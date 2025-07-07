@@ -5,25 +5,29 @@ import "./App.css";
 
 const CricGuess = () => {
   // ============================================================================
-  // PART 1: PUZZLE SYSTEM - Using Match Puzzles from JSON
+  // FEATURE FLAGS - Toggle between discovery systems
   // ============================================================================
-
-  // Puzzle configuration - Now uses match puzzles from extracted data
-  const PUZZLE_CONFIG = {
-    maxGuesses: 5,
-    puzzles: matchPuzzlesData.puzzles || [], // Load from match_puzzles.json
+  const FEATURES = {
+    useSquadDiscovery: true,  // Set to false for current system
+    showDebugInfo: true,      // Set to false for production
   };
 
   // ============================================================================
-  // PART 2: FEEDBACK SYSTEM - Match-Specific Performance
+  // PART 1: PUZZLE SYSTEM - Enhanced with better error handling
   // ============================================================================
 
-  // Feedback configuration - NEW MATCH-SPECIFIC FEEDBACK
-  const FEEDBACK_CONFIG = {
-    // New match-specific feedback fields - REORDERED
-    activeFields: ["country", "playedInMatch", "runsInMatch", "wicketsInMatch"],
+  const PUZZLE_CONFIG = {
+    maxGuesses: 5,
+    puzzles: matchPuzzlesData.puzzles || [],
+  };
 
-    // Comparison logic for match-specific fields
+  // ============================================================================
+  // PART 2: FEEDBACK SYSTEMS - Both Current + Squad Discovery
+  // ============================================================================
+
+  // Current feedback system (unchanged)
+  const FEEDBACK_CONFIG = {
+    activeFields: ["country", "playedInMatch", "runsInMatch", "wicketsInMatch"],
     compareFields: {
       country: {
         label: "Country",
@@ -60,8 +64,47 @@ const CricGuess = () => {
     },
   };
 
+  // NEW: Squad Discovery feedback system
+  const SQUAD_FEEDBACK_CONFIG = {
+    activeFields: ["team", "battingOrder", "runsScored", "role"],
+    compareFields: {
+      team: {
+        label: "Team",
+        icon: "👥",
+        compare: (guessValue, targetValue) =>
+          guessValue === targetValue ? "✅" : "❌",
+      },
+      battingOrder: {
+        label: "Batting Order",
+        icon: "📝",
+        compare: (guessValue, targetValue) =>
+          guessValue > targetValue
+            ? "🔽"
+            : guessValue < targetValue
+              ? "🔼"
+              : "✅",
+      },
+      runsScored: {
+        label: "Runs Scored",
+        icon: "🏃",
+        compare: (guessValue, targetValue) =>
+          guessValue > targetValue
+            ? "🔽"
+            : guessValue < targetValue
+              ? "🔼"
+              : "✅",
+      },
+      role: {
+        label: "Role",
+        icon: "🎭",
+        compare: (guessValue, targetValue) =>
+          guessValue === targetValue ? "✅" : "❌",
+      },
+    },
+  };
+
   // ============================================================================
-  // GAME STATE MANAGEMENT + AUTOCOMPLETE STATE
+  // GAME STATE MANAGEMENT
   // ============================================================================
 
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
@@ -70,478 +113,344 @@ const CricGuess = () => {
   const [gameWon, setGameWon] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [gameError, setGameError] = useState(null); // NEW: Error handling
 
-  // NEW: Autocomplete state
+  // Autocomplete state (for current system)
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
 
-  // Refs for autocomplete
+  // NEW: Squad discovery state
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [squadFeedback, setSquadFeedback] = useState([]);
+
   const inputRef = useRef(null);
   const suggestionRefs = useRef([]);
 
-  // Get current puzzle
-  const currentPuzzle = PUZZLE_CONFIG.puzzles[currentPuzzleIndex];
+  // Enhanced puzzle getter with error handling
+  const getCurrentPuzzle = () => {
+    try {
+      const puzzle = PUZZLE_CONFIG.puzzles[currentPuzzleIndex];
+      if (!puzzle) {
+        setGameError("Puzzle not found");
+        return null;
+      }
+      return puzzle;
+    } catch (error) {
+      setGameError(`Puzzle error: ${error.message}`);
+      return null;
+    }
+  };
+
+  const currentPuzzle = getCurrentPuzzle();
+
+  // Enhanced target player getter with error handling
+  const getTargetPlayer = () => {
+    if (!currentPuzzle) return null;
+    try {
+      const targetPlayerKey = currentPuzzle.targetPlayer;
+      const targetPlayer = playersData[targetPlayerKey];
+      if (!targetPlayer) {
+        console.error(`Target player not found: ${targetPlayerKey}`);
+        return null;
+      }
+      return targetPlayer;
+    } catch (error) {
+      console.error(`Error getting target player:`, error);
+      return null;
+    }
+  };
 
   // ============================================================================
-  // AUTOCOMPLETE FUNCTIONS
+  // SQUAD DISCOVERY FUNCTIONS
   // ============================================================================
 
   /**
-   * Advanced player search with fuzzy matching and scoring
-   * @param {string} input - Search query
-   * @returns {Array} - Sorted array of matching players
+   * Get squad players for current puzzle
    */
-  const searchPlayers = (input) => {
-    if (!input || input.length < 3) return [];
+  const getSquadPlayers = () => {
+    if (!currentPuzzle?.matchData?.playerPerformances) return { team1: [], team2: [] };
 
-    const query = input.toLowerCase();
-    const matches = [];
+    try {
+      const performances = currentPuzzle.matchData.playerPerformances;
+      const team1Players = [];
+      const team2Players = [];
 
-    Object.entries(playersData).forEach(([key, player]) => {
-      let score = 0;
-      let matchType = "";
+      Object.entries(performances).forEach(([playerKey, perf]) => {
+        const player = playersData[playerKey];
+        if (player && perf.played_in_match) {
+          const playerData = {
+            key: playerKey,
+            name: player.fullName,
+            team: perf.team,
+            runs: perf.runs_in_match || 0,
+            wickets: perf.wickets_in_match || 0,
+            role: player.role || "Player",
+            battingOrder: getBattingOrder(playerKey, performances),
+          };
 
-      // Exact name match (highest priority)
-      if (player.fullName.toLowerCase().includes(query)) {
-        score = 1000;
-        matchType = "name";
-      }
-
-      // Surname match
-      const surnames = player.fullName.split(" ");
-      surnames.forEach((surname) => {
-        if (surname.toLowerCase().includes(query)) {
-          score = Math.max(score, 800);
-          matchType = "surname";
+          if (perf.team === currentPuzzle.matchData.scorecard.teams[0]) {
+            team1Players.push(playerData);
+          } else {
+            team2Players.push(playerData);
+          }
         }
       });
 
-      // Alias matching
-      if (player.aliases) {
-        player.aliases.forEach((alias) => {
-          if (alias.toLowerCase().includes(query)) {
-            score = Math.max(score, 500);
-            matchType = "alias";
-          }
-        });
-      }
+      // Sort by batting order
+      team1Players.sort((a, b) => a.battingOrder - b.battingOrder);
+      team2Players.sort((a, b) => a.battingOrder - b.battingOrder);
 
-      if (score > 0) {
-        matches.push({
-          key,
-          player,
-          score,
-          matchType,
-          displayText: player.fullName,
-        });
-      }
-    });
-
-    // Sort by score (descending) and return top 8
-    return matches.sort((a, b) => b.score - a.score).slice(0, 8);
-  };
-
-  /**
-   * Handles input change and triggers autocomplete
-   */
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setCurrentGuess(value);
-    setSelectedSuggestionIndex(-1);
-
-    if (value.length >= 3) {
-      setIsLoadingSuggestions(true);
-
-      // Debounce search for better performance
-      setTimeout(() => {
-        const results = searchPlayers(value);
-        setSuggestions(results);
-        setShowSuggestions(results.length > 0);
-        setIsLoadingSuggestions(false);
-      }, 150);
-    } else {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      setIsLoadingSuggestions(false);
+      return { 
+        team1: team1Players, 
+        team2: team2Players,
+        team1Name: currentPuzzle.matchData.scorecard.teams[0],
+        team2Name: currentPuzzle.matchData.scorecard.teams[1]
+      };
+    } catch (error) {
+      console.error("Error getting squad players:", error);
+      return { team1: [], team2: [] };
     }
   };
 
   /**
-   * Handles keyboard navigation in autocomplete
+   * Get batting order for a player (simplified logic)
    */
-  const handleKeyDown = (e) => {
-    if (!showSuggestions || suggestions.length === 0) {
-      if (e.key === "Enter") {
-        processGuess();
-      }
-      return;
-    }
+  const getBattingOrder = (playerKey, performances) => {
+    const perf = performances[playerKey];
+    if (!perf) return 11;
 
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        setSelectedSuggestionIndex((prev) =>
-          prev < suggestions.length - 1 ? prev + 1 : 0,
-        );
-        break;
+    // Simple heuristic: higher runs/balls faced = higher batting order
+    const ballsFaced = perf.balls_faced || 0;
+    const runs = perf.runs_in_match || 0;
 
-      case "ArrowUp":
-        e.preventDefault();
-        setSelectedSuggestionIndex((prev) =>
-          prev > 0 ? prev - 1 : suggestions.length - 1,
-        );
-        break;
-
-      case "Enter":
-        e.preventDefault();
-        if (selectedSuggestionIndex >= 0) {
-          selectSuggestion(suggestions[selectedSuggestionIndex]);
-        } else {
-          processGuess();
-        }
-        break;
-
-      case "Escape":
-        setShowSuggestions(false);
-        setSelectedSuggestionIndex(-1);
-        break;
-
-      case "Tab":
-        if (selectedSuggestionIndex >= 0) {
-          e.preventDefault();
-          selectSuggestion(suggestions[selectedSuggestionIndex]);
-        }
-        break;
-    }
+    if (ballsFaced > 20) return Math.floor(runs / 10) + 1; // Top order
+    if (ballsFaced > 0) return 6 + Math.floor(ballsFaced / 5); // Middle order
+    return 9 + (perf.wickets_in_match || 0); // Bowlers/tailenders
   };
 
   /**
-   * Selects a suggestion from autocomplete
+   * Generate squad-based feedback
    */
-  const selectSuggestion = (suggestion) => {
-    setCurrentGuess(suggestion.player.fullName);
-    setShowSuggestions(false);
-    setSuggestions([]);
-    setSelectedSuggestionIndex(-1);
-    inputRef.current?.focus();
-  };
+  const generateSquadFeedback = (guessPlayerKey, targetPlayerKey) => {
+    try {
+      const performances = currentPuzzle.matchData.playerPerformances;
+      const guessPerf = performances[guessPlayerKey];
+      const targetPerf = performances[targetPlayerKey];
+      const guessPlayer = playersData[guessPlayerKey];
+      const targetPlayer = playersData[targetPlayerKey];
 
-  /**
-   * Handles clicking outside autocomplete to close it
-   */
-  const handleClickOutside = (e) => {
-    if (inputRef.current && !inputRef.current.contains(e.target)) {
-      const suggestionContainer = document.querySelector(
-        ".autocomplete-suggestions",
-      );
-      if (!suggestionContainer || !suggestionContainer.contains(e.target)) {
-        setShowSuggestions(false);
-        setSelectedSuggestionIndex(-1);
-      }
-    }
-  };
-
-  // Set up click outside listener
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  // Scroll selected suggestion into view
-  useEffect(() => {
-    if (
-      selectedSuggestionIndex >= 0 &&
-      suggestionRefs.current[selectedSuggestionIndex]
-    ) {
-      suggestionRefs.current[selectedSuggestionIndex].scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
-  }, [selectedSuggestionIndex]);
-
-  // ============================================================================
-  // PART 2: PLAYER MATCHING AND FEEDBACK FUNCTIONS - UPDATED SYSTEM
-  // ============================================================================
-
-  /**
-   * Matches player input to database key with flexible matching
-   * @param {string} input - Player name input
-   * @returns {string|null} - Player key or null if not found
-   */
-  const matchPlayerName = (input) => {
-    const inputUpper = input.toUpperCase().trim();
-
-    // Direct key match
-    if (playersData[inputUpper]) return inputUpper;
-
-    // Search through all players for surname or alias matching
-    for (const [key, player] of Object.entries(playersData)) {
-      const fullName = player.fullName.toLowerCase();
-      const inputLower = input.toLowerCase();
-
-      // Check if input matches surname
-      const surnames = player.fullName.split(" ");
-      const lastSurname = surnames[surnames.length - 1].toLowerCase();
-
-      if (
-        inputLower === lastSurname ||
-        inputLower.includes(lastSurname) ||
-        lastSurname.includes(inputLower) ||
-        fullName.includes(inputLower)
-      ) {
-        return key;
+      if (!guessPerf || !targetPerf || !guessPlayer || !targetPlayer) {
+        return null;
       }
 
-      // Check aliases if they exist
-      if (player.aliases) {
-        for (const alias of player.aliases) {
-          if (alias.toLowerCase() === inputLower) {
-            return key;
-          }
-        }
-      }
-    }
+      const feedback = {};
 
-    return null;
-  };
+      SQUAD_FEEDBACK_CONFIG.activeFields.forEach((field) => {
+        const fieldConfig = SQUAD_FEEDBACK_CONFIG.compareFields[field];
+        if (!fieldConfig) return;
 
-  /**
-   * UPDATED: Generates feedback for a guess - handles both in-match and not-in-match players
-   * @param {string} guessPlayerKey - Database key for guessed player
-   * @param {string} targetPlayerKey - Database key for target player
-   * @returns {Object} - Feedback object with match-specific comparisons
-   */
-  const generateFeedback = (guessPlayerKey, targetPlayerKey) => {
-    const guessPlayerData = playersData[guessPlayerKey];
-    const targetPlayerData = playersData[targetPlayerKey];
-
-    // Get match-specific performance data
-    const matchData = currentPuzzle.matchData;
-    const guessMatchPerf = matchData?.playerPerformances?.[guessPlayerKey];
-    const targetMatchPerf = matchData?.playerPerformances?.[targetPlayerKey];
-
-    const feedback = {};
-
-    // Generate feedback for active fields
-    FEEDBACK_CONFIG.activeFields.forEach((field) => {
-      const fieldConfig = FEEDBACK_CONFIG.compareFields[field];
-      if (fieldConfig) {
-        if (field === "country") {
-          // Country comparison using players.json data (always available)
+        if (field === "team") {
           feedback[field] = {
-            comparison: fieldConfig.compare(
-              guessPlayerData?.country,
-              targetPlayerData?.country,
-            ),
-            value: guessPlayerData?.country,
-            flag: guessPlayerData?.countryFlag,
+            comparison: fieldConfig.compare(guessPerf.team, targetPerf.team),
+            value: guessPerf.team,
             label: fieldConfig.label,
             icon: fieldConfig.icon,
           };
-        } else if (field === "playedInMatch") {
-          // Whether they played in this match
-          const guessPlayed = guessMatchPerf?.played_in_match || false;
-          const targetPlayed = targetMatchPerf?.played_in_match || false;
+        } else if (field === "battingOrder") {
+          const guessBattingOrder = getBattingOrder(guessPlayerKey, performances);
+          const targetBattingOrder = getBattingOrder(targetPlayerKey, performances);
           feedback[field] = {
-            comparison: fieldConfig.compare(guessPlayed, targetPlayed),
-            value: guessPlayed ? "Yes" : "No",
+            comparison: fieldConfig.compare(guessBattingOrder, targetBattingOrder),
+            value: guessBattingOrder,
             label: fieldConfig.label,
             icon: fieldConfig.icon,
           };
-        } else if (field === "runsInMatch") {
-          // Match-specific runs (0 if didn't play)
-          const guessRuns = guessMatchPerf?.runs_in_match || 0;
-          const targetRuns = targetMatchPerf?.runs_in_match || 0;
+        } else if (field === "runsScored") {
+          const guessRuns = guessPerf.runs_in_match || 0;
+          const targetRuns = targetPerf.runs_in_match || 0;
           feedback[field] = {
             comparison: fieldConfig.compare(guessRuns, targetRuns),
             value: guessRuns,
             label: fieldConfig.label,
             icon: fieldConfig.icon,
           };
-        } else if (field === "wicketsInMatch") {
-          // Match-specific wickets (0 if didn't play)
-          const guessWickets = guessMatchPerf?.wickets_in_match || 0;
-          const targetWickets = targetMatchPerf?.wickets_in_match || 0;
+        } else if (field === "role") {
           feedback[field] = {
-            comparison: fieldConfig.compare(guessWickets, targetWickets),
-            value: guessWickets,
+            comparison: fieldConfig.compare(guessPlayer.role, targetPlayer.role),
+            value: guessPlayer.role,
             label: fieldConfig.label,
             icon: fieldConfig.icon,
           };
         }
-      }
-    });
+      });
 
-    return feedback;
+      return feedback;
+    } catch (error) {
+      console.error("Error generating squad feedback:", error);
+      return null;
+    }
   };
 
   /**
-   * UPDATED: Processes a player guess with improved feedback system
-   * 1. Only popup if player not in database
-   * 2. If player in database but not in match - count as guess with feedback
+   * Handle squad player selection
    */
-  const processGuess = () => {
-    // Basic validation
-    if (!currentGuess.trim()) {
-      alert("Please enter a player name!");
+  const handleSquadPlayerSelect = (playerKey) => {
+    if (!currentPuzzle) return;
+
+    const targetPlayerKey = currentPuzzle.targetPlayer;
+
+    // Check if already guessed
+    if (squadFeedback.some(f => f.guessPlayer === playerKey)) {
+      alert("You already tried this player!");
       return;
     }
 
-    const matchedPlayer = matchPlayerName(currentGuess);
+    const feedback = generateSquadFeedback(playerKey, targetPlayerKey);
+    const guessPlayer = playersData[playerKey];
 
-    // CASE 1: Player not found in database at all - SHOW POPUP
-    if (!matchedPlayer) {
-      const matchPlayers = currentPuzzle.matchData?.playerPerformances
-        ? Object.keys(currentPuzzle.matchData.playerPerformances)
-        : [];
-
-      if (matchPlayers.length > 0) {
-        const suggestions = matchPlayers
-          .slice(0, 5)
-          .map((key) => playersData[key]?.fullName || key)
-          .join(", ");
-        alert(
-          `Player not found in database! Try players from this match like: ${suggestions}`,
-        );
-      } else {
-        alert("Player not found in database! Try another name.");
-      }
+    if (!feedback || !guessPlayer) {
+      alert("Error processing guess!");
       return;
     }
 
-    // CASE 2: Check if already guessed
-    if (guesses.some((g) => g.guessPlayer === matchedPlayer)) {
-      alert("You already guessed this player!");
-      return;
-    }
-
-    // CASE 3: Player exists in database - ALWAYS COUNT AS GUESS (whether in match or not)
-
-    // Generate feedback (this will handle both in-match and not-in-match cases)
-    const feedback = generateFeedback(
-      matchedPlayer,
-      currentPuzzle.targetPlayer,
-    );
-
-    const newGuess = {
-      guessPlayer: matchedPlayer,
-      guessPlayerName: playersData[matchedPlayer].fullName,
+    const newFeedback = {
+      guessPlayer: playerKey,
+      guessPlayerName: guessPlayer.fullName,
       feedback: feedback,
-      isCorrect: matchedPlayer === currentPuzzle.targetPlayer,
+      isCorrect: playerKey === targetPlayerKey,
     };
 
-    // Update game state
-    const newGuesses = [...guesses, newGuess];
-    setGuesses(newGuesses);
-    setCurrentGuess("");
-    setShowSuggestions(false);
+    const newSquadFeedback = [...squadFeedback, newFeedback];
+    setSquadFeedback(newSquadFeedback);
 
     // Check win/lose conditions
-    if (matchedPlayer === currentPuzzle.targetPlayer) {
+    if (playerKey === targetPlayerKey) {
       setGameWon(true);
       setGameOver(true);
-    } else if (newGuesses.length >= PUZZLE_CONFIG.maxGuesses) {
+    } else if (newSquadFeedback.length >= PUZZLE_CONFIG.maxGuesses) {
       setGameOver(true);
     }
   };
 
   // ============================================================================
-  // PART 3: COMPLETION FUNCTIONS - Game end states and sharing
+  // ORIGINAL AUTOCOMPLETE FUNCTIONS (unchanged for current system)
+  // ============================================================================
+
+  const searchPlayers = (query) => {
+    if (query.length < 3) return [];
+
+    const searchTerm = query.toLowerCase();
+    const results = [];
+
+    Object.entries(playersData).forEach(([key, player]) => {
+      const fullName = player.fullName.toLowerCase();
+      const aliases = player.aliases || [];
+
+      if (fullName.includes(searchTerm) || 
+          aliases.some(alias => alias.toLowerCase().includes(searchTerm))) {
+        results.push({
+          key: key,
+          player: player,
+          relevance: fullName.startsWith(searchTerm) ? 2 : 1
+        });
+      }
+    });
+
+    return results
+      .sort((a, b) => b.relevance - a.relevance)
+      .slice(0, 8);
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setCurrentGuess(value);
+
+    if (value.length >= 3) {
+      setIsLoadingSuggestions(true);
+      setTimeout(() => {
+        const results = searchPlayers(value);
+        setSuggestions(results);
+        setShowSuggestions(true);
+        setIsLoadingSuggestions(false);
+        setSelectedSuggestionIndex(-1);
+      }, 300);
+    } else {
+      setShowSuggestions(false);
+      setSuggestions([]);
+    }
+  };
+
+  // ============================================================================
+  // ENHANCED ERROR HANDLING & PROGRESSION
   // ============================================================================
 
   /**
-   * Generates shareable text for social media
-   * @returns {string} - Formatted share text
-   */
-  const generateShareText = () => {
-    const guessCount = guesses.length;
-    const result = gameWon
-      ? `${guessCount}/${PUZZLE_CONFIG.maxGuesses}`
-      : `X/${PUZZLE_CONFIG.maxGuesses}`;
-
-    let shareText = `🏏 CricGuess #${currentPuzzleIndex + 1} ${result}\n`;
-
-    // Use match details for sharing
-    if (currentPuzzle.matchData?.scorecard) {
-      const scorecard = currentPuzzle.matchData.scorecard;
-      shareText += `${scorecard.teams[0]} vs ${scorecard.teams[1]}\n`;
-      shareText += `${scorecard.venue}, ${scorecard.date}\n\n`;
-    }
-
-    guesses.forEach((guess) => {
-      const feedbackEmojis = FEEDBACK_CONFIG.activeFields
-        .map((field) => guess.feedback[field]?.comparison || "❓")
-        .join("");
-      shareText += feedbackEmojis;
-      if (guess.isCorrect) shareText += " ✅";
-      shareText += "\n";
-    });
-
-    shareText += "\nPlay at cricguess.com 🏏";
-    return shareText;
-  };
-
-  /**
-   * Handles sharing results to clipboard
-   */
-  const handleShare = () => {
-    const shareText = generateShareText();
-    navigator.clipboard.writeText(shareText);
-    alert("Results copied to clipboard! 📋");
-  };
-
-  /**
-   * Progresses to next puzzle
+   * Enhanced next puzzle function with error handling
    */
   const nextPuzzle = () => {
-    if (currentPuzzleIndex < PUZZLE_CONFIG.puzzles.length - 1) {
-      setCurrentPuzzleIndex(currentPuzzleIndex + 1);
-      resetPuzzleState();
+    try {
+      if (currentPuzzleIndex < PUZZLE_CONFIG.puzzles.length - 1) {
+        setCurrentPuzzleIndex(currentPuzzleIndex + 1);
+        resetPuzzleState();
+        setGameError(null);
+      }
+    } catch (error) {
+      setGameError(`Error moving to next puzzle: ${error.message}`);
     }
   };
 
   /**
-   * Resets current puzzle state
+   * Enhanced reset with error clearing
    */
   const resetPuzzleState = () => {
     setGuesses([]);
+    setSquadFeedback([]);
     setGameWon(false);
     setGameOver(false);
     setCurrentGuess("");
     setShowSuggestions(false);
     setSuggestions([]);
     setSelectedSuggestionIndex(-1);
+    setSelectedPlayer(null);
+    setGameError(null);
   };
 
   /**
-   * Get puzzle type label
-   */
-  const getPuzzleTypeLabel = (puzzleType) => {
-    return puzzleType === "scorecard" ? "Match Scorecard" : "Unknown";
-  };
-
-  /**
-   * Renders game completion status
-   * @returns {JSX.Element|null} - Status component or null
+   * ENHANCED: Game status with proper error handling and answer reveal
    */
   const renderGameStatus = () => {
+    const targetPlayer = getTargetPlayer();
+    const targetPlayerName = targetPlayer?.fullName || "Unknown Player";
+
+    if (gameError) {
+      return (
+        <div className="status-error">
+          <div className="text-red-800 font-bold text-xl">⚠️ Game Error</div>
+          <div className="text-sm mt-2">{gameError}</div>
+          <div className="mt-4">
+            <button onClick={resetPuzzleState} className="btn btn-blue">
+              Try Again
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     if (gameWon) {
       return (
         <div className="status-win">
           <div className="text-green-800 font-bold text-xl">🎉 Brilliant!</div>
           <div className="text-sm mt-2">
-            You found{" "}
-            <strong>{playersData[currentPuzzle.targetPlayer].fullName}</strong>{" "}
-            in {guesses.length} guesses!
+            You found <strong>{targetPlayerName}</strong> in{" "}
+            {FEATURES.useSquadDiscovery ? squadFeedback.length : guesses.length} tries!
           </div>
-          <div className="mt-3 p-3 bg-green-50 rounded text-sm text-left">
-            <strong>Cricket Trivia:</strong> {currentPuzzle.trivia}
-          </div>
+          {currentPuzzle?.trivia && (
+            <div className="mt-3 p-3 bg-green-50 rounded text-sm text-left">
+              <strong>Cricket Trivia:</strong> {currentPuzzle.trivia}
+            </div>
+          )}
           <div className="mt-4 space-x-3">
             <button onClick={resetPuzzleState} className="btn btn-blue">
               Try Again
@@ -559,14 +468,15 @@ const CricGuess = () => {
     if (gameOver && !gameWon) {
       return (
         <div className="status-lose">
-          <div className="text-red-800 font-bold text-xl">Close One!</div>
+          <div className="text-red-800 font-bold text-xl">🎯 Close One!</div>
           <div className="text-sm mt-2">
-            The answer was:{" "}
-            <strong>{playersData[currentPuzzle.targetPlayer].fullName}</strong>
+            The answer was: <strong>{targetPlayerName}</strong>
           </div>
-          <div className="mt-3 p-3 bg-red-50 rounded text-sm text-left">
-            <strong>Cricket Trivia:</strong> {currentPuzzle.trivia}
-          </div>
+          {currentPuzzle?.trivia && (
+            <div className="mt-3 p-3 bg-red-50 rounded text-sm text-left">
+              <strong>Cricket Trivia:</strong> {currentPuzzle.trivia}
+            </div>
+          )}
           <div className="mt-4 space-x-3">
             <button onClick={resetPuzzleState} className="btn btn-blue">
               Try Again
@@ -585,131 +495,86 @@ const CricGuess = () => {
   };
 
   // ============================================================================
-  // PART 1: PUZZLE FUNCTIONS - Match Scorecard Display
+  // RENDER FUNCTIONS - Squad Discovery UI
   // ============================================================================
 
   /**
-   * Renders the match scorecard puzzle content - FORMATTED LIKE CRICKET BROADCAST
-   * @param {Object} puzzle - Current puzzle object
-   * @returns {JSX.Element} - Rendered puzzle display
+   * Render squad-based discovery interface
    */
-  const renderPuzzleContent = (puzzle) => {
-    if (!puzzle || puzzle.puzzleType !== "scorecard") {
-      return (
-        <div className="puzzle-display">
-          <div className="text-sm text-gray-600 mb-3">Puzzle not available</div>
-        </div>
-      );
-    }
+  const renderSquadDiscovery = () => {
+    const { team1, team2, team1Name, team2Name } = getSquadPlayers();
+    const targetPlayer = getTargetPlayer();
+    const guessesUsed = squadFeedback.length;
 
-    const scorecard = puzzle.matchData?.scorecard;
-    if (!scorecard) {
+    if (team1.length === 0 && team2.length === 0) {
       return (
-        <div className="puzzle-display">
-          <div className="text-sm text-gray-600 mb-3">
-            Scorecard not available
+        <div className="squad-discovery-error">
+          <div className="text-red-600 text-sm">
+            Squad data not available for this match
           </div>
         </div>
       );
     }
-
-    const team1 = scorecard.teams[0];
-    const team2 = scorecard.teams[1];
-    const team1Score = scorecard.team_scores[team1];
-    const team2Score = scorecard.team_scores[team2];
-    const winner = scorecard.winner;
-
-    // Format team names to abbreviations
-    const formatTeamName = (name) => {
-      const abbreviations = {
-        "Royal Challengers Bangalore": "RCB",
-        "Kolkata Knight Riders": "KKR",
-        "Chennai Super Kings": "CSK",
-        "Mumbai Indians": "MI",
-        "Kings XI Punjab": "KXIP",
-        "Delhi Daredevils": "DD",
-        "Rajasthan Royals": "RR",
-        "Deccan Chargers": "DC",
-      };
-      return (
-        abbreviations[name] ||
-        name
-          .split(" ")
-          .map((word) => word[0])
-          .join("")
-      );
-    };
-
-    // Determine batting order and victory margin correctly
-    const getBattingOrderAndMargin = () => {
-      const team1Runs = team1Score?.runs || 0;
-      const team2Runs = team2Score?.runs || 0;
-      const team1Wickets = team1Score?.wickets || 0;
-      const team2Wickets = team2Score?.wickets || 0;
-
-      // Determine which team batted first (lower score usually batted first in successful chases)
-      const firstInnings = team1Runs < team2Runs ? team1 : team2;
-      const secondInnings = team1Runs < team2Runs ? team2 : team1;
-      const firstScore = team1Runs < team2Runs ? team1Score : team2Score;
-      const secondScore = team1Runs < team2Runs ? team2Score : team1Score;
-
-      let marginText = "";
-      if (winner === secondInnings) {
-        // Successful chase
-        const wicketsLeft = 10 - (secondScore?.wickets || 0);
-        marginText = `${winner} won by ${wicketsLeft} wickets`;
-      } else {
-        // Defend successfully
-        const runMargin = (firstScore?.runs || 0) - (secondScore?.runs || 0);
-        marginText = `${winner} won by ${runMargin} runs`;
-      }
-
-      return {
-        firstInnings,
-        secondInnings,
-        firstScore,
-        secondScore,
-        marginText,
-      };
-    };
-
-    const { marginText } = getBattingOrderAndMargin();
 
     return (
-      <div className="puzzle-display">
-        <div className="text-center space-y-3">
-          {/* Match Header */}
-          <div className="text-lg font-bold text-blue-800">
-            🏏 {formatTeamName(team1)} vs {formatTeamName(team2)}
+      <div className="squad-discovery">
+        <div className="discovery-header">
+          <h3 className="text-lg font-bold mb-2">🎯 Select a Player from the Squads</h3>
+          <div className="text-sm text-gray-600 mb-4">
+            Guess {guessesUsed + 1} of {PUZZLE_CONFIG.maxGuesses} • Tap a player to get clues!
           </div>
+        </div>
 
-          {/* Venue and Date */}
-          <div className="text-sm text-gray-600">
-            <div>{scorecard.venue}</div>
-            <div>{scorecard.date}</div>
-          </div>
+        <div className="squads-container">
+          {/* Team 1 */}
+          <div className="team-squad">
+            <h4 className="team-name">{team1Name}</h4>
+            <div className="players-grid">
+              {team1.map((player) => {
+                const isGuessed = squadFeedback.some(f => f.guessPlayer === player.key);
+                const isCorrect = player.key === currentPuzzle?.targetPlayer;
 
-          {/* Team Scores */}
-          <div className="space-y-2 py-4">
-            <div className="flex justify-between items-center bg-blue-50 p-2 rounded">
-              <span className="font-semibold">{formatTeamName(team1)}</span>
-              <span className="font-mono text-lg">
-                {team1Score?.runs || 0}/{team1Score?.wickets || 0}
-              </span>
+                return (
+                  <button
+                    key={player.key}
+                    className={`player-card ${isGuessed ? 'guessed' : ''} ${isCorrect && gameWon ? 'correct' : ''}`}
+                    onClick={() => !gameOver && !isGuessed && handleSquadPlayerSelect(player.key)}
+                    disabled={gameOver || isGuessed}
+                  >
+                    <div className="player-name">{player.name}</div>
+                    <div className="player-stats">
+                      {player.runs}* ({player.wickets}w)
+                    </div>
+                    <div className="player-role">{player.role}</div>
+                  </button>
+                );
+              })}
             </div>
-            <div className="flex justify-between items-center bg-green-50 p-2 rounded">
-              <span className="font-semibold">{formatTeamName(team2)}</span>
-              <span className="font-mono text-lg">
-                {team2Score?.runs || 0}/{team2Score?.wickets || 0}
-              </span>
-            </div>
           </div>
 
-          {/* Result */}
-          <div className="border-t pt-3 space-y-2">
-            <div className="text-green-700 font-semibold">{marginText}</div>
-            <div className="text-xl font-bold text-purple-600">
-              Player of the Match: ?
+          {/* Team 2 */}
+          <div className="team-squad">
+            <h4 className="team-name">{team2Name}</h4>
+            <div className="players-grid">
+              {team2.map((player) => {
+                const isGuessed = squadFeedback.some(f => f.guessPlayer === player.key);
+                const isCorrect = player.key === currentPuzzle?.targetPlayer;
+
+                return (
+                  <button
+                    key={player.key}
+                    className={`player-card ${isGuessed ? 'guessed' : ''} ${isCorrect && gameWon ? 'correct' : ''}`}
+                    onClick={() => !gameOver && !isGuessed && handleSquadPlayerSelect(player.key)}
+                    disabled={gameOver || isGuessed}
+                  >
+                    <div className="player-name">{player.name}</div>
+                    <div className="player-stats">
+                      {player.runs}* ({player.wickets}w)
+                    </div>
+                    <div className="player-role">{player.role}</div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -717,156 +582,82 @@ const CricGuess = () => {
     );
   };
 
-  // ============================================================================
-  // RENDER FUNCTIONS - Updated UI for Match-Specific Feedback
-  // ============================================================================
-
   /**
-   * Renders the feedback legend explaining symbols - UPDATED FOR MATCH-SPECIFIC
-   * @returns {JSX.Element} - Legend component
+   * Render squad feedback history
    */
-  const renderFeedbackLegend = () => (
-    <div className="feedback-legend">
-      <div className="font-semibold mb-2">How to Read the Clues:</div>
-      <div className="space-y-1">
-        {FEEDBACK_CONFIG.activeFields.map((field) => {
-          const fieldConfig = FEEDBACK_CONFIG.compareFields[field];
-          if (!fieldConfig) return null;
-
-          return (
-            <div key={field}>
-              {fieldConfig.icon} <strong>{fieldConfig.label}:</strong>{" "}
-              {field === "country"
-                ? "🎯 Same country | ❌ Different country"
-                : field === "playedInMatch"
-                  ? "🎯 Played in match | ❌ Did not play in match"
-                  : "⬆️ Target scored/took more | ⬇️ Target scored/took fewer | 🎯 Same"}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-
-  /**
-   * Renders guess history with feedback - UPDATED FOR 4-COLUMN GRID
-   * @returns {JSX.Element} - Guess history component
-   */
-  const renderGuessHistory = () => (
-    <div className="space-y-3 mb-6">
-      {guesses.map((guess, index) => (
-        <div key={index} className="guess-card">
-          <div className="flex items-center justify-between mb-2">
-            <span className="font-bold">
-              #{index + 1} {guess.guessPlayerName}
-            </span>
-            {guess.isCorrect && (
-              <span className="text-green-600 text-xl">✅</span>
-            )}
-          </div>
-          {/* Updated to 4-column grid for new feedback fields */}
-          <div className="grid grid-cols-4 gap-2 text-sm">
-            {FEEDBACK_CONFIG.activeFields.map((field) => {
-              const feedback = guess.feedback[field];
-              if (!feedback) return null;
-
-              return (
-                <div key={field} className="text-center">
-                  <div className="text-xs text-gray-600">{feedback.label}</div>
-                  <div className="font-mono">
-                    {/* Special handling for different field types */}
-                    {field === "country" ? (
-                      <div className="flex flex-col items-center">
-                        <div className="text-lg">{feedback.flag || "🏳️"}</div>
-                        <div className="text-xs">{feedback.comparison}</div>
-                      </div>
-                    ) : field === "playedInMatch" ? (
-                      <div className="flex flex-col items-center">
-                        <div className="text-xs">{feedback.value}</div>
-                        <div className="text-lg">{feedback.comparison}</div>
-                      </div>
-                    ) : (
-                      <>
-                        {feedback.value} {feedback.comparison}
-                      </>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-
-  /**
-   * Renders autocomplete suggestions dropdown
-   * @returns {JSX.Element|null} - Autocomplete component or null
-   */
-  const renderAutocompleteSuggestions = () => {
-    if (!showSuggestions || suggestions.length === 0) return null;
+  const renderSquadFeedbackHistory = () => {
+    if (squadFeedback.length === 0) return null;
 
     return (
-      <div className="autocomplete-suggestions">
-        {isLoadingSuggestions ? (
-          <div className="autocomplete-loading">
-            <span>🔍 Searching players...</span>
-          </div>
-        ) : (
-          suggestions.map((suggestion, index) => (
-            <div
-              key={suggestion.key}
-              ref={(el) => (suggestionRefs.current[index] = el)}
-              className={`autocomplete-suggestion ${
-                index === selectedSuggestionIndex ? "selected" : ""
-              }`}
-              onClick={() => selectSuggestion(suggestion)}
-              onMouseEnter={() => setSelectedSuggestionIndex(index)}
-            >
-              <div className="suggestion-main">
-                <span className="suggestion-name">
-                  {suggestion.player.fullName}
+      <div className="squad-feedback-history">
+        <h4 className="text-md font-bold mb-3">🧩 Your Clues</h4>
+        <div className="space-y-3">
+          {squadFeedback.map((feedback, index) => (
+            <div key={index} className="feedback-card">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-bold">
+                  #{index + 1} {feedback.guessPlayerName}
                 </span>
-                <span className="suggestion-flag">
-                  {suggestion.player.countryFlag}
-                </span>
+                {feedback.isCorrect && (
+                  <span className="text-green-600 text-xl">🎯</span>
+                )}
               </div>
-              <div className="suggestion-details">
-                <span className="suggestion-country">
-                  {suggestion.player.country}
-                </span>
-                <span className="suggestion-teams">
-                  {suggestion.player.teams?.slice(0, 2).join(", ") ||
-                    "No team info"}
-                </span>
+              <div className="grid grid-cols-4 gap-2 text-sm">
+                {SQUAD_FEEDBACK_CONFIG.activeFields.map((field) => {
+                  const fb = feedback.feedback[field];
+                  if (!fb) return null;
+
+                  return (
+                    <div key={field} className="text-center">
+                      <div className="text-xs text-gray-600">{fb.label}</div>
+                      <div className="font-mono text-sm">
+                        <div>{fb.icon}</div>
+                        <div>{fb.comparison}</div>
+                        <div className="text-xs">{fb.value}</div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          ))
-        )}
-        <div className="autocomplete-footer">
-          Use ↑↓ keys to navigate, Enter to select
+          ))}
         </div>
       </div>
     );
   };
 
+  /**
+   * Render squad feedback legend
+   */
+  const renderSquadFeedbackLegend = () => (
+    <div className="squad-feedback-legend">
+      <div className="font-semibold mb-2">🔍 How to Read the Clues:</div>
+      <div className="space-y-1 text-sm">
+        <div>👥 <strong>Team:</strong> ✅ Same team | ❌ Different team</div>
+        <div>📝 <strong>Batting Order:</strong> 🔼 Target bats higher | 🔽 Target bats lower | ✅ Same position</div>
+        <div>🏃 <strong>Runs:</strong> 🔼 Target scored more | 🔽 Target scored less | ✅ Same runs</div>
+        <div>🎭 <strong>Role:</strong> ✅ Same role | ❌ Different role</div>
+      </div>
+    </div>
+  );
+
   // ============================================================================
-  // MAIN RENDER - Complete game interface
+  // MAIN RENDER - Error boundaries and feature switching
   // ============================================================================
 
-  // Check if we have valid puzzle data
+  // Error boundary for missing puzzle
   if (!currentPuzzle) {
     return (
       <div className="page-background">
         <div className="game-container">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-blue-600 mb-4">
-              🏏 CricGuess
-            </h1>
-            <div className="text-red-600">
-              No puzzles available. Please check match_puzzles.json
+            <h1 className="text-3xl font-bold text-blue-600 mb-4">🏏 CricGuess</h1>
+            <div className="text-red-600 mb-4">
+              {gameError || "No puzzles available. Please check match_puzzles.json"}
             </div>
+            <button onClick={() => window.location.reload()} className="btn btn-blue">
+              Reload Game
+            </button>
           </div>
         </div>
       </div>
@@ -875,38 +666,34 @@ const CricGuess = () => {
 
   return (
     <div className="page-background">
-      {/* How to Play Popup - UPDATED WITH MATCH-SPECIFIC INFO */}
+      {/* How to Play Popup */}
       {showHowToPlay && (
         <div className="popup-overlay" onClick={() => setShowHowToPlay(false)}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="popup-close"
-              onClick={() => setShowHowToPlay(false)}
-            >
-              ×
-            </button>
+            <button className="popup-close" onClick={() => setShowHowToPlay(false)}>×</button>
             <h2 className="popup-title">How To Play</h2>
             <p className="popup-subtitle">
-              Guess the Cricket Player from the match scorecard in{" "}
-              {PUZZLE_CONFIG.maxGuesses} tries.
+              Guess the Cricket Player from the match scorecard in {PUZZLE_CONFIG.maxGuesses} tries.
             </p>
             <div className="popup-rules">
               <ul>
-                <li>Each guess must be a valid cricket player name.</li>
-                <li>
-                  The arrows will show how your guess's match performance
-                  compares to the target player.
-                </li>
-                <li>
-                  The flag shows if your guess is from the same country as the
-                  target player.
-                </li>
-                <li>🏟️ Shows if your guess played in this specific match.</li>
-                <li>
-                  Use the scorecard clues to deduce who the target player might
-                  be!
-                </li>
-                <li>Type 3+ letters to see autocomplete suggestions.</li>
+                {FEATURES.useSquadDiscovery ? (
+                  <>
+                    <li>Select players from the squad lists to get clues.</li>
+                    <li>Use team, batting order, runs, and role clues to find the target player.</li>
+                    <li>✅ means your guess matches the target player's attribute.</li>
+                    <li>🔼/🔽 means the target player has higher/lower values.</li>
+                    <li>Each selection counts as one guess!</li>
+                  </>
+                ) : (
+                  <>
+                    <li>Each guess must be a valid cricket player name.</li>
+                    <li>The arrows show how your guess's match performance compares to the target player.</li>
+                    <li>The flag shows if your guess is from the same country as the target player.</li>
+                    <li>🏟️ Shows if your guess played in this specific match.</li>
+                    <li>Use the scorecard clues to deduce who the target player might be!</li>
+                  </>
+                )}
               </ul>
             </div>
             <div className="popup-footer">
@@ -919,16 +706,21 @@ const CricGuess = () => {
       <div className="game-container">
         {/* Header */}
         <div className="header-section">
-          <h1 className="text-3xl font-bold text-center text-blue-600">
-            🏏 CricGuess
-          </h1>
-          <button
-            className="how-to-play-btn"
-            onClick={() => setShowHowToPlay(true)}
-          >
+          <h1 className="text-3xl font-bold text-center text-blue-600">🏏 CricGuess</h1>
+          <button className="how-to-play-btn" onClick={() => setShowHowToPlay(true)}>
             How to Play
           </button>
         </div>
+
+        {/* Debug Info */}
+        {FEATURES.showDebugInfo && (
+          <div className="debug-info">
+            <div className="text-xs text-gray-500 text-center mb-2">
+              🔧 Mode: {FEATURES.useSquadDiscovery ? "Squad Discovery" : "Current System"} | 
+              Puzzle {currentPuzzleIndex + 1}/{PUZZLE_CONFIG.puzzles.length}
+            </div>
+          </div>
+        )}
 
         {/* Puzzle Counter */}
         <div className="text-center mb-4">
@@ -942,64 +734,824 @@ const CricGuess = () => {
           )}
         </div>
 
-        {/* Puzzle Type Badge */}
-        <div className="mb-4 text-center">
-          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-            {getPuzzleTypeLabel(currentPuzzle.puzzleType)}
-          </span>
-        </div>
-
-        {/* PART 1: PUZZLE DISPLAY */}
-        {renderPuzzleContent(currentPuzzle)}
-
-        {/* PART 3: COMPLETION STATUS */}
+        {/* Game Status */}
         {renderGameStatus()}
 
-        {/* Input Area with Autocomplete */}
-        {!gameOver && (
-          <div className="mb-6">
-            <div className="text-sm text-gray-600 mb-2">
-              Guess {guesses.length + 1} of {PUZZLE_CONFIG.maxGuesses}
+        {/* Feature-based UI */}
+        {!gameOver && FEATURES.useSquadDiscovery ? (
+          <>
+            {/* Squad Discovery Interface */}
+            {renderSquadDiscovery()}
+            {renderSquadFeedbackLegend()}
+            {renderSquadFeedbackHistory()}
+          </>
+        ) : !gameOver ? (
+          <>
+            {/* Original Input Interface */}
+            <div className="mb-6">
+              <div className="text-sm text-gray-600 mb-2">
+                Guess {guesses.length + 1} of {PUZZLE_CONFIG.maxGuesses}
+              </div>
+              <div className="autocomplete-container" style={{ position: "relative" }}>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={currentGuess}
+                  onChange={handleInputChange}
+                  placeholder="Type player name (e.g., Kohli, Dhoni, Gayle)..."
+                  className="game-input"
+                  autoComplete="off"
+                />
+              </div>
+              <button onClick={() => {}} className="btn btn-green w-full mt-3">
+                Submit Guess
+              </button>
             </div>
-            <div
-              className="autocomplete-container"
-              style={{ position: "relative" }}
-            >
-              <input
-                ref={inputRef}
-                type="text"
-                value={currentGuess}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder="Type player name (e.g., Kohli, Dhoni, Gayle)..."
-                className="game-input"
-                autoComplete="off"
-              />
-              {renderAutocompleteSuggestions()}
-            </div>
-            <button
-              onClick={processGuess}
-              className="btn btn-green w-full mt-3"
-            >
-              Submit Guess
+          </>
+        ) : null}
+
+        {/* Footer */}
+        <div className="mt-8 text-center text-xs text-gray-400">
+          <div>Players in database: {Object.keys(playersData).length}</div>
+          <div>Match puzzles: {PUZZLE_CONFIG.puzzles.length}</div>
+          <div className="mt-1">🏏 Built for cricket lovers</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CricGuess;import React, { useState, useEffect, useRef } from "react";
+import playersData from "./data/players.json";
+import matchPuzzlesData from "./data/match_puzzles.json";
+import "./App.css";
+
+const CricGuess = () => {
+  // ============================================================================
+  // FEATURE FLAGS - Toggle between discovery systems
+  // ============================================================================
+  const FEATURES = {
+    useSquadDiscovery: true,  // Set to false for current system
+    showDebugInfo: true,      // Set to false for production
+  };
+
+  // ============================================================================
+  // PART 1: PUZZLE SYSTEM - Enhanced with better error handling
+  // ============================================================================
+
+  const PUZZLE_CONFIG = {
+    maxGuesses: 5,
+    puzzles: matchPuzzlesData.puzzles || [],
+  };
+
+  // ============================================================================
+  // PART 2: FEEDBACK SYSTEMS - Both Current + Squad Discovery
+  // ============================================================================
+
+  // Current feedback system (unchanged)
+  const FEEDBACK_CONFIG = {
+    activeFields: ["country", "playedInMatch", "runsInMatch", "wicketsInMatch"],
+    compareFields: {
+      country: {
+        label: "Country",
+        icon: "🌍",
+        compare: (guessValue, targetValue) =>
+          guessValue === targetValue ? "🎯" : "❌",
+      },
+      playedInMatch: {
+        label: "Played in Match",
+        icon: "🏟️",
+        compare: (guessValue, targetValue) =>
+          guessValue === targetValue ? "🎯" : "❌",
+      },
+      runsInMatch: {
+        label: "Runs in Match",
+        icon: "🏃",
+        compare: (guessValue, targetValue) =>
+          guessValue > targetValue
+            ? "⬇️"
+            : guessValue < targetValue
+              ? "⬆️"
+              : "🎯",
+      },
+      wicketsInMatch: {
+        label: "Wickets in Match",
+        icon: "🎳",
+        compare: (guessValue, targetValue) =>
+          guessValue > targetValue
+            ? "⬇️"
+            : guessValue < targetValue
+              ? "⬆️"
+              : "🎯",
+      },
+    },
+  };
+
+  // NEW: Squad Discovery feedback system
+  const SQUAD_FEEDBACK_CONFIG = {
+    activeFields: ["team", "battingOrder", "runsScored", "role"],
+    compareFields: {
+      team: {
+        label: "Team",
+        icon: "👥",
+        compare: (guessValue, targetValue) =>
+          guessValue === targetValue ? "✅" : "❌",
+      },
+      battingOrder: {
+        label: "Batting Order",
+        icon: "📝",
+        compare: (guessValue, targetValue) =>
+          guessValue > targetValue
+            ? "🔽"
+            : guessValue < targetValue
+              ? "🔼"
+              : "✅",
+      },
+      runsScored: {
+        label: "Runs Scored",
+        icon: "🏃",
+        compare: (guessValue, targetValue) =>
+          guessValue > targetValue
+            ? "🔽"
+            : guessValue < targetValue
+              ? "🔼"
+              : "✅",
+      },
+      role: {
+        label: "Role",
+        icon: "🎭",
+        compare: (guessValue, targetValue) =>
+          guessValue === targetValue ? "✅" : "❌",
+      },
+    },
+  };
+
+  // ============================================================================
+  // GAME STATE MANAGEMENT
+  // ============================================================================
+
+  const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
+  const [guesses, setGuesses] = useState([]);
+  const [currentGuess, setCurrentGuess] = useState("");
+  const [gameWon, setGameWon] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [gameError, setGameError] = useState(null); // NEW: Error handling
+
+  // Autocomplete state (for current system)
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+
+  // NEW: Squad discovery state
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [squadFeedback, setSquadFeedback] = useState([]);
+
+  const inputRef = useRef(null);
+  const suggestionRefs = useRef([]);
+
+  // Enhanced puzzle getter with error handling
+  const getCurrentPuzzle = () => {
+    try {
+      const puzzle = PUZZLE_CONFIG.puzzles[currentPuzzleIndex];
+      if (!puzzle) {
+        setGameError("Puzzle not found");
+        return null;
+      }
+      return puzzle;
+    } catch (error) {
+      setGameError(`Puzzle error: ${error.message}`);
+      return null;
+    }
+  };
+
+  const currentPuzzle = getCurrentPuzzle();
+
+  // Enhanced target player getter with error handling
+  const getTargetPlayer = () => {
+    if (!currentPuzzle) return null;
+    try {
+      const targetPlayerKey = currentPuzzle.targetPlayer;
+      const targetPlayer = playersData[targetPlayerKey];
+      if (!targetPlayer) {
+        console.error(`Target player not found: ${targetPlayerKey}`);
+        return null;
+      }
+      return targetPlayer;
+    } catch (error) {
+      console.error(`Error getting target player:`, error);
+      return null;
+    }
+  };
+
+  // ============================================================================
+  // SQUAD DISCOVERY FUNCTIONS
+  // ============================================================================
+
+  /**
+   * Get squad players for current puzzle
+   */
+  const getSquadPlayers = () => {
+    if (!currentPuzzle?.matchData?.playerPerformances) return { team1: [], team2: [] };
+    
+    try {
+      const performances = currentPuzzle.matchData.playerPerformances;
+      const team1Players = [];
+      const team2Players = [];
+      
+      Object.entries(performances).forEach(([playerKey, perf]) => {
+        const player = playersData[playerKey];
+        if (player && perf.played_in_match) {
+          const playerData = {
+            key: playerKey,
+            name: player.fullName,
+            team: perf.team,
+            runs: perf.runs_in_match || 0,
+            wickets: perf.wickets_in_match || 0,
+            role: player.role || "Player",
+            battingOrder: getBattingOrder(playerKey, performances),
+          };
+          
+          if (perf.team === currentPuzzle.matchData.scorecard.teams[0]) {
+            team1Players.push(playerData);
+          } else {
+            team2Players.push(playerData);
+          }
+        }
+      });
+      
+      // Sort by batting order
+      team1Players.sort((a, b) => a.battingOrder - b.battingOrder);
+      team2Players.sort((a, b) => a.battingOrder - b.battingOrder);
+      
+      return { 
+        team1: team1Players, 
+        team2: team2Players,
+        team1Name: currentPuzzle.matchData.scorecard.teams[0],
+        team2Name: currentPuzzle.matchData.scorecard.teams[1]
+      };
+    } catch (error) {
+      console.error("Error getting squad players:", error);
+      return { team1: [], team2: [] };
+    }
+  };
+
+  /**
+   * Get batting order for a player (simplified logic)
+   */
+  const getBattingOrder = (playerKey, performances) => {
+    const perf = performances[playerKey];
+    if (!perf) return 11;
+    
+    // Simple heuristic: higher runs/balls faced = higher batting order
+    const ballsFaced = perf.balls_faced || 0;
+    const runs = perf.runs_in_match || 0;
+    
+    if (ballsFaced > 20) return Math.floor(runs / 10) + 1; // Top order
+    if (ballsFaced > 0) return 6 + Math.floor(ballsFaced / 5); // Middle order
+    return 9 + (perf.wickets_in_match || 0); // Bowlers/tailenders
+  };
+
+  /**
+   * Generate squad-based feedback
+   */
+  const generateSquadFeedback = (guessPlayerKey, targetPlayerKey) => {
+    try {
+      const performances = currentPuzzle.matchData.playerPerformances;
+      const guessPerf = performances[guessPlayerKey];
+      const targetPerf = performances[targetPlayerKey];
+      const guessPlayer = playersData[guessPlayerKey];
+      const targetPlayer = playersData[targetPlayerKey];
+      
+      if (!guessPerf || !targetPerf || !guessPlayer || !targetPlayer) {
+        return null;
+      }
+
+      const feedback = {};
+      
+      SQUAD_FEEDBACK_CONFIG.activeFields.forEach((field) => {
+        const fieldConfig = SQUAD_FEEDBACK_CONFIG.compareFields[field];
+        if (!fieldConfig) return;
+
+        if (field === "team") {
+          feedback[field] = {
+            comparison: fieldConfig.compare(guessPerf.team, targetPerf.team),
+            value: guessPerf.team,
+            label: fieldConfig.label,
+            icon: fieldConfig.icon,
+          };
+        } else if (field === "battingOrder") {
+          const guessBattingOrder = getBattingOrder(guessPlayerKey, performances);
+          const targetBattingOrder = getBattingOrder(targetPlayerKey, performances);
+          feedback[field] = {
+            comparison: fieldConfig.compare(guessBattingOrder, targetBattingOrder),
+            value: guessBattingOrder,
+            label: fieldConfig.label,
+            icon: fieldConfig.icon,
+          };
+        } else if (field === "runsScored") {
+          const guessRuns = guessPerf.runs_in_match || 0;
+          const targetRuns = targetPerf.runs_in_match || 0;
+          feedback[field] = {
+            comparison: fieldConfig.compare(guessRuns, targetRuns),
+            value: guessRuns,
+            label: fieldConfig.label,
+            icon: fieldConfig.icon,
+          };
+        } else if (field === "role") {
+          feedback[field] = {
+            comparison: fieldConfig.compare(guessPlayer.role, targetPlayer.role),
+            value: guessPlayer.role,
+            label: fieldConfig.label,
+            icon: fieldConfig.icon,
+          };
+        }
+      });
+
+      return feedback;
+    } catch (error) {
+      console.error("Error generating squad feedback:", error);
+      return null;
+    }
+  };
+
+  /**
+   * Handle squad player selection
+   */
+  const handleSquadPlayerSelect = (playerKey) => {
+    if (!currentPuzzle) return;
+    
+    const targetPlayerKey = currentPuzzle.targetPlayer;
+    
+    // Check if already guessed
+    if (squadFeedback.some(f => f.guessPlayer === playerKey)) {
+      alert("You already tried this player!");
+      return;
+    }
+
+    const feedback = generateSquadFeedback(playerKey, targetPlayerKey);
+    const guessPlayer = playersData[playerKey];
+    
+    if (!feedback || !guessPlayer) {
+      alert("Error processing guess!");
+      return;
+    }
+
+    const newFeedback = {
+      guessPlayer: playerKey,
+      guessPlayerName: guessPlayer.fullName,
+      feedback: feedback,
+      isCorrect: playerKey === targetPlayerKey,
+    };
+
+    const newSquadFeedback = [...squadFeedback, newFeedback];
+    setSquadFeedback(newSquadFeedback);
+
+    // Check win/lose conditions
+    if (playerKey === targetPlayerKey) {
+      setGameWon(true);
+      setGameOver(true);
+    } else if (newSquadFeedback.length >= PUZZLE_CONFIG.maxGuesses) {
+      setGameOver(true);
+    }
+  };
+
+  // ============================================================================
+  // ORIGINAL AUTOCOMPLETE FUNCTIONS (unchanged for current system)
+  // ============================================================================
+
+  const searchPlayers = (query) => {
+    if (query.length < 3) return [];
+    
+    const searchTerm = query.toLowerCase();
+    const results = [];
+    
+    Object.entries(playersData).forEach(([key, player]) => {
+      const fullName = player.fullName.toLowerCase();
+      const aliases = player.aliases || [];
+      
+      if (fullName.includes(searchTerm) || 
+          aliases.some(alias => alias.toLowerCase().includes(searchTerm))) {
+        results.push({
+          key: key,
+          player: player,
+          relevance: fullName.startsWith(searchTerm) ? 2 : 1
+        });
+      }
+    });
+    
+    return results
+      .sort((a, b) => b.relevance - a.relevance)
+      .slice(0, 8);
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setCurrentGuess(value);
+    
+    if (value.length >= 3) {
+      setIsLoadingSuggestions(true);
+      setTimeout(() => {
+        const results = searchPlayers(value);
+        setSuggestions(results);
+        setShowSuggestions(true);
+        setIsLoadingSuggestions(false);
+        setSelectedSuggestionIndex(-1);
+      }, 300);
+    } else {
+      setShowSuggestions(false);
+      setSuggestions([]);
+    }
+  };
+
+  // ============================================================================
+  // ENHANCED ERROR HANDLING & PROGRESSION
+  // ============================================================================
+
+  /**
+   * Enhanced next puzzle function with error handling
+   */
+  const nextPuzzle = () => {
+    try {
+      if (currentPuzzleIndex < PUZZLE_CONFIG.puzzles.length - 1) {
+        setCurrentPuzzleIndex(currentPuzzleIndex + 1);
+        resetPuzzleState();
+        setGameError(null);
+      }
+    } catch (error) {
+      setGameError(`Error moving to next puzzle: ${error.message}`);
+    }
+  };
+
+  /**
+   * Enhanced reset with error clearing
+   */
+  const resetPuzzleState = () => {
+    setGuesses([]);
+    setSquadFeedback([]);
+    setGameWon(false);
+    setGameOver(false);
+    setCurrentGuess("");
+    setShowSuggestions(false);
+    setSuggestions([]);
+    setSelectedSuggestionIndex(-1);
+    setSelectedPlayer(null);
+    setGameError(null);
+  };
+
+  /**
+   * ENHANCED: Game status with proper error handling and answer reveal
+   */
+  const renderGameStatus = () => {
+    const targetPlayer = getTargetPlayer();
+    const targetPlayerName = targetPlayer?.fullName || "Unknown Player";
+
+    if (gameError) {
+      return (
+        <div className="status-error">
+          <div className="text-red-800 font-bold text-xl">⚠️ Game Error</div>
+          <div className="text-sm mt-2">{gameError}</div>
+          <div className="mt-4">
+            <button onClick={resetPuzzleState} className="btn btn-blue">
+              Try Again
             </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (gameWon) {
+      return (
+        <div className="status-win">
+          <div className="text-green-800 font-bold text-xl">🎉 Brilliant!</div>
+          <div className="text-sm mt-2">
+            You found <strong>{targetPlayerName}</strong> in{" "}
+            {FEATURES.useSquadDiscovery ? squadFeedback.length : guesses.length} tries!
+          </div>
+          {currentPuzzle?.trivia && (
+            <div className="mt-3 p-3 bg-green-50 rounded text-sm text-left">
+              <strong>Cricket Trivia:</strong> {currentPuzzle.trivia}
+            </div>
+          )}
+          <div className="mt-4 space-x-3">
+            <button onClick={resetPuzzleState} className="btn btn-blue">
+              Try Again
+            </button>
+            {currentPuzzleIndex < PUZZLE_CONFIG.puzzles.length - 1 && (
+              <button onClick={nextPuzzle} className="btn btn-green">
+                Next Puzzle →
+              </button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    if (gameOver && !gameWon) {
+      return (
+        <div className="status-lose">
+          <div className="text-red-800 font-bold text-xl">🎯 Close One!</div>
+          <div className="text-sm mt-2">
+            The answer was: <strong>{targetPlayerName}</strong>
+          </div>
+          {currentPuzzle?.trivia && (
+            <div className="mt-3 p-3 bg-red-50 rounded text-sm text-left">
+              <strong>Cricket Trivia:</strong> {currentPuzzle.trivia}
+            </div>
+          )}
+          <div className="mt-4 space-x-3">
+            <button onClick={resetPuzzleState} className="btn btn-blue">
+              Try Again
+            </button>
+            {currentPuzzleIndex < PUZZLE_CONFIG.puzzles.length - 1 && (
+              <button onClick={nextPuzzle} className="btn btn-orange">
+                Next Puzzle →
+              </button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  // ============================================================================
+  // RENDER FUNCTIONS - Squad Discovery UI
+  // ============================================================================
+
+  /**
+   * Render squad-based discovery interface
+   */
+  const renderSquadDiscovery = () => {
+    const { team1, team2, team1Name, team2Name } = getSquadPlayers();
+    const targetPlayer = getTargetPlayer();
+    const guessesUsed = squadFeedback.length;
+    
+    if (team1.length === 0 && team2.length === 0) {
+      return (
+        <div className="squad-discovery-error">
+          <div className="text-red-600 text-sm">
+            Squad data not available for this match
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="squad-discovery">
+        <div className="discovery-header">
+          <h3 className="text-lg font-bold mb-2">🎯 Select a Player from the Squads</h3>
+          <div className="text-sm text-gray-600 mb-4">
+            Guess {guessesUsed + 1} of {PUZZLE_CONFIG.maxGuesses} • Tap a player to get clues!
+          </div>
+        </div>
+
+        <div className="squads-container">
+          {/* Team 1 */}
+          <div className="team-squad">
+            <h4 className="team-name">{team1Name}</h4>
+            <div className="players-grid">
+              {team1.map((player) => {
+                const isGuessed = squadFeedback.some(f => f.guessPlayer === player.key);
+                const isCorrect = player.key === currentPuzzle?.targetPlayer;
+                
+                return (
+                  <button
+                    key={player.key}
+                    className={`player-card ${isGuessed ? 'guessed' : ''} ${isCorrect && gameWon ? 'correct' : ''}`}
+                    onClick={() => !gameOver && !isGuessed && handleSquadPlayerSelect(player.key)}
+                    disabled={gameOver || isGuessed}
+                  >
+                    <div className="player-name">{player.name}</div>
+                    <div className="player-stats">
+                      {player.runs}* ({player.wickets}w)
+                    </div>
+                    <div className="player-role">{player.role}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Team 2 */}
+          <div className="team-squad">
+            <h4 className="team-name">{team2Name}</h4>
+            <div className="players-grid">
+              {team2.map((player) => {
+                const isGuessed = squadFeedback.some(f => f.guessPlayer === player.key);
+                const isCorrect = player.key === currentPuzzle?.targetPlayer;
+                
+                return (
+                  <button
+                    key={player.key}
+                    className={`player-card ${isGuessed ? 'guessed' : ''} ${isCorrect && gameWon ? 'correct' : ''}`}
+                    onClick={() => !gameOver && !isGuessed && handleSquadPlayerSelect(player.key)}
+                    disabled={gameOver || isGuessed}
+                  >
+                    <div className="player-name">{player.name}</div>
+                    <div className="player-stats">
+                      {player.runs}* ({player.wickets}w)
+                    </div>
+                    <div className="player-role">{player.role}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  /**
+   * Render squad feedback history
+   */
+  const renderSquadFeedbackHistory = () => {
+    if (squadFeedback.length === 0) return null;
+
+    return (
+      <div className="squad-feedback-history">
+        <h4 className="text-md font-bold mb-3">🧩 Your Clues</h4>
+        <div className="space-y-3">
+          {squadFeedback.map((feedback, index) => (
+            <div key={index} className="feedback-card">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-bold">
+                  #{index + 1} {feedback.guessPlayerName}
+                </span>
+                {feedback.isCorrect && (
+                  <span className="text-green-600 text-xl">🎯</span>
+                )}
+              </div>
+              <div className="grid grid-cols-4 gap-2 text-sm">
+                {SQUAD_FEEDBACK_CONFIG.activeFields.map((field) => {
+                  const fb = feedback.feedback[field];
+                  if (!fb) return null;
+
+                  return (
+                    <div key={field} className="text-center">
+                      <div className="text-xs text-gray-600">{fb.label}</div>
+                      <div className="font-mono text-sm">
+                        <div>{fb.icon}</div>
+                        <div>{fb.comparison}</div>
+                        <div className="text-xs">{fb.value}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  /**
+   * Render squad feedback legend
+   */
+  const renderSquadFeedbackLegend = () => (
+    <div className="squad-feedback-legend">
+      <div className="font-semibold mb-2">🔍 How to Read the Clues:</div>
+      <div className="space-y-1 text-sm">
+        <div>👥 <strong>Team:</strong> ✅ Same team | ❌ Different team</div>
+        <div>📝 <strong>Batting Order:</strong> 🔼 Target bats higher | 🔽 Target bats lower | ✅ Same position</div>
+        <div>🏃 <strong>Runs:</strong> 🔼 Target scored more | 🔽 Target scored less | ✅ Same runs</div>
+        <div>🎭 <strong>Role:</strong> ✅ Same role | ❌ Different role</div>
+      </div>
+    </div>
+  );
+
+  // ============================================================================
+  // MAIN RENDER - Error boundaries and feature switching
+  // ============================================================================
+
+  // Error boundary for missing puzzle
+  if (!currentPuzzle) {
+    return (
+      <div className="page-background">
+        <div className="game-container">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-blue-600 mb-4">🏏 CricGuess</h1>
+            <div className="text-red-600 mb-4">
+              {gameError || "No puzzles available. Please check match_puzzles.json"}
+            </div>
+            <button onClick={() => window.location.reload()} className="btn btn-blue">
+              Reload Game
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="page-background">
+      {/* How to Play Popup */}
+      {showHowToPlay && (
+        <div className="popup-overlay" onClick={() => setShowHowToPlay(false)}>
+          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+            <button className="popup-close" onClick={() => setShowHowToPlay(false)}>×</button>
+            <h2 className="popup-title">How To Play</h2>
+            <p className="popup-subtitle">
+              Guess the Cricket Player from the match scorecard in {PUZZLE_CONFIG.maxGuesses} tries.
+            </p>
+            <div className="popup-rules">
+              <ul>
+                {FEATURES.useSquadDiscovery ? (
+                  <>
+                    <li>Select players from the squad lists to get clues.</li>
+                    <li>Use team, batting order, runs, and role clues to find the target player.</li>
+                    <li>✅ means your guess matches the target player's attribute.</li>
+                    <li>🔼/🔽 means the target player has higher/lower values.</li>
+                    <li>Each selection counts as one guess!</li>
+                  </>
+                ) : (
+                  <>
+                    <li>Each guess must be a valid cricket player name.</li>
+                    <li>The arrows show how your guess's match performance compares to the target player.</li>
+                    <li>The flag shows if your guess is from the same country as the target player.</li>
+                    <li>🏟️ Shows if your guess played in this specific match.</li>
+                    <li>Use the scorecard clues to deduce who the target player might be!</li>
+                  </>
+                )}
+              </ul>
+            </div>
+            <div className="popup-footer">
+              <p>A new puzzle is released daily at midnight. Good luck! 🏏</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="game-container">
+        {/* Header */}
+        <div className="header-section">
+          <h1 className="text-3xl font-bold text-center text-blue-600">🏏 CricGuess</h1>
+          <button className="how-to-play-btn" onClick={() => setShowHowToPlay(true)}>
+            How to Play
+          </button>
+        </div>
+
+        {/* Debug Info */}
+        {FEATURES.showDebugInfo && (
+          <div className="debug-info">
+            <div className="text-xs text-gray-500 text-center mb-2">
+              🔧 Mode: {FEATURES.useSquadDiscovery ? "Squad Discovery" : "Current System"} | 
+              Puzzle {currentPuzzleIndex + 1}/{PUZZLE_CONFIG.puzzles.length}
+            </div>
           </div>
         )}
 
-        {/* PART 2: FEEDBACK LEGEND - UPDATED */}
-        {renderFeedbackLegend()}
+        {/* Puzzle Counter */}
+        <div className="text-center mb-4">
+          <span className="text-sm text-gray-600">
+            Puzzle {currentPuzzleIndex + 1} of {PUZZLE_CONFIG.puzzles.length}
+          </span>
+          {currentPuzzleIndex < PUZZLE_CONFIG.puzzles.length - 1 && (
+            <span className="text-xs text-gray-400 block">
+              More puzzles unlocked after solving!
+            </span>
+          )}
+        </div>
 
-        {/* PART 2: GUESS HISTORY WITH FEEDBACK - UPDATED */}
-        {renderGuessHistory()}
+        {/* Game Status */}
+        {renderGameStatus()}
 
-        {/* PART 3: SHARE RESULTS */}
-        {gameOver && (
-          <div className="mt-6">
-            <button onClick={handleShare} className="btn btn-blue w-full">
-              📋 Share Your Results
-            </button>
-          </div>
-        )}
+        {/* Feature-based UI */}
+        {!gameOver && FEATURES.useSquadDiscovery ? (
+          <>
+            {/* Squad Discovery Interface */}
+            {renderSquadDiscovery()}
+            {renderSquadFeedbackLegend()}
+            {renderSquadFeedbackHistory()}
+          </>
+        ) : !gameOver ? (
+          <>
+            {/* Original Input Interface */}
+            <div className="mb-6">
+              <div className="text-sm text-gray-600 mb-2">
+                Guess {guesses.length + 1} of {PUZZLE_CONFIG.maxGuesses}
+              </div>
+              <div className="autocomplete-container" style={{ position: "relative" }}>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={currentGuess}
+                  onChange={handleInputChange}
+                  placeholder="Type player name (e.g., Kohli, Dhoni, Gayle)..."
+                  className="game-input"
+                  autoComplete="off"
+                />
+              </div>
+              <button onClick={() => {}} className="btn btn-green w-full mt-3">
+                Submit Guess
+              </button>
+            </div>
+          </>
+        ) : null}
 
         {/* Footer */}
         <div className="mt-8 text-center text-xs text-gray-400">
