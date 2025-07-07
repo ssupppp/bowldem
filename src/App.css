@@ -1,23 +1,38 @@
 /*
- * CricGuess - Enhanced CSS Styles
+ * CricGuess - Complete Man of the Match CSS
+ * Enhanced styles with visual feedback states and cricket authenticity
  * 
- * VERSION HISTORY:
- * - v1: Original text-input based system styles
- * - v2: Added Squad Discovery visual interface styles
+ * DESIGN DECISIONS DOCUMENTED:
+ * ============================
  * 
- * LATEST CHANGES:
- * 1. Added squad discovery interface (.squad-discovery, .team-squad, .player-card)
- * 2. Enhanced error state styling (.status-error)
- * 3. Added debug info styling (.debug-info)
- * 4. Improved mobile responsiveness for squad interface
- * 5. Added visual feedback for player selection states
+ * 1. VISUAL FEEDBACK STATES:
+ *    - Decision: Three distinct player states (unselected, incorrect, correct)
+ *    - Rationale: Clear visual progression, "super juicy" celebration for MOTM
+ *    - Implementation: White → Red (incorrect) → Gold (correct MOTM)
  * 
- * DEPLOYMENT: This CSS works with both old and new systems
- * Feature flags in JavaScript determine which styles are used
+ * 2. CRICKET BROADCAST STYLING:
+ *    - Decision: Full scorecard with gradient backgrounds
+ *    - Rationale: Authentic cricket nostalgia, TV broadcast feel
+ *    - Implementation: Blue gradients, proper cricket typography
+ * 
+ * 3. MOTM CELEBRATION:
+ *    - Decision: Multiple animation layers for correct answer
+ *    - Rationale: Make finding MOTM feel truly rewarding
+ *    - Implementation: Gold gradient + floating banner + sparkle + pulse
+ * 
+ * 4. MOBILE RESPONSIVENESS:
+ *    - Decision: Stack teams vertically on mobile, single column feedback
+ *    - Rationale: Maintain usability across devices
+ *    - Implementation: Grid adjustments, font scaling
+ * 
+ * 5. ACCESSIBILITY:
+ *    - Decision: High contrast, focus states, reduced motion support
+ *    - Rationale: Inclusive design for all cricket fans
+ *    - Implementation: Contrast ratios, keyboard navigation, motion preferences
  */
 
 /* ============================================================================
-   BASE STYLES - Unchanged from original
+   BASE STYLES - Foundation
    ============================================================================ */
 * {
   box-sizing: border-box;
@@ -45,9 +60,9 @@ body {
   padding-top: 2rem;
 }
 
-/* ENHANCED: Wider container for squad discovery */
+/* ENHANCED: Wider container for cricket scorecard + teams */
 .game-container {
-  max-width: 32rem; /* Increased from 28rem for squad interface */
+  max-width: 32rem; /* Optimized for scorecard + dual teams */
   width: 100%;
   padding: 2rem;
   background-color: #f3f4f6;
@@ -56,7 +71,7 @@ body {
   border: 1px solid #e5e7eb;
 }
 
-/* Header section - unchanged */
+/* Header section */
 .header-section {
   position: relative;
   margin-bottom: 1.5rem;
@@ -81,56 +96,113 @@ body {
   border-color: #9ca3af;
 }
 
-/* NEW: Debug info styling */
-.debug-info {
-  background-color: #fef3c7;
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-  border: 1px solid #f59e0b;
-  margin-bottom: 1rem;
-}
-
 /* ============================================================================
-   STATUS MESSAGES - Enhanced with new error state
+   CRICKET SCORECARD STYLES - Broadcast authenticity
    ============================================================================ */
 
-.status-win {
-  background-color: #dcfce7;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  margin-bottom: 1rem;
+/* DESIGN DECISION: Full cricket broadcast styling for nostalgia */
+.scorecard {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 25px;
   text-align: center;
-  border: 2px solid #bbf7d0;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
 }
 
-.status-lose {
-  background-color: #fee2e2;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  border: 2px solid #fecaca;
+.match-header {
+  font-size: 13px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* NEW: Error state styling - fixes blank page bug experience */
-.status-error {
-  background-color: #fef2f2;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  border: 2px solid #f87171;
-  animation: pulse-error 2s infinite;
+.match-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 18px;
 }
 
-@keyframes pulse-error {
-  0%, 100% { border-color: #f87171; }
-  50% { border-color: #ef4444; }
+.score-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  padding: 10px 15px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+}
+
+.team-name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.score {
+  font-family: monospace;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.match-result {
+  margin-top: 18px;
+  padding: 12px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.venue-info {
+  margin-top: 12px;
+  font-size: 12px;
+  opacity: 0.85;
 }
 
 /* ============================================================================
-   SQUAD DISCOVERY STYLES - NEW VISUAL INTERFACE
-   Major addition for enhanced user experience
+   MOTM PUZZLE STYLING - Enhanced focus
+   ============================================================================ */
+
+.puzzle-hint {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 15px;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(245, 158, 11, 0.3);
+}
+
+.guess-counter {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.progress-bar {
+  background: #e5e7eb;
+  height: 6px;
+  border-radius: 3px;
+  margin: 8px auto;
+  width: 200px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* ============================================================================
+   SQUAD DISCOVERY STYLES - Cricket team layouts
    ============================================================================ */
 
 .squad-discovery {
@@ -142,156 +214,331 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Squad container - side by side teams */
+/* DESIGN DECISION: Side-by-side teams like cricket broadcasts */
 .squads-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 20px;
   margin-bottom: 1.5rem;
 }
 
-/* Individual team squad styling */
 .team-squad {
-  background: white;
-  border-radius: 0.75rem;
-  padding: 1rem;
-  border: 2px solid #e5e7eb;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.team-name {
+.squad-header {
+  background: linear-gradient(135deg, #334155, #475569);
+  color: white;
+  padding: 15px;
   font-weight: bold;
-  font-size: 0.875rem;
-  color: #1f2937;
   text-align: center;
-  margin-bottom: 0.75rem;
-  padding: 0.5rem;
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  border-radius: 0.5rem;
-  border: 1px solid #93c5fd;
+  font-size: 15px;
 }
 
-/* Grid of players within each team */
-.players-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.5rem;
-}
-
-/* Individual player card - KEY INTERACTIVE ELEMENT */
-.player-card {
-  background: white;
-  border: 2px solid #e5e7eb;
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-  width: 100%;
-  position: relative;
-}
-
-/* Hover state for interactive feedback */
-.player-card:hover:not(:disabled) {
-  border-color: #3b82f6;
-  background-color: #f8fafc;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Disabled state for already guessed players */
-.player-card:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background-color: #f9fafb;
-}
-
-/* Already guessed player styling */
-.player-card.guessed {
-  background-color: #f3f4f6;
-  border-color: #9ca3af;
-  position: relative;
-}
-
-.player-card.guessed::after {
-  content: "✓";
-  position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
-  color: #6b7280;
-  font-size: 0.75rem;
-}
-
-/* Correct answer highlighting */
-.player-card.correct {
-  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-  border-color: #22c55e;
-  box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
-  animation: correct-pulse 1s ease-in-out;
-}
-
-@keyframes correct-pulse {
-  0% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
-  50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.6); }
-  100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
-}
-
-/* Player card content styling */
-.player-name {
-  font-weight: bold;
-  font-size: 0.875rem;
-  color: #1f2937;
-  margin-bottom: 0.25rem;
-}
-
-.player-stats {
-  font-size: 0.75rem;
-  color: #6b7280;
-  font-family: ui-monospace, SFMono-Regular, monospace;
-  margin-bottom: 0.25rem;
-}
-
-.player-role {
-  font-size: 0.625rem;
-  color: #9ca3af;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Squad feedback history styling */
-.squad-feedback-history {
-  margin-bottom: 1.5rem;
-}
-
-.feedback-card {
-  background: white;
-  border: 2px solid #e5e7eb;
-  border-radius: 0.75rem;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Squad feedback legend styling */
-.squad-feedback-legend {
-  background-color: #f0f9ff;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  margin-bottom: 1.5rem;
-  border: 2px solid #0ea5e9;
-}
-
-/* Error state for squad discovery */
-.squad-discovery-error {
-  text-align: center;
-  padding: 2rem;
-  background-color: #fef2f2;
-  border-radius: 0.75rem;
-  border: 2px solid #fecaca;
+.player-list {
+  padding: 0;
 }
 
 /* ============================================================================
-   BUTTONS - Enhanced with better hover effects
+   PLAYER CARD STATES - Three distinct visual states
+   DESIGN DECISION: Clear progression from unselected → incorrect → correct
+   ============================================================================ */
+
+/* STATE 1: Unselected players (clean, inviting) */
+.player-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+  position: relative;
+}
+
+.player-item:last-child {
+  border-bottom: none;
+}
+
+.player-item:hover {
+  background: #f1f5f9;
+  border-left: 4px solid #3b82f6;
+  transform: translateX(2px);
+}
+
+/* STATE 2: Incorrect guesses (red, clear feedback) */
+.player-item.guessed {
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+  opacity: 0.85;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.player-item.guessed::after {
+  content: "❌";
+  position: absolute;
+  right: 15px;
+  color: #dc2626;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* STATE 3: CORRECT ANSWER - SUPER JUICY CELEBRATION */
+/* DESIGN DECISION: Multiple animation layers for maximum impact */
+.player-item.correct {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+  border-left: 4px solid #d97706;
+  animation: motmCelebration 2s ease-in-out infinite;
+  position: relative;
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+  cursor: default;
+}
+
+.player-item.correct .player-name {
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.player-item.correct .player-role {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.player-item.correct .stats-filled {
+  color: white;
+  font-weight: bold;
+}
+
+/* FLOATING MOTM BANNER - Key celebration element */
+.player-item.correct::before {
+  content: "🏆 MAN OF THE MATCH 🏆";
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 10px;
+  font-weight: bold;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  animation: bounce 1s ease-in-out infinite alternate;
+  z-index: 10;
+}
+
+/* SPARKLE EFFECT */
+.player-item.correct::after {
+  content: "🌟";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+/* CELEBRATION ANIMATIONS */
+@keyframes motmCelebration {
+  0%, 100% { 
+    box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+    border-left-color: #d97706;
+  }
+  50% { 
+    box-shadow: 0 12px 35px rgba(251, 191, 36, 0.7);
+    border-left-color: #fbbf24;
+  }
+}
+
+@keyframes bounce {
+  0% { transform: translateX(-50%) translateY(0px); }
+  100% { transform: translateX(-50%) translateY(-3px); }
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: translateY(-50%) scale(1) rotate(0deg); }
+  50% { transform: translateY(-50%) scale(1.2) rotate(180deg); }
+}
+
+/* ============================================================================
+   PLAYER CARD CONTENT - Cricket-specific styling
+   ============================================================================ */
+
+.player-name {
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 14px;
+}
+
+.player-role {
+  font-size: 11px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* Cricket designations */
+.captain-badge {
+  background: #fbbf24;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+.wicketkeeper-badge {
+  background: #059669;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+/* Stats display states */
+.stats-placeholder {
+  font-family: monospace;
+  font-size: 12px;
+  color: #9ca3af;
+  min-width: 80px;
+  text-align: right;
+}
+
+.stats-filled {
+  font-family: monospace;
+  font-size: 12px;
+  color: #374151;
+  min-width: 80px;
+  text-align: right;
+}
+
+/* ============================================================================
+   FEEDBACK SECTION - MOTM-specific feedback
+   ============================================================================ */
+
+.feedback-section {
+  background: #f0f9ff;
+  border: 2px solid #0ea5e9;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.feedback-header {
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #0369a1;
+  font-size: 16px;
+}
+
+/* DESIGN DECISION: 3-column grid for refined feedback system */
+.clue-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.clue-box {
+  text-align: center;
+  padding: 12px 8px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.clue-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.clue-label {
+  font-size: 10px;
+  color: #6b7280;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.clue-value {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.clue-legend {
+  margin-top: 12px;
+  font-size: 11px;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ============================================================================
+   GAME STATUS MESSAGES - Enhanced for MOTM
+   ============================================================================ */
+
+.status-win {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border: 2px solid #16a34a;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.status-lose {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.status-error {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border: 2px solid #f87171;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  animation: pulse-error 2s infinite;
+}
+
+@keyframes pulse-error {
+  0%, 100% { border-color: #f87171; }
+  50% { border-color: #ef4444; }
+}
+
+/* ============================================================================
+   DEBUG INFO - Development helper
+   ============================================================================ */
+
+.debug-info {
+  background-color: #fef3c7;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid #f59e0b;
+  margin-bottom: 1rem;
+  font-size: 12px;
+}
+
+/* ============================================================================
+   BUTTONS - Cricket-themed styling
    ============================================================================ */
 
 .btn {
@@ -341,7 +588,7 @@ body {
 }
 
 /* ============================================================================
-   POPUP STYLES - Unchanged from original
+   POPUP STYLES - How to play modal
    ============================================================================ */
 
 .popup-overlay {
@@ -426,27 +673,7 @@ body {
 }
 
 /* ============================================================================
-   INPUT STYLES - For original text-based system
-   ============================================================================ */
-
-.game-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #d1d5db;
-  border-radius: 0.5rem;
-  background-color: white;
-  transition: border-color 0.2s ease;
-  font-size: 1rem;
-}
-
-.game-input:focus {
-  border-color: #3b82f6;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* ============================================================================
-   UTILITY CLASSES - Extended for new features
+   UTILITY CLASSES - Design system
    ============================================================================ */
 
 .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
@@ -471,8 +698,6 @@ body {
 .text-gray-400 { color: #9ca3af; }
 .text-green-600 { color: #16a34a; }
 
-.bg-blue-100 { background-color: #dbeafe; }
-.bg-blue-700 { color: #1d4ed8; }
 .bg-green-50 { background-color: #f0fdf4; }
 .bg-red-50 { background-color: #fef2f2; }
 
@@ -500,7 +725,6 @@ body {
 
 .justify-between { justify-content: space-between; }
 .items-center { align-items: center; }
-.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
 .gap-2 { gap: 0.5rem; }
 
 .space-x-3 > * + * { margin-left: 0.75rem; }
@@ -510,10 +734,10 @@ body {
 .w-full { width: 100%; }
 
 /* ============================================================================
-   MOBILE RESPONSIVE - Enhanced for squad discovery
+   MOBILE RESPONSIVE - Enhanced for MOTM interface
    ============================================================================ */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .page-background {
     padding: 0.5rem;
     padding-top: 1rem;
@@ -536,17 +760,17 @@ body {
     width: fit-content;
   }
 
-  /* ENHANCED: Squad discovery mobile adjustments */
+  /* DESIGN DECISION: Stack teams vertically on mobile */
   .squads-container {
-    grid-template-columns: 1fr; /* Stack teams vertically on mobile */
-    gap: 1rem;
+    grid-template-columns: 1fr;
+    gap: 15px;
   }
 
   .team-squad {
     padding: 0.75rem;
   }
 
-  .player-card {
+  .player-item {
     padding: 0.5rem;
   }
 
@@ -554,17 +778,14 @@ body {
     font-size: 0.75rem;
   }
 
-  .player-stats {
+  .player-role {
     font-size: 0.625rem;
   }
 
-  .player-role {
-    font-size: 0.5rem;
-  }
-
-  .grid-cols-4 {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+  /* DESIGN DECISION: Single column feedback on mobile */
+  .clue-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
   }
 
   .popup-content {
@@ -577,19 +798,32 @@ body {
     font-size: 0.8rem;
   }
 
-  /* Mobile debug info adjustments */
-  .debug-info {
-    font-size: 0.625rem;
-    padding: 0.375rem;
+  /* Mobile MOTM celebration adjustments */
+  .player-item.correct::before {
+    font-size: 8px;
+    padding: 3px 8px;
+    top: -20px;
+  }
+
+  .score-line {
+    font-size: 14px;
+  }
+
+  .team-name {
+    font-size: 14px;
+  }
+
+  .score {
+    font-size: 16px;
   }
 }
 
 /* ============================================================================
-   ACCESSIBILITY IMPROVEMENTS
+   ACCESSIBILITY ENHANCEMENTS
    ============================================================================ */
 
 /* Focus states for keyboard navigation */
-.player-card:focus {
+.player-item:focus {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
@@ -601,18 +835,26 @@ body {
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  .player-card {
+  .player-item {
     border-width: 3px;
   }
 
   .team-squad {
     border-width: 3px;
   }
+
+  .player-item.correct {
+    border-width: 4px;
+  }
+
+  .player-item.guessed {
+    border-width: 4px;
+  }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  .player-card {
+  .player-item {
     transition: none;
   }
 
@@ -620,12 +862,24 @@ body {
     transition: none;
   }
 
-  .correct-pulse {
+  .motmCelebration {
+    animation: none;
+  }
+
+  .bounce {
+    animation: none;
+  }
+
+  .sparkle {
     animation: none;
   }
 
   .pulse-error {
     animation: none;
+  }
+
+  .progress-fill {
+    transition: none;
   }
 }
 
@@ -643,10 +897,53 @@ body {
   .game-container {
     box-shadow: none;
     border: 1px solid #000;
+    max-width: 100%;
   }
 
-  .player-card:hover {
+  .player-item:hover {
     transform: none;
     box-shadow: none;
   }
+
+  .scorecard {
+    background: #1e40af !important;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  .player-item.correct {
+    background: #fbbf24 !important;
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+
+/* ============================================================================
+   DARK MODE SUPPORT (Future enhancement)
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  /* 
+   * DESIGN DECISION: Dark mode commented out for now
+   * Rationale: Focus on core experience first, cricket broadcasts are traditionally bright
+   * Implementation: Could add dark variants of scorecard, player cards
+   */
+
+  /*
+  body {
+    background-color: #111827;
+    color: #f9fafb;
+  }
+
+  .game-container {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+
+  .player-item {
+    background-color: #374151;
+    color: #f9fafb;
+    border-color: #4b5563;
+  }
+  */
 }
