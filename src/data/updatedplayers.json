@@ -1,0 +1,642 @@
+{
+  "KOHLI": {
+    "fullName": "Virat Kohli",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman",
+    "iplMatches": 267, "iplRuns": 8661, "iplWickets": 4,
+    "odiMatches": 295, "odiRuns": 13437, "odiWickets": 4,
+    "teams": "IND|RCB",
+    "notable": "Most ODI centuries (51), IPL highest run-scorer"
+  },
+  "DHONI": {
+    "fullName": "MS Dhoni",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Wicketkeeper",
+    "iplMatches": 264, "iplRuns": 5082, "iplWickets": 0,
+    "odiMatches": 350, "odiRuns": 10773, "odiWickets": 1,
+    "teams": "IND|CSK|RPS",
+    "notable": "Captain Cool, 3 ICC trophies as captain, 2011 WC winning shot"
+  },
+  "MCCULLUM": {
+    "fullName": "Brendon McCullum",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "Wicketkeeper",
+    "iplMatches": 109, "iplRuns": 5980, "iplWickets": 0,
+    "odiMatches": 260, "odiRuns": 6083, "odiWickets": 0,
+    "teams": "NZ|KKR|CSK|GL",
+    "notable": "Fearless Leader, fastest Test century (54 balls), current England coach"
+  },
+  "MURALITHARAN": {
+    "fullName": "Muttiah Muralitharan",
+    "country": "Sri Lanka",
+    "countryFlag": "🇱🇰",
+    "role": "Bowler",
+    "iplMatches": 63, "iplRuns": 73, "iplWickets": 170,
+    "odiMatches": 350, "odiRuns": 674, "odiWickets": 534,
+    "teams": "SL|CSK",
+    "notable": "Spin Wizard, only bowler with 800 Test wickets, most ODI wickets"
+  },
+  "SPFLEMING": {
+    "fullName": "Stephen Fleming",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "Batsman",
+    "iplMatches": 38, "iplRuns": 431, "iplWickets": 0,
+    "odiMatches": 279, "odiRuns": 8037, "odiWickets": 1,
+    "teams": "NZ|CSK",
+    "notable": "Longest serving NZ captain, tactical genius"
+  },
+  "NJASTLE": {
+    "fullName": "Nathan Astle",
+    "country": "New Zealand", 
+    "countryFlag": "🇳🇿",
+    "role": "All-rounder",
+    "iplMatches": 0, "iplRuns": 0, "iplWickets": 0,
+    "odiMatches": 223, "odiRuns": 7090, "odiWickets": 154,
+    "teams": "NZ",
+    "notable": "Fastest Test double century (153 balls), attacking all-rounder"
+  },
+  "MSSINCLAIR": {
+    "fullName": "Mathew Sinclair",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "Batsman",
+    "iplMatches": 0, "iplRuns": 0, "iplWickets": 0,
+    "odiMatches": 96, "odiRuns": 2727, "odiWickets": 3,
+    "teams": "NZ",
+    "notable": "Elegant batsman, double century on Test debut"
+  },
+  "CDMCMILLAN": {
+    "fullName": "Craig McMillan",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "All-rounder",
+    "iplMatches": 0, "iplRuns": 0, "iplWickets": 0,
+    "odiMatches": 197, "odiRuns": 4707, "odiWickets": 49,
+    "teams": "NZ",
+    "notable": "Power-hitter, handy medium pacer"
+  },
+  "LVINCENT": {
+    "fullName": "Lou Vincent",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "Batsman",
+    "iplMatches": 0, "iplRuns": 0, "iplWickets": 0,
+    "odiMatches": 102, "odiRuns": 2684, "odiWickets": 0,
+    "teams": "NZ",
+    "notable": "Stylish opener, aggressive stroke-player"
+  },
+  "JDPORAM": {
+    "fullName": "Jacob Oram",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "All-rounder",
+    "iplMatches": 30, "iplRuns": 374, "iplWickets": 24,
+    "odiMatches": 160, "odiRuns": 2473, "odiWickets": 240,
+    "teams": "NZ|CSK|MI",
+    "notable": "Tall left-arm seamer, handy lower-order bat"
+  },
+  "BBMCCULLUM": {
+    "fullName": "Brendon McCullum",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "Wicketkeeper",
+    "iplMatches": 109, "iplRuns": 5980, "iplWickets": 0,
+    "odiMatches": 260, "odiRuns": 6083, "odiWickets": 0,
+    "teams": "NZ|KKR|CSK|GL",
+    "notable": "Fearless Leader, fastest Test century (54 balls), current England coach"
+  },
+  "KDMILLS": {
+    "fullName": "Kyle Mills",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "Bowler",
+    "iplMatches": 0, "iplRuns": 0, "iplWickets": 0,
+    "odiMatches": 170, "odiRuns": 711, "odiWickets": 240,
+    "teams": "NZ",
+    "notable": "Left-arm seamer, economical bowler"
+  },
+  "DLVETTORI": {
+    "fullName": "Daniel Vettori",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿", 
+    "role": "All-rounder",
+    "iplMatches": 34, "iplRuns": 287, "iplWickets": 23,
+    "odiMatches": 295, "odiRuns": 2253, "odiWickets": 305,
+    "teams": "NZ|RCB|DD",
+    "notable": "Left-arm spin wizard, youngest Test captain"
+  },
+  "DRTUFFEY": {
+    "fullName": "Daryl Tuffey",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "Bowler",
+    "iplMatches": 0, "iplRuns": 0, "iplWickets": 0,
+    "odiMatches": 99, "odiRuns": 258, "odiWickets": 146,
+    "teams": "NZ",
+    "notable": "Right-arm medium pacer, consistent performer"
+  },
+  "PAHITCHCOCK": {
+    "fullName": "Paul Hitchcock",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "Bowler",
+    "iplMatches": 0, "iplRuns": 0, "iplWickets": 0,
+    "odiMatches": 15, "odiRuns": 21, "odiWickets": 15,
+    "teams": "NZ",
+    "notable": "Fast bowler, limited international career"
+  },
+  "SCGANGULY": {
+    "fullName": "Sourav Ganguly",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman",
+    "iplMatches": 59, "iplRuns": 1349, "iplWickets": 0,
+    "odiMatches": 311, "odiRuns": 11363, "odiWickets": 32,
+    "teams": "IND|KKR|PWI",
+    "notable": "Dada, Prince of Calcutta, revolutionized Indian cricket mentality"
+  },
+  "VSEHWAG": {
+    "fullName": "Virender Sehwag",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman",
+    "iplMatches": 104, "iplRuns": 2728, "iplWickets": 0,
+    "odiMatches": 251, "odiRuns": 8273, "odiWickets": 40,
+    "teams": "IND|DD|KXIP",
+    "notable": "Nawab of Nazafgarh, destructive opener"
+  },
+  "VVSLAXMAN": {
+    "fullName": "VVS Laxman",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman",
+    "iplMatches": 35, "iplRuns": 519, "iplWickets": 0,
+    "odiMatches": 86, "odiRuns": 2338, "odiWickets": 4,
+    "teams": "IND|DC|KXIP",
+    "notable": "Very Very Special, 281 at Eden Gardens"
+  },
+  "RDRAVID": {
+    "fullName": "Rahul Dravid",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman",
+    "iplMatches": 89, "iplRuns": 2174, "iplWickets": 0,
+    "odiMatches": 344, "odiRuns": 10889, "odiWickets": 4,
+    "teams": "IND|RCB|RR",
+    "notable": "The Wall, Mr Dependable, current India head coach"
+  },
+  "YUVRAJSINGH": {
+    "fullName": "Yuvraj Singh",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "All-rounder",
+    "iplMatches": 132, "iplRuns": 2750, "iplWickets": 36,
+    "odiMatches": 304, "odiRuns": 8701, "odiWickets": 111,
+    "teams": "IND|KXIP|DC|SRH|MI",
+    "notable": "6 sixes in an over, 2011 World Cup Player of Tournament"
+  },
+  "MKAIF": {
+    "fullName": "Mohammad Kaif",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman",
+    "iplMatches": 18, "iplRuns": 119, "iplWickets": 0,
+    "odiMatches": 125, "odiRuns": 2753, "odiWickets": 1,
+    "teams": "IND|KXIP|RR",
+    "notable": "Natwest final hero, brilliant fielder"
+  },
+  "SBBANGAR": {
+    "fullName": "Sanjay Bangar",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "All-rounder",
+    "iplMatches": 5, "iplRuns": 37, "iplWickets": 0,
+    "odiMatches": 15, "odiRuns": 277, "odiWickets": 3,
+    "teams": "IND|KXIP",
+    "notable": "Former India batting coach, steady all-rounder"
+  },
+  "HARBHAJANSINGH": {
+    "fullName": "Harbhajan Singh",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 163, "iplRuns": 1479, "iplWickets": 150,
+    "odiMatches": 236, "odiRuns": 1180, "odiWickets": 269,
+    "teams": "IND|MI|CSK|KKR",
+    "notable": "Turbanator, hat-trick vs Australia, off-spin legend"
+  },
+  "ZKHAN": {
+    "fullName": "Zaheer Khan",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 100, "iplRuns": 187, "iplWickets": 119,
+    "odiMatches": 200, "odiRuns": 434, "odiWickets": 282,
+    "teams": "IND|MI|DD|RCB",
+    "notable": "Left-arm pace spearhead, 2011 World Cup hero"
+  },
+  "JSRINATH": {
+    "fullName": "Javagal Srinath",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 0, "iplRuns": 0, "iplWickets": 0,
+    "odiMatches": 229, "odiRuns": 505, "odiWickets": 315,
+    "teams": "IND",
+    "notable": "First Indian pacer to 300 ODI wickets, express pace"
+  },
+  "ANEHRA": {
+    "fullName": "Ashish Nehra",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 88, "iplRuns": 111, "iplWickets": 106,
+    "odiMatches": 120, "odiRuns": 237, "odiWickets": 157,
+    "teams": "IND|CSK|MI|DD|SRH",
+    "notable": "Left-arm pacer, 2011 World Cup winner, injury-prone warrior"
+  },
+  "AGARKAR": {
+    "fullName": "Ajit Agarkar",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 35, "iplRuns": 134, "iplWickets": 30,
+    "odiMatches": 191, "odiRuns": 1269, "odiWickets": 288,
+    "teams": "IND|KKR|DD",
+    "notable": "Fastest to 50 ODI wickets (23 matches), Lords century, explosive lower-order bat"
+  },
+  "KALLIS": {
+    "fullName": "Jacques Kallis",
+    "country": "South Africa", 
+    "countryFlag": "🇿🇦",
+    "role": "All-rounder",
+    "iplMatches": 98, "iplRuns": 2427, "iplWickets": 65,
+    "odiMatches": 328, "odiRuns": 11579, "odiWickets": 273,
+    "teams": "SA|RCB|KKR",
+    "notable": "Greatest all-rounder ever, only player with 10k+ runs & 250+ wickets in both Tests & ODIs"
+  },
+  "SHUKLA": {
+    "fullName": "Laxmi Ratan Shukla",
+    "country": "India",
+    "countryFlag": "🇮🇳", 
+    "role": "All-rounder",
+    "iplMatches": 20, "iplRuns": 89, "iplWickets": 8,
+    "odiMatches": 3, "odiRuns": 17, "odiWickets": 2,
+    "teams": "IND|KKR",
+    "notable": "Kolkata Knight Riders stalwart, domestic cricket legend"
+  },
+  "DINDA": {
+    "fullName": "Ashok Dinda", 
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 78, "iplRuns": 45, "iplWickets": 69,
+    "odiMatches": 13, "odiRuns": 12, "odiWickets": 12,
+    "teams": "IND|KKR|PBKS|RPS",
+    "notable": "Bengal fast bowler, IPL journeyman"
+  },
+  "KARTIK": {
+    "fullName": "Murali Kartik",
+    "country": "India", 
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 42, "iplRuns": 78, "iplWickets": 34,
+    "odiMatches": 37, "odiRuns": 124, "odiWickets": 32,
+    "teams": "IND|KKR|RR",
+    "notable": "Left-arm spinner, Railway cricketer turned international"
+  },
+  "JAFFER": {
+    "fullName": "Wasim Jaffer",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman", 
+    "iplMatches": 31, "iplRuns": 554, "iplWickets": 0,
+    "odiMatches": 2, "odiRuns": 19, "odiWickets": 0,
+    "teams": "IND|RCB|KXIP",
+    "notable": "Most runs in Ranji Trophy history, Test stalwart, Meme King"
+  },
+  "WHITE": {
+    "fullName": "Cameron White",
+    "country": "Australia",
+    "countryFlag": "🇦🇺", 
+    "role": "All-rounder",
+    "iplMatches": 46, "iplRuns": 916, "iplWickets": 3,
+    "odiMatches": 91, "odiRuns": 2072, "odiWickets": 17,
+    "teams": "AUS|RCB|DD",
+    "notable": "Australian captain, aggressive middle-order bat"
+  },
+  "BOUCHER": {
+    "fullName": "Mark Boucher",
+    "country": "South Africa",
+    "countryFlag": "🇿🇦",
+    "role": "Wicketkeeper",
+    "iplMatches": 35, "iplRuns": 427, "iplWickets": 0,
+    "odiMatches": 295, "odiRuns": 4686, "odiWickets": 0,
+    "teams": "SA|RCB|KKR",
+    "notable": "Most Test dismissals by wicketkeeper (555), current SA coach"
+  },
+  "PONTING": {
+    "fullName": "Ricky Ponting", 
+    "country": "Australia",
+    "countryFlag": "🇦🇺",
+    "role": "Batsman",
+    "iplMatches": 84, "iplRuns": 1848, "iplWickets": 0,
+    "odiMatches": 375, "odiRuns": 13704, "odiWickets": 3,
+    "teams": "AUS|KKR|MI",
+    "notable": "Most successful cricket captain, 2x World Cup winner, 71 international centuries"
+  },
+  "HUSSEY": {
+    "fullName": "Michael Hussey",
+    "country": "Australia", 
+    "countryFlag": "🇦🇺",
+    "role": "Batsman",
+    "iplMatches": 59, "iplRuns": 1977, "iplWickets": 0,
+    "odiMatches": 185, "odiRuns": 5442, "odiWickets": 0,
+    "teams": "AUS|CSK",
+    "notable": "Mr Cricket, finisher extraordinaire, late bloomer who peaked after 30"
+  },
+  "GANGULY": {
+    "fullName": "Sourav Ganguly",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman", 
+    "iplMatches": 59, "iplRuns": 1349, "iplWickets": 0,
+    "odiMatches": 311, "odiRuns": 11363, "odiWickets": 32,
+    "teams": "IND|KKR|PWI",
+    "notable": "Dada, Prince of Calcutta, revolutionized Indian cricket mentality"
+  },
+  "DRAVID": {
+    "fullName": "Rahul Dravid",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman",
+    "iplMatches": 89, "iplRuns": 2174, "iplWickets": 0,
+    "odiMatches": 344, "odiRuns": 10889, "odiWickets": 4,
+    "teams": "IND|RCB|RR",
+    "notable": "The Wall, Mr Dependable, current India head coach"
+  },
+  "SAHA": {
+    "fullName": "Wriddhiman Saha",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Wicketkeeper",
+    "iplMatches": 150, "iplRuns": 3204, "iplWickets": 0,
+    "odiMatches": 9, "odiRuns": 124, "odiWickets": 0,
+    "teams": "IND|CSK|KXIP|SRH|GT",
+    "notable": "Finest wicketkeeper-batsman of modern India"
+  },
+  "SHARMA": {
+    "fullName": "Ishant Sharma",
+    "country": "India", 
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 105, "iplRuns": 234, "iplWickets": 72,
+    "odiMatches": 80, "odiRuns": 195, "odiWickets": 115,
+    "teams": "IND|DC|KXIP|RR",
+    "notable": "Veteran Indian pacer, 100+ Test wickets"
+  },
+  "PATEL": {
+    "fullName": "Parthiv Patel",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Wicketkeeper",
+    "iplMatches": 139, "iplRuns": 2848, "iplWickets": 0,
+    "odiMatches": 38, "odiRuns": 736, "odiWickets": 0,
+    "teams": "IND|CSK|KXIP|MI|RCB",
+    "notable": "Youngest Indian Test debutant at 17, IPL stalwart"
+  },
+  "HAYDEN": {
+    "fullName": "Matthew Hayden",
+    "country": "Australia", 
+    "countryFlag": "🇦🇺",
+    "role": "Batsman",
+    "iplMatches": 85, "iplRuns": 2687, "iplWickets": 0,
+    "odiMatches": 161, "odiRuns": 6133, "odiWickets": 0,
+    "teams": "AUS|CSK",
+    "notable": "Aggressive opener, highest Test score of 380, CSK legend"
+  },
+  "RAINA": {
+    "fullName": "Suresh Raina",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman",
+    "iplMatches": 205, "iplRuns": 5528, "iplWickets": 2,
+    "odiMatches": 226, "odiRuns": 5615, "odiWickets": 36,
+    "teams": "IND|CSK|GL",
+    "notable": "Mr IPL, first to 5000 IPL runs, first Indian to score T20I century"
+  },
+  "ORAM": {
+    "fullName": "Jacob Oram",
+    "country": "New Zealand",
+    "countryFlag": "🇳🇿",
+    "role": "All-rounder",
+    "iplMatches": 30, "iplRuns": 374, "iplWickets": 24,
+    "odiMatches": 160, "odiRuns": 2473, "odiWickets": 240,
+    "teams": "NZ|CSK|MI",
+    "notable": "Tall left-arm seamer, handy lower-order bat"
+  },
+  "BADRINATH": {
+    "fullName": "Subramaniam Badrinath",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Batsman",
+    "iplMatches": 97, "iplRuns": 1591, "iplWickets": 0,
+    "odiMatches": 7, "odiRuns": 86, "odiWickets": 0,
+    "teams": "IND|CSK",
+    "notable": "Tamil Nadu stalwart, CSK loyalist, domestic run machine"
+  },
+  "SANGAKKARA": {
+    "fullName": "Kumar Sangakkara",
+    "country": "Sri Lanka",
+    "countryFlag": "🇱🇰",
+    "role": "Wicketkeeper",
+    "iplMatches": 62, "iplRuns": 1899, "iplWickets": 0,
+    "odiMatches": 404, "odiRuns": 14234, "odiWickets": 0,
+    "teams": "SL|KXIP|DC|SRH",
+    "notable": "Second-highest ODI run-scorer, elegant left-handed bat"
+  },
+  "LEE": {
+    "fullName": "Brett Lee",
+    "country": "Australia",
+    "countryFlag": "🇦🇺",
+    "role": "Bowler",
+    "iplMatches": 38, "iplRuns": 93, "iplWickets": 28,
+    "odiMatches": 221, "odiRuns": 502, "odiWickets": 380,
+    "teams": "AUS|KKR",
+    "notable": "Fastest bowler of his era (161 kph), yorker specialist, Bollywood actor"
+  },
+  "SREESANTH": {
+    "fullName": "Sreesanth",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 44, "iplRuns": 89, "iplWickets": 40,
+    "odiMatches": 53, "odiRuns": 195, "odiWickets": 75,
+    "teams": "IND|RR|KXIP",
+    "notable": "2007 T20 World Cup hero, colorful character, comeback story"
+  },
+  "HAFEEZ": {
+    "fullName": "Mohammad Hafeez",
+    "country": "Pakistan",
+    "countryFlag": "🇵🇰",
+    "role": "All-rounder",
+    "iplMatches": 38, "iplRuns": 304, "iplWickets": 8,
+    "odiMatches": 218, "odiRuns": 6614, "odiWickets": 139,
+    "teams": "PAK|KXIP|KKR",
+    "notable": "Professor, explosive opener, handy off-spinner, T20 captain"
+  },
+  "AKHIL": {
+    "fullName": "B Akhil",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler", 
+    "iplMatches": 12, "iplRuns": 23, "iplWickets": 8,
+    "odiMatches": 0, "odiRuns": 0, "odiWickets": 0,
+    "teams": "IND|RCB",
+    "notable": "Karnataka pace bowler, IPL early seasons player"
+  },
+  "NOFFKE": {
+    "fullName": "Ashley Noffke",
+    "country": "Australia",
+    "countryFlag": "🇦🇺",
+    "role": "All-rounder",
+    "iplMatches": 10, "iplRuns": 53, "iplWickets": 6,
+    "odiMatches": 1, "odiRuns": 0, "odiWickets": 1,
+    "teams": "AUS|RCB",
+    "notable": "Queensland all-rounder, 50-wicket 500-run season achiever"
+  },
+  "KUMAR": {
+    "fullName": "Praveen Kumar",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 119, "iplRuns": 333, "iplWickets": 90,
+    "odiMatches": 68, "odiRuns": 277, "odiWickets": 102,
+    "teams": "IND|RCB|KXIP|SRH",
+    "notable": "Swing bowling specialist, 2011 World Cup winner"
+  },
+  "KHAN": {
+    "fullName": "Iqbal Abdulla", 
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 51, "iplRuns": 89, "iplWickets": 33,
+    "odiMatches": 0, "odiRuns": 0, "odiWickets": 0,
+    "teams": "IND|KKR|RR|RCB",
+    "notable": "Left-arm spinner, 2008 U-19 World Cup winner"
+  },
+  "JOSHI": {
+    "fullName": "Sunil Joshi",
+    "country": "India", 
+    "countryFlag": "🇮🇳",
+    "role": "All-rounder",
+    "iplMatches": 25, "iplRuns": 133, "iplWickets": 13,
+    "odiMatches": 69, "odiRuns": 612, "odiWickets": 69,
+    "teams": "IND|RCB|CSK",
+    "notable": "Left-arm spinner, handy lower-order bat, Karnataka stalwart"
+  },
+  "AMARNATH": {
+    "fullName": "Tanmay Srivastava",
+    "country": "India",
+    "countryFlag": "🇮🇳", 
+    "role": "Batsman",
+    "iplMatches": 7, "iplRuns": 8, "iplWickets": 0,
+    "odiMatches": 0, "odiRuns": 0, "odiWickets": 0,
+    "teams": "IND|KXIP",
+    "notable": "2008 U-19 World Cup winner, opening batsman"
+  },
+  "GONY": {
+    "fullName": "Manpreet Gony",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 22, "iplRuns": 37, "iplWickets": 21,
+    "odiMatches": 2, "odiRuns": 4, "odiWickets": 0,
+    "teams": "IND|CSK|KXIP",
+    "notable": "Punjab pacer, CSK early seasons bowler"
+  },
+  "GOEL": {
+    "fullName": "Kapil Goel",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 8, "iplRuns": 12, "iplWickets": 4,
+    "odiMatches": 0, "odiRuns": 0, "odiWickets": 0,
+    "teams": "IND|CSK",
+    "notable": "Tamil Nadu spinner, domestic cricket stalwart"
+  },
+  "HOPES": {
+    "fullName": "James Hopes",
+    "country": "Australia",
+    "countryFlag": "🇦🇺",
+    "role": "All-rounder",
+    "iplMatches": 22, "iplRuns": 239, "iplWickets": 15,
+    "odiMatches": 84, "odiRuns": 1238, "odiWickets": 112,
+    "teams": "AUS|CSK",
+    "notable": "Queensland all-rounder, reliable middle-order option"
+  },
+  "SINGH": {
+    "fullName": "Thilan Samaraweera",
+    "country": "Sri Lanka",
+    "countryFlag": "🇱🇰",
+    "role": "Batsman",
+    "iplMatches": 0, "iplRuns": 0, "iplWickets": 0,
+    "odiMatches": 26, "odiRuns": 405, "odiWickets": 1,
+    "teams": "SL",
+    "notable": "Test specialist, patient accumulator, terrorism attack survivor"
+  },
+  "KATICH": {
+    "fullName": "Simon Katich",
+    "country": "Australia",
+    "countryFlag": "🇦🇺",
+    "role": "All-rounder",
+    "iplMatches": 45, "iplRuns": 888, "iplWickets": 0,
+    "odiMatches": 45, "odiRuns": 1186, "odiWickets": 0,
+    "teams": "AUS|KXIP",
+    "notable": "Gritty opener, NSW captain, part-time leg-spinner"
+  },
+  "PATHAN": {
+    "fullName": "Irfan Pathan",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "All-rounder",
+    "iplMatches": 103, "iplRuns": 1544, "iplWickets": 80,
+    "odiMatches": 120, "odiRuns": 1544, "odiWickets": 173,
+    "teams": "IND|KXIP|DD|SRH|CSK",
+    "notable": "2007 T20 World Cup hero, swing bowling all-rounder"
+  },
+  "DHARMANI": {
+    "fullName": "Lakshmipathy Balaji",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 23, "iplRuns": 31, "iplWickets": 19,
+    "odiMatches": 30, "odiRuns": 67, "odiWickets": 34,
+    "teams": "IND|CSK",
+    "notable": "Tamil Nadu pacer, comeback warrior from back injury"
+  },
+  "CHAWLA": {
+    "fullName": "Piyush Chawla",
+    "country": "India",
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 194, "iplRuns": 627, "iplWickets": 192,
+    "odiMatches": 25, "odiRuns": 62, "odiWickets": 32,
+    "teams": "IND|KXIP|KKR|CSK|MI",
+    "notable": "Leg-spinner, 2011 World Cup winner, 4th highest IPL wicket-taker"
+  },
+  "MOTA": {
+    "fullName": "Munaf Patel",
+    "country": "India", 
+    "countryFlag": "🇮🇳",
+    "role": "Bowler",
+    "iplMatches": 82, "iplRuns": 39, "iplWickets": 73,
+    "odiMatches": 70, "odiRuns": 83, "odiWickets": 86,
+    "teams": "IND|RR|MI|GL",
+    "notable": "2011 World Cup winner, express pace, current DC bowling coach"
+  }
+}
