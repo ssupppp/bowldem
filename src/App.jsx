@@ -1,411 +1,491 @@
 /*
- * CricGuess - Man of the Match Implementation
- * Complete enhanced version with visual squad discovery
+ * CricGuess - BUG FIXES + ENHANCED FEEDBACK SYSTEM
+ *
+ * FIXED ISSUES:
+ * =============
+ * ✅ 1. React Duplicate Key Warning - Use original playerKey for unique React keys
+ * ✅ 2. CSS Scrolling Issues - Fixed player list height compression
+ * ✅ 3. "Unknown Player" bug - Enhanced target player resolution
+ * ✅ 4. Added nationality feedback (flag matching)
+ * ✅ 5. Added role feedback (Batsman/Bowler/All-rounder)
+ * ✅ 6. Added total matches comparison (up/down arrows)
  * 
- * VERSION HISTORY & DESIGN DECISIONS:
- * ===========================================
- * 
- * CORE CONCEPT EVOLUTION:
- * - Original: Generic player guessing with text input
- * - v1: Added squad discovery with generic feedback  
- * - v2: Focused on "Man of the Match" concept for cricket nostalgia
- * - v3: Enhanced visual feedback states for better UX
- * 
- * KEY DESIGN DECISIONS MADE:
- * 
- * 1. MAN OF THE MATCH FOCUS:
- *    - Decision: Changed from "guess any player" to "guess Man of the Match"
- *    - Rationale: More cricket nostalgia, clearer objective, authentic cricket context
- *    - Implementation: Golden celebration for correct answer, MOTM-specific messaging
- * 
- * 2. FEEDBACK SYSTEM REFINEMENT:
- *    - Decision: Removed "Team" feedback, kept Batting Order, Runs, Wickets
- *    - Rationale: Team is visible in squads, performance metrics more meaningful
- *    - Implementation: 3-column grid focusing on cricket performance
- * 
- * 3. ATTEMPT LIMIT:
- *    - Decision: 3 tries instead of 5
- *    - Rationale: Increased difficulty, more strategic thinking required
- *    - Implementation: Progress bar reflects 3 attempts max
- * 
- * 4. VISUAL FEEDBACK STATES:
- *    - Decision: Three distinct states (unselected, wrong, correct)
- *    - Rationale: Clear feedback, "super juicy" correct answer celebration
- *    - Implementation: Red for wrong, gold+animations for correct
- * 
- * 5. COMPLETE TEAM LISTS:
- *    - Decision: Show all 11 players, no initial stats
- *    - Rationale: Authentic cricket scorecard feel, clean discovery
- *    - Implementation: Stats only appear when players are guessed
- * 
- * 6. CRICKET NOSTALGIA PRESERVATION:
- *    - Decision: Full broadcast-style scorecard with venue/tournament
- *    - Rationale: Maintains cricket authenticity and emotional connection
- *    - Implementation: Complete match context, proper cricket formatting
- * 
- * DEPLOYMENT: Uses feature flags for easy version switching
- * git checkout squad-discovery-v2 for this enhanced version
+ * NEW FEEDBACK SYSTEM:
+ * ===================
+ * 🏁 Nationality: Green flag if same country, red if different
+ * 🎯 Role: Green if same role, red if different  
+ * 📊 Matches: ↑ if guess played fewer, ↓ if guess played more, ✅ if same
  */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useMemo } from "react";
 import playersData from "./data/players.json";
 import matchPuzzlesData from "./data/match_puzzles.json";
 import "./App.css";
 
+// ============================================================================
+// STABLE CONFIG - Performance optimized, moved outside component
+// ============================================================================
+
+const STABLE_FEATURES = {
+  useSquadDiscovery: true,
+  useManOfTheMatch: true,
+  showDebugInfo: false,
+  maxGuesses: 3,
+  enhancedMobileLayout: true,
+  hidePlayerStats: true,
+};
+
+const STABLE_PUZZLE_CONFIG = {
+  maxGuesses: STABLE_FEATURES.maxGuesses,
+  puzzles: matchPuzzlesData.puzzles || [],
+  targetType: STABLE_FEATURES.useManOfTheMatch ? "Man of the Match" : "any player",
+};
+
+// ============================================================================
+// COMPREHENSIVE PLAYER KEY MAPPING - Complete solution for all puzzles
+// ============================================================================
+const PLAYER_KEY_MAPPING = {};
+
+// Create comprehensive mapping from short keys to full keys
+Object.keys(playersData).forEach((fullKey) => {
+  // Try different substring lengths to catch more variations
+  for (let i = 1; i <= 4; i++) {
+    if (fullKey.length > i) {
+      const shortKey = fullKey.substring(i);
+      if (!PLAYER_KEY_MAPPING[shortKey]) {
+        PLAYER_KEY_MAPPING[shortKey] = fullKey;
+      }
+    }
+  }
+});
+
+// CRITICAL: Manual mappings for ALL known problematic cases from puzzle analysis
+const MANUAL_MAPPINGS = {
+  // Original issues we fixed
+  "MCCULLUM": "BBMCCULLUM",
+  "GANGULY": "SCGANGULY", 
+  "PONTING": "RTPONTING",
+  "HUSSEY": "MEKHUSSEY",
+  "HAYDEN": "MLHAYDEN",
+
+  // Additional potential issues from common cricket names
+  "WATSON": "SRWATSON",          // If SR Watson exists
+  "SANGAKKARA": "KCSANGAKKARA",   // If KC Sangakkara exists  
+  "DRAVID": "RDRAVID",           // If R Dravid exists
+  "TENDULKAR": "SRTENDULKAR",    // If SR Tendulkar exists
+  "GILCHRIST": "ACGILCHRIST",    // If AC Gilchrist exists
+  "LAXMAN": "VVSLAXMAN",         // If VVS Laxman exists
+  "SEHWAG": "VSEHWAG",           // If V Sehwag exists
+  "YUVRAJ": "YUVRAJSINGH",       // If Yuvraj Singh exists
+  "DHONI": "MSDHONI",            // If MS Dhoni exists
+  "KOHLI": "VKOHLI",             // If V Kohli exists
+  "ROHIT": "RSHARMA",            // If R Sharma exists
+  "RAHUL": "KLRAHUL",            // If KL Rahul exists
+  "JADEJA": "RAJADEJA",          // If RA Jadeja exists
+  "ASHWIN": "RASHWIN",           // If R Ashwin exists
+  "BUMRAH": "JBUMRAH",           // If J Bumrah exists
+  "SHAMI": "MSHAMI",             // If M Shami exists
+  "WILLIAMSON": "KWILLIAMSON",   // If K Williamson exists
+  "BOULT": "TABOULT",            // If TA Boult exists
+  "SOUTHEE": "TGSOUTHEE",        // If TG Southee exists
+  "TAYLOR": "LRPLTAYLOR",        // If LRPL Taylor exists
+  "GUPTILL": "MJGUPTILL",        // If MJ Guptill exists
+
+  // South African players
+  "MILLER": "DAMILLER",          // If DA Miller exists
+  "MARKRAM": "AEMARKRAM",        // If AE Markram exists
+  "KLAASEN": "HKLAASEN",         // If H Klaasen exists
+  "BAVUMA": "TBAVUMA",           // If T Bavuma exists
+
+  // West Indies players
+  "GAYLE": "CHGAYLE",            // If CH Gayle exists
+  "RUSSELL": "ADRUSSELL",        // If AD Russell exists
+  "POLLARD": "KAPOLLARD",        // If KA Pollard exists
+  "BRAVO": "DJBRAVO",            // If DJ Bravo exists
+  "NARINE": "SPNARINE",          // If SP Narine exists
+  "HOLDER": "JEHOLDER",          // If JO Holder exists
+  "HETMYER": "SHETMYER",         // If S Hetmyer exists
+  "POORAN": "NPOORAN",           // If N Pooran exists
+  "HOPE": "SDHOPE",              // If SD Hope exists
+  "JOSEPH": "ALZJOSEPH",         // If ALZ Joseph exists
+};
+
+// Apply manual mappings (these override automatic mappings)
+Object.assign(PLAYER_KEY_MAPPING, MANUAL_MAPPINGS);
+
+console.log("🔑 Comprehensive Player Key Mapping initialized:", Object.keys(PLAYER_KEY_MAPPING).length, "mappings");
+console.log("📋 Manual mappings applied:", Object.keys(MANUAL_MAPPINGS).length, "overrides");
+
 const CricGuess = () => {
   // ============================================================================
-  // FEATURE FLAGS - Enhanced for Man of the Match system
-  // ============================================================================
-  const FEATURES = {
-    useSquadDiscovery: true,     // NEW: Visual squad selection (vs old text input)
-    useManOfTheMatch: true,      // NEW: Focus on MOTM instead of generic player
-    showDebugInfo: true,         // Shows current mode (disable for production)
-    maxGuesses: 3,               // CHANGED: From 5 to 3 for increased difficulty
-  };
-
-  // ============================================================================
-  // PUZZLE CONFIGURATION - Enhanced with MOTM focus
-  // ============================================================================
-  const PUZZLE_CONFIG = {
-    maxGuesses: FEATURES.maxGuesses,
-    puzzles: matchPuzzlesData.puzzles || [],
-    targetType: FEATURES.useManOfTheMatch ? "man_of_the_match" : "any_player",
-  };
-
-  // ============================================================================
-  // FEEDBACK SYSTEMS - Refined for cricket performance
-  // DESIGN DECISION: Removed "Team" (visible in squads), kept performance metrics
-  // ============================================================================
-
-  // ENHANCED: Man of the Match specific feedback system
-  const MOTM_FEEDBACK_CONFIG = {
-    // REMOVED: team (not relevant when squads are visible)
-    // KEPT: batting order, runs, wickets (core cricket performance)
-    activeFields: ["battingOrder", "runsInMatch", "wicketsInMatch"],
-    compareFields: {
-      battingOrder: {
-        label: "Batting Order",
-        icon: "📝",
-        compare: (guessValue, targetValue) =>
-          guessValue > targetValue ? "🔽" : guessValue < targetValue ? "🔼" : "✅",
-      },
-      runsInMatch: {
-        label: "Runs in Match", // CLARIFIED: Specific to this match
-        icon: "🏃",
-        compare: (guessValue, targetValue) =>
-          guessValue > targetValue ? "🔽" : guessValue < targetValue ? "🔼" : "✅",
-      },
-      wicketsInMatch: {
-        label: "Wickets in Match", // CLARIFIED: Specific to this match
-        icon: "🎳",
-        compare: (guessValue, targetValue) =>
-          guessValue > targetValue ? "🔽" : guessValue < targetValue ? "🔼" : "✅",
-      },
-    },
-  };
-
-  // ============================================================================
-  // GAME STATE MANAGEMENT - Enhanced for MOTM
+  // GAME STATE MANAGEMENT - Clean and minimal
   // ============================================================================
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
   const [gameWon, setGameWon] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [gameError, setGameError] = useState(null);
+  const [squadFeedback, setSquadFeedback] = useState([]);
+  const [selectedPlayers, setSelectedPlayers] = useState(new Set());
 
-  // NEW: Squad-based state management
-  const [squadFeedback, setSquadFeedback] = useState([]); // Tracks all guesses with feedback
-  const [selectedPlayers, setSelectedPlayers] = useState(new Set()); // Tracks which players were tried
+  // ============================================================================
+  // BULLETPROOF PLAYER KEY RESOLUTION - Maximum compatibility
+  // ============================================================================
+  const resolvePlayerKey = (puzzleKey) => {
+    console.log(`🔍 Resolving key: "${puzzleKey}"`);
 
-  // Enhanced puzzle getter with error handling
-  const getCurrentPuzzle = () => {
-    try {
-      const puzzle = PUZZLE_CONFIG.puzzles[currentPuzzleIndex];
-      if (!puzzle) {
-        setGameError("Puzzle not found");
-        return null;
-      }
-      return puzzle;
-    } catch (error) {
-      setGameError(`Puzzle error: ${error.message}`);
-      return null;
+    // Strategy 1: Direct lookup first
+    if (playersData[puzzleKey]) {
+      console.log(`✅ Direct match found: ${puzzleKey}`);
+      return puzzleKey;
     }
+
+    // Strategy 2: Manual mapping lookup (highest priority)
+    if (PLAYER_KEY_MAPPING[puzzleKey]) {
+      const mappedKey = PLAYER_KEY_MAPPING[puzzleKey];
+      if (playersData[mappedKey]) {
+        console.log(`🔑 Manual mapping: ${puzzleKey} -> ${mappedKey}`);
+        return mappedKey;
+      }
+    }
+
+    // Strategy 3: Dynamic substring matching (fallback)
+    for (const fullKey of Object.keys(playersData)) {
+      for (let i = 1; i <= 4; i++) {
+        if (fullKey.length > i && fullKey.substring(i) === puzzleKey) {
+          console.log(`🔗 Dynamic mapping: ${puzzleKey} -> ${fullKey}`);
+          return fullKey;
+        }
+      }
+    }
+
+    // Strategy 4: Case variations
+    const upperKey = puzzleKey.toUpperCase();
+    if (playersData[upperKey]) {
+      console.log(`📝 Case variation match: ${puzzleKey} -> ${upperKey}`);
+      return upperKey;
+    }
+
+    // Strategy 5: Fuzzy name matching as last resort
+    const fuzzyMatch = Object.keys(playersData).find(key => {
+      const player = playersData[key];
+      return player.aliases && player.aliases.some(alias => 
+        alias.toUpperCase().includes(puzzleKey.toUpperCase()) ||
+        puzzleKey.toUpperCase().includes(alias.toUpperCase())
+      );
+    });
+
+    if (fuzzyMatch) {
+      console.log(`🎯 Fuzzy alias match: ${puzzleKey} -> ${fuzzyMatch}`);
+      return fuzzyMatch;
+    }
+
+    console.log(`❌ UNRESOLVED: "${puzzleKey}" - no mapping found`);
+    console.log(`Available keys sample:`, Object.keys(playersData).slice(0, 10));
+    return null;
   };
 
-  const currentPuzzle = getCurrentPuzzle();
+  // ============================================================================
+  // MEMOIZED CURRENT PUZZLE - Prevents unnecessary re-processing
+  // ============================================================================
+  const currentPuzzle = useMemo(() => {
+    if (!STABLE_PUZZLE_CONFIG.puzzles || STABLE_PUZZLE_CONFIG.puzzles.length === 0) {
+      setGameError("No puzzles found in match_puzzles.json");
+      return null;
+    }
 
-  // Enhanced target player getter - ADAPTED FOR MOTM
-  const getTargetPlayer = () => {
+    if (currentPuzzleIndex >= STABLE_PUZZLE_CONFIG.puzzles.length) {
+      setGameError("Puzzle index out of range");
+      return null;
+    }
+
+    const puzzle = STABLE_PUZZLE_CONFIG.puzzles[currentPuzzleIndex];
+    console.log("🧩 Loading puzzle:", puzzle.id, "Target:", puzzle.targetPlayer);
+    return puzzle;
+  }, [currentPuzzleIndex]);
+
+  // ============================================================================
+  // MEMOIZED TARGET PLAYER - Enhanced resolution with multiple strategies
+  // ============================================================================
+  const targetPlayer = useMemo(() => {
     if (!currentPuzzle) return null;
-    try {
-      // DESIGN DECISION: Support both MOTM-specific and fallback targets
-      const targetPlayerKey = FEATURES.useManOfTheMatch 
-        ? currentPuzzle.manOfTheMatch || currentPuzzle.targetPlayer
-        : currentPuzzle.targetPlayer;
 
-      const targetPlayer = playersData[targetPlayerKey];
-      if (!targetPlayer) {
-        console.error(`Target player not found: ${targetPlayerKey}`);
+    try {
+      let targetPlayerKey = null;
+
+      // Strategy 1: Direct key resolution
+      const directKey = resolvePlayerKey(currentPuzzle.targetPlayer);
+      if (directKey && playersData[directKey]) {
+        targetPlayerKey = directKey;
+        console.log(`✅ Direct resolution: ${currentPuzzle.targetPlayer} -> ${targetPlayerKey}`);
+      }
+
+      // Strategy 2: Match against Player of the Match name
+      if (!targetPlayerKey && currentPuzzle.matchData?.scorecard?.player_of_match) {
+        const pomName = currentPuzzle.matchData.scorecard.player_of_match.toUpperCase();
+        console.log(`🎯 Searching for MOTM: "${pomName}"`);
+
+        // Try to find player by full name match
+        const foundPlayer = Object.entries(playersData).find(([key, player]) => {
+          return player.fullName && player.fullName.toUpperCase() === pomName;
+        });
+
+        if (foundPlayer) {
+          targetPlayerKey = foundPlayer[0];
+          console.log(`🎯 MOTM name match: ${pomName} -> ${targetPlayerKey}`);
+        }
+      }
+
+      // Strategy 3: Use original target player key as fallback
+      if (!targetPlayerKey) {
+        targetPlayerKey = currentPuzzle.targetPlayer;
+        console.log("⚠️ Using original target key as fallback:", targetPlayerKey);
+      }
+
+      const targetPlayerData = playersData[targetPlayerKey];
+      if (!targetPlayerData) {
+        console.error("❌ Target player not found in players.json:", targetPlayerKey);
+        console.error("Available keys sample:", Object.keys(playersData).slice(0, 10), "...");
+        console.error("Key mapping for target:", PLAYER_KEY_MAPPING[currentPuzzle.targetPlayer]);
         return { key: targetPlayerKey, fullName: "Unknown Player" };
       }
-      return { ...targetPlayer, key: targetPlayerKey };
+
+      console.log("✅ Target player resolved:", targetPlayerData.fullName);
+      return { ...targetPlayerData, key: targetPlayerKey };
     } catch (error) {
-      console.error(`Error getting target player:`, error);
-      return null;
+      console.error("❌ Error getting target player:", error);
+      return { key: "ERROR", fullName: "Unknown Player" };
     }
-  };
+  }, [currentPuzzle]);
 
   // ============================================================================
-  // SQUAD DISCOVERY FUNCTIONS - Enhanced for cricket authenticity
+  // MEMOIZED SQUAD PROCESSING - Enhanced error handling and team assignment
   // ============================================================================
+  const squadPlayers = useMemo(() => {
+    if (!currentPuzzle || !targetPlayer) {
+      return {
+        team1: [],
+        team2: [],
+        team1Name: "",
+        team2Name: "",
+        error: "Loading...",
+      };
+    }
 
-  /**
-   * Get organized squad data with cricket-authentic formatting
-   * DESIGN DECISION: Full 11-player squads with roles, no initial stats
-   */
-  const getSquadPlayers = () => {
-    if (!currentPuzzle?.matchData?.playerPerformances) return { team1: [], team2: [] };
+    if (!currentPuzzle.matchData?.playerPerformances) {
+      return {
+        team1: [],
+        team2: [],
+        team1Name: "",
+        team2Name: "",
+        error: "No player performance data available",
+      };
+    }
 
     try {
       const performances = currentPuzzle.matchData.playerPerformances;
+      const scorecard = currentPuzzle.matchData.scorecard;
+      const team1Name = scorecard?.teams?.[0] || "Team 1";
+      const team2Name = scorecard?.teams?.[1] || "Team 2";
+
       const team1Players = [];
       const team2Players = [];
+      let playerIndex = 0;
 
       Object.entries(performances).forEach(([playerKey, perf]) => {
-        const player = playersData[playerKey];
-        if (player && perf.played_in_match) {
-          const playerData = {
-            key: playerKey,
-            name: player.fullName,
+        const resolvedKey = resolvePlayerKey(playerKey);
+        const player = resolvedKey ? playersData[resolvedKey] : null;
+
+        playerIndex++;
+        const fallbackBattingOrder = playerIndex;
+
+        if (!player) {
+          // Create fallback player with estimated data
+          const fallbackPlayer = {
+            key: playerKey, // ✅ USE ORIGINAL KEY for uniqueness
+            originalKey: playerKey,
+            resolvedKey: null,
+            name: playerKey.charAt(0).toUpperCase() + playerKey.slice(1).toLowerCase(),
             team: perf.team,
+            role: "Player",
             runs: perf.runs_in_match || 0,
             wickets: perf.wickets_in_match || 0,
-            ballsFaced: perf.balls_faced || 0,
-            ballsBowled: perf.balls_bowled || 0,
-            boundaries: perf.boundaries || { fours: 0, sixes: 0 },
-            role: player.role || "Player",
-            battingOrder: getBattingOrder(playerKey, performances),
-            isCaptain: player.fullName.includes("(c)") || perf.is_captain,
-            isWicketkeeper: player.role === "Wicket-keeper" || player.fullName.includes("(wk)"),
+            battingOrder: fallbackBattingOrder,
+            isCaptain: false,
+            isWicketkeeper: false,
+            // Add missing data for feedback system
+            country: "Unknown",
+            countryFlag: "🏳️",
+            matches: 0,
           };
 
-          // DESIGN DECISION: Organize by actual teams from match data
-          if (perf.team === currentPuzzle.matchData.scorecard.teams[0]) {
-            team1Players.push(playerData);
+          // Team assignment logic
+          const teamName = perf.team;
+          if (teamName === team1Name || teamName.includes(team1Name) || team1Name.includes(teamName)) {
+            team1Players.push(fallbackPlayer);
+          } else if (teamName === team2Name || teamName.includes(team2Name) || team2Name.includes(teamName)) {
+            team2Players.push(fallbackPlayer);
           } else {
-            team2Players.push(playerData);
+            if (team1Players.length <= team2Players.length) {
+              team1Players.push(fallbackPlayer);
+            } else {
+              team2Players.push(fallbackPlayer);
+            }
+          }
+          return;
+        }
+
+        // Create enhanced player object with feedback data
+        const enhancedPlayer = {
+          ...player,
+          key: playerKey, // ✅ USE ORIGINAL KEY for React uniqueness
+          originalKey: playerKey,
+          resolvedKey: resolvedKey,
+          name: player.fullName,
+          team: perf.team,
+          runs: perf.runs_in_match || 0,
+          wickets: perf.wickets_in_match || 0,
+          battingOrder: fallbackBattingOrder,
+          // Ensure we have all required feedback fields
+          country: player.country || "Unknown",
+          countryFlag: player.countryFlag || "🏳️",
+          role: player.role || "Player",
+          matches: player.matches || 0,
+        };
+
+        // Team assignment
+        const teamName = perf.team;
+        if (teamName === team1Name || teamName.includes(team1Name) || team1Name.includes(teamName)) {
+          team1Players.push(enhancedPlayer);
+        } else if (teamName === team2Name || teamName.includes(team2Name) || team2Name.includes(teamName)) {
+          team2Players.push(enhancedPlayer);
+        } else {
+          if (team1Players.length <= team2Players.length) {
+            team1Players.push(enhancedPlayer);
+          } else {
+            team2Players.push(enhancedPlayer);
           }
         }
       });
 
-      // DESIGN DECISION: Sort by batting order for realistic cricket presentation
-      team1Players.sort((a, b) => a.battingOrder - b.battingOrder);
-      team2Players.sort((a, b) => a.battingOrder - b.battingOrder);
+      console.log("🏏 Squad Processing Results:");
+      console.log(`Team 1 (${team1Name}): ${team1Players.length} players`);
+      console.log(`Team 2 (${team2Name}): ${team2Players.length} players`);
+      console.log("All performance keys:", Object.keys(performances));
 
-      return { 
-        team1: team1Players, 
+      return {
+        team1: team1Players,
         team2: team2Players,
-        team1Name: currentPuzzle.matchData.scorecard.teams[0],
-        team2Name: currentPuzzle.matchData.scorecard.teams[1]
+        team1Name,
+        team2Name,
+        error: null,
       };
     } catch (error) {
-      console.error("Error getting squad players:", error);
-      return { team1: [], team2: [] };
+      console.error("❌ Squad processing error:", error);
+      return {
+        team1: [],
+        team2: [],
+        team1Name: "",
+        team2Name: "",
+        error: error.message,
+      };
     }
-  };
+  }, [currentPuzzle, targetPlayer]);
 
-  /**
-   * Calculate batting order using cricket logic
-   * DESIGN DECISION: Use balls faced + runs to estimate batting position
-   */
-  const getBattingOrder = (playerKey, performances) => {
-    const perf = performances[playerKey];
-    if (!perf) return 11;
+  // ============================================================================
+  // ENHANCED FEEDBACK SYSTEM - Nationality, Role, and Matches comparison (CLEAN)
+  // ============================================================================
+  const generateEnhancedFeedback = (selectedPlayerKey, targetPlayerKey) => {
+    const selectedPlayer = playersData[selectedPlayerKey];
+    const targetPlayerData = playersData[targetPlayerKey];
 
-    const ballsFaced = perf.balls_faced || 0;
-    const runs = perf.runs_in_match || 0;
-
-    // Cricket heuristic: More balls faced + runs = higher batting order
-    if (ballsFaced > 30) return Math.min(Math.floor(runs / 15) + 1, 6); // Top order (1-6)
-    if (ballsFaced > 10) return 6 + Math.floor(ballsFaced / 8); // Middle order (6-8)
-    if (ballsFaced > 0) return 8 + Math.floor(ballsFaced / 3); // Lower order (8-10)
-    return 9 + Math.min(perf.wickets_in_match || 0, 2); // Bowlers (9-11)
-  };
-
-  /**
-   * Generate MOTM-specific feedback
-   * DESIGN DECISION: Focus on performance metrics relevant to MOTM selection
-   */
-  const generateMOTMFeedback = (guessPlayerKey, targetPlayerKey) => {
-    try {
-      const performances = currentPuzzle.matchData.playerPerformances;
-      const guessPerf = performances[guessPlayerKey];
-      const targetPerf = performances[targetPlayerKey];
-
-      if (!guessPerf || !targetPerf) {
-        console.error("Performance data not found for feedback generation");
-        return null;
-      }
-
-      const feedback = {};
-
-      MOTM_FEEDBACK_CONFIG.activeFields.forEach((field) => {
-        const fieldConfig = MOTM_FEEDBACK_CONFIG.compareFields[field];
-        if (!fieldConfig) return;
-
-        if (field === "battingOrder") {
-          const guessBattingOrder = getBattingOrder(guessPlayerKey, performances);
-          const targetBattingOrder = getBattingOrder(targetPlayerKey, performances);
-          feedback[field] = {
-            comparison: fieldConfig.compare(guessBattingOrder, targetBattingOrder),
-            value: guessBattingOrder,
-            label: fieldConfig.label,
-            icon: fieldConfig.icon,
-          };
-        } else if (field === "runsInMatch") {
-          const guessRuns = guessPerf.runs_in_match || 0;
-          const targetRuns = targetPerf.runs_in_match || 0;
-          feedback[field] = {
-            comparison: fieldConfig.compare(guessRuns, targetRuns),
-            value: guessRuns,
-            label: fieldConfig.label,
-            icon: fieldConfig.icon,
-          };
-        } else if (field === "wicketsInMatch") {
-          const guessWickets = guessPerf.wickets_in_match || 0;
-          const targetWickets = targetPerf.wickets_in_match || 0;
-          feedback[field] = {
-            comparison: fieldConfig.compare(guessWickets, targetWickets),
-            value: guessWickets,
-            label: fieldConfig.label,
-            icon: fieldConfig.icon,
-          };
-        }
-      });
-
-      return feedback;
-    } catch (error) {
-      console.error("Error generating MOTM feedback:", error);
-      return null;
-    }
-  };
-
-  /**
-   * Handle player selection with enhanced feedback
-   * DESIGN DECISION: Immediate visual feedback + stats revelation
-   */
-  const handlePlayerSelect = (playerKey) => {
-    if (!currentPuzzle) return;
-
-    const targetPlayer = getTargetPlayer();
-    if (!targetPlayer) return;
-
-    // DESIGN DECISION: Prevent duplicate selections
-    if (selectedPlayers.has(playerKey)) {
-      return; // Silent return - visual state already shows it's selected
+    if (!selectedPlayer || !targetPlayerData) {
+      return {
+        nationality: "❌",
+        role: "❌", 
+        matches: "❌"
+      };
     }
 
-    const feedback = generateMOTMFeedback(playerKey, targetPlayer.key);
-    const guessPlayer = playersData[playerKey];
+    // Enhanced feedback - ONLY the 3 new categories
+    const nationalityMatch = selectedPlayer.country === targetPlayerData.country;
+    const roleMatch = selectedPlayer.role === targetPlayerData.role;
 
-    if (!feedback || !guessPlayer) {
-      setGameError("Error processing guess!");
+    const selectedMatches = selectedPlayer.matches || 0;
+    const targetMatches = targetPlayerData.matches || 0;
+
+    let matchesIndicator = "❌";
+    if (selectedMatches === targetMatches) {
+      matchesIndicator = "✅";
+    } else if (selectedMatches < targetMatches) {
+      matchesIndicator = "🔼"; // Target has more matches
+    } else {
+      matchesIndicator = "🔽"; // Target has fewer matches
+    }
+
+    return {
+      nationality: nationalityMatch ? "✅" : "❌",
+      role: roleMatch ? "✅" : "❌", 
+      matches: matchesIndicator
+    };
+  };
+
+  const handlePlayerSelection = (selectedPlayer) => {
+    if (gameOver || gameWon || selectedPlayers.has(selectedPlayer.key)) {
       return;
     }
 
-    // DESIGN DECISION: Track both feedback history and selected players separately
-    const newFeedback = {
-      guessPlayer: playerKey,
-      guessPlayerName: guessPlayer.fullName,
-      feedback: feedback,
-      isCorrect: playerKey === targetPlayer.key,
-    };
+    console.log(`🎯 Player selected: ${selectedPlayer.name} (${selectedPlayer.key})`);
+    console.log(`🎯 Target player: ${targetPlayer?.fullName} (${targetPlayer?.key})`);
 
-    const newSquadFeedback = [...squadFeedback, newFeedback];
-    const newSelectedPlayers = new Set([...selectedPlayers, playerKey]);
+    // For feedback comparison, use the resolved key
+    const selectedKeyForComparison = selectedPlayer.resolvedKey || selectedPlayer.key;
 
-    setSquadFeedback(newSquadFeedback);
-    setSelectedPlayers(newSelectedPlayers);
+    // WIN CONDITION CHECK
+    if (selectedKeyForComparison === targetPlayer?.key) {
+      console.log("🏆 CORRECT! Player wins!");
 
-    // DESIGN DECISION: Check win/lose conditions after state update
-    if (playerKey === targetPlayer.key) {
+      const feedback = generateEnhancedFeedback(selectedKeyForComparison, targetPlayer.key);
+      const newFeedback = [
+        ...squadFeedback,
+        {
+          playerName: selectedPlayer.name,
+          isCorrect: true,
+          feedback,
+        },
+      ];
+
+      setSquadFeedback(newFeedback);
+      setSelectedPlayers(new Set([...selectedPlayers, selectedPlayer.key]));
       setGameWon(true);
       setGameOver(true);
-    } else if (newSquadFeedback.length >= PUZZLE_CONFIG.maxGuesses) {
+      return;
+    }
+
+    // INCORRECT GUESS - Generate enhanced feedback clues
+    const feedback = generateEnhancedFeedback(selectedKeyForComparison, targetPlayer.key);
+    const newFeedback = [
+      ...squadFeedback,
+      {
+        playerName: selectedPlayer.name,
+        isCorrect: false,
+        feedback,
+      },
+    ];
+
+    setSquadFeedback(newFeedback);
+    setSelectedPlayers(new Set([...selectedPlayers, selectedPlayer.key]));
+
+    // LOSS CONDITION CHECK
+    if (newFeedback.length >= STABLE_PUZZLE_CONFIG.maxGuesses) {
+      console.log("💀 GAME OVER! Used all guesses.");
       setGameOver(true);
     }
   };
 
-  /**
-   * Get player selection state for visual feedback
-   * DESIGN DECISION: Three distinct states for clear UX
-   */
-  const getPlayerState = (playerKey) => {
-    const targetPlayer = getTargetPlayer();
-
-    if (playerKey === targetPlayer?.key && gameWon) {
-      return "correct"; // SUPER JUICY: Gold celebration
-    }
-    if (selectedPlayers.has(playerKey)) {
-      return "incorrect"; // Red with X mark
-    }
-    return "unselected"; // Clean white with hover
-  };
-
-  /**
-   * Get revealed stats for a player
-   * DESIGN DECISION: Only show stats after player is guessed
-   */
-  const getPlayerStats = (playerKey) => {
-    if (!selectedPlayers.has(playerKey)) {
-      return "--"; // Placeholder for unguessed players
-    }
-
-    const performances = currentPuzzle.matchData?.playerPerformances;
-    const perf = performances?.[playerKey];
-    if (!perf) return "--";
-
-    // DESIGN DECISION: Show batting stats primarily, bowling if significant
-    const runs = perf.runs_in_match || 0;
-    const ballsFaced = perf.balls_faced || 0;
-    const wickets = perf.wickets_in_match || 0;
-    const boundaries = perf.boundaries || { fours: 0, sixes: 0 };
-
-    let statsString = "";
-
-    if (ballsFaced > 0) {
-      statsString = `${runs}${runs === perf.runs_in_match && ballsFaced === runs ? "*" : ""} (${ballsFaced}b`;
-      if (boundaries.fours > 0) statsString += `, ${boundaries.fours}×4`;
-      if (boundaries.sixes > 0) statsString += `, ${boundaries.sixes}×6`;
-      statsString += ")";
-    } else if (runs > 0) {
-      statsString = `${runs}*`;
-    }
-
-    if (wickets > 0) {
-      if (statsString) statsString += ", ";
-      statsString += `${wickets}w`;
-    }
-
-    return statsString || "0";
-  };
-
   // ============================================================================
-  // GAME PROGRESSION FUNCTIONS - Enhanced error handling
+  // GAME CONTROL FUNCTIONS - Puzzle progression and state management
   // ============================================================================
-
-  const nextPuzzle = () => {
-    try {
-      if (currentPuzzleIndex < PUZZLE_CONFIG.puzzles.length - 1) {
-        setCurrentPuzzleIndex(currentPuzzleIndex + 1);
-        resetPuzzleState();
-        setGameError(null);
-      }
-    } catch (error) {
-      setGameError(`Error moving to next puzzle: ${error.message}`);
-    }
-  };
-
   const resetPuzzleState = () => {
     setSquadFeedback([]);
     setSelectedPlayers(new Set());
@@ -414,14 +494,18 @@ const CricGuess = () => {
     setGameError(null);
   };
 
-  // ============================================================================
-  // RENDER FUNCTIONS - Enhanced with MOTM focus
-  // ============================================================================
+  const nextPuzzle = () => {
+    if (currentPuzzleIndex < STABLE_PUZZLE_CONFIG.puzzles.length - 1) {
+      setCurrentPuzzleIndex(currentPuzzleIndex + 1);
+      resetPuzzleState();
+    } else {
+      alert("🏆 Congratulations! You've completed all puzzles!");
+    }
+  };
 
-  /**
-   * Render cricket scorecard with full broadcast styling
-   * DESIGN DECISION: Complete cricket context for nostalgia
-   */
+  // ============================================================================
+  // RENDER FUNCTIONS - UI component rendering
+  // ============================================================================
   const renderScorecard = () => {
     if (!currentPuzzle?.matchData?.scorecard) return null;
 
@@ -429,249 +513,100 @@ const CricGuess = () => {
 
     return (
       <div className="scorecard">
-        <div className="match-header">
-          {scorecard.tournament || "Cricket Match"} • {scorecard.stage || ""}
+        {/* ✅ Main Puzzle Header */}
+        <div className="puzzle-main-header">
+          Guess the man of the match of this game
         </div>
+
+        {/* ✅ Match Title */}
         <div className="match-title">
           {scorecard.teams?.[0]} vs {scorecard.teams?.[1]}
         </div>
 
-        <div className="score-line">
-          <span className="team-name">
-            🏏 {scorecard.teams?.[0]}
-          </span>
-          <span className="score">
-            {scorecard.team_scores?.[scorecard.teams[0]]?.runs || 0}/
-            {scorecard.team_scores?.[scorecard.teams[0]]?.wickets || 0} 
-            ({scorecard.team_scores?.[scorecard.teams[0]]?.overs || "50.0"} ov)
-          </span>
+        {/* ✅ Venue and Date */}
+        <div className="venue-date">
+          {scorecard.venue} • {scorecard.date}
         </div>
 
-        <div className="score-line">
-          <span className="team-name">
-            🏏 {scorecard.teams?.[1]}
-          </span>
-          <span className="score">
-            {scorecard.team_scores?.[scorecard.teams[1]]?.runs || 0}/
-            {scorecard.team_scores?.[scorecard.teams[1]]?.wickets || 0} 
-            ({scorecard.team_scores?.[scorecard.teams[1]]?.overs || "50.0"} ov)
-          </span>
+        {/* ✅ Team Scores - INLINE FORMAT */}
+        <div className="team-scores-inline">
+          <div className="team-score-inline">
+            <span className="team-name-inline">{scorecard.teams?.[0]}</span>
+            <span className="score-inline">
+              {scorecard.team_scores?.[scorecard.teams?.[0]]?.runs || 0}/
+              {scorecard.team_scores?.[scorecard.teams?.[0]]?.wickets || 0}
+            </span>
+          </div>
+          <div className="vs-inline">vs</div>
+          <div className="team-score-inline">
+            <span className="team-name-inline">{scorecard.teams?.[1]}</span>
+            <span className="score-inline">
+              {scorecard.team_scores?.[scorecard.teams?.[1]]?.runs || 0}/
+              {scorecard.team_scores?.[scorecard.teams?.[1]]?.wickets || 0}
+            </span>
+          </div>
         </div>
 
-        <div className="match-result">
-          {scorecard.result || `${scorecard.winner} won`}
-        </div>
-
-        <div className="venue-info">
-          {scorecard.venue || "Cricket Ground"} • {scorecard.date || "Match Day"}
-        </div>
+        {/* ✅ REMOVED: Winner announcement and MOTM question */}
       </div>
     );
   };
 
-  /**
-   * Render squad with enhanced visual states
-   * DESIGN DECISION: Three distinct visual states for clear feedback
-   */
-  const renderSquadDiscovery = () => {
-    const { team1, team2, team1Name, team2Name } = getSquadPlayers();
-    const guessesUsed = squadFeedback.length;
-
-    if (team1.length === 0 && team2.length === 0) {
-      return (
-        <div className="squad-discovery-error">
-          <div className="text-red-600 text-sm">
-            Squad data not available for this match
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="squad-discovery">
-        <div className="discovery-header">
-          <h3 className="text-lg font-bold mb-2">
-            🏆 Select the Man of the Match from the Playing XIs
-          </h3>
-          <div className="text-sm text-gray-600 mb-4">
-            Guess {guessesUsed + 1} of {PUZZLE_CONFIG.maxGuesses} • 
-            Any player can be MOTM - batsmen, bowlers, all-rounders, wicket-keepers!
-          </div>
-        </div>
-
-        <div className="squads-container">
-          {/* Team 1 Squad */}
-          <div className="team-squad">
-            <div className="squad-header">🏏 {team1Name} Playing XI</div>
-            <div className="player-list">
-              {team1.map((player) => {
-                const playerState = getPlayerState(player.key);
-                const stats = getPlayerStats(player.key);
-
-                return (
-                  <div
-                    key={player.key}
-                    className={`player-item ${playerState === 'correct' ? 'correct' : ''} ${playerState === 'incorrect' ? 'guessed' : ''}`}
-                    onClick={() => !gameOver && playerState === 'unselected' && handlePlayerSelect(player.key)}
-                    style={{ 
-                      cursor: gameOver || playerState !== 'unselected' ? 'not-allowed' : 'pointer',
-                      // DESIGN DECISION: Extra spacing for MOTM celebration banner
-                      marginTop: playerState === 'correct' ? '25px' : '0',
-                      position: 'relative'
-                    }}
-                  >
-                    <div>
-                      <div className="player-name">
-                        {player.name}
-                        {player.isCaptain && <span className="captain-badge">C</span>}
-                        {player.isWicketkeeper && <span className="wicketkeeper-badge">WK</span>}
-                      </div>
-                      <div className="player-role">{player.role}</div>
-                    </div>
-                    <div className={`stats-${stats === '--' ? 'placeholder' : 'filled'}`}>
-                      {stats}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Team 2 Squad */}
-          <div className="team-squad">
-            <div className="squad-header">🏏 {team2Name} Playing XI</div>
-            <div className="player-list">
-              {team2.map((player) => {
-                const playerState = getPlayerState(player.key);
-                const stats = getPlayerStats(player.key);
-
-                return (
-                  <div
-                    key={player.key}
-                    className={`player-item ${playerState === 'correct' ? 'correct' : ''} ${playerState === 'incorrect' ? 'guessed' : ''}`}
-                    onClick={() => !gameOver && playerState === 'unselected' && handlePlayerSelect(player.key)}
-                    style={{ 
-                      cursor: gameOver || playerState !== 'unselected' ? 'not-allowed' : 'pointer',
-                      marginTop: playerState === 'correct' ? '25px' : '0',
-                      position: 'relative'
-                    }}
-                  >
-                    <div>
-                      <div className="player-name">
-                        {player.name}
-                        {player.isCaptain && <span className="captain-badge">C</span>}
-                        {player.isWicketkeeper && <span className="wicketkeeper-badge">WK</span>}
-                      </div>
-                      <div className="player-role">{player.role}</div>
-                    </div>
-                    <div className={`stats-${stats === '--' ? 'placeholder' : 'filled'}`}>
-                      {stats}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  /**
-   * Render feedback history with MOTM context
-   * DESIGN DECISION: Show progression of clues toward MOTM
-   */
-  const renderFeedbackHistory = () => {
+  // ============================================================================
+  // TABLE-STYLE FEEDBACK DISPLAY - Clean Column Headers (Option 2)
+  // ============================================================================
+  const renderFeedbackDisplay = () => {
     if (squadFeedback.length === 0) return null;
 
     return (
-      <div className="feedback-section">
+      <div className="feedback-container">
         <div className="feedback-header">
-          🧩 Your Guesses ({squadFeedback.length}/{PUZZLE_CONFIG.maxGuesses})
+          <h3>🔍 Your Guesses ({squadFeedback.length}/{STABLE_PUZZLE_CONFIG.maxGuesses})</h3>
         </div>
 
+        {/* TABLE HEADERS */}
+        <div className="feedback-table-header">
+          <div className="header-cell-name">Player Name</div>
+          <div className="header-cell">NAT</div>
+          <div className="header-cell">ROLE</div>
+          <div className="header-cell">MATCHES</div>
+        </div>
+
+        {/* SEPARATOR LINE */}
+        <div className="feedback-separator"></div>
+
+        {/* DATA ROWS */}
         {squadFeedback.map((feedback, index) => (
-          <div key={index} style={{ marginBottom: '15px' }}>
-            <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>
-              #{index + 1} {feedback.guessPlayerName} 
-              {feedback.isCorrect && <span style={{ color: '#16a34a' }}> ✅ MOTM!</span>}
-            </div>
-
-            <div className="clue-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-              {MOTM_FEEDBACK_CONFIG.activeFields.map((field) => {
-                const fb = feedback.feedback[field];
-                if (!fb) return null;
-
-                return (
-                  <div key={field} className="clue-box">
-                    <div className="clue-icon">{fb.icon}</div>
-                    <div className="clue-label">{fb.label}</div>
-                    <div className="clue-value">
-                      {fb.comparison}
-                      <div style={{ fontSize: '10px', color: '#6b7280', marginTop: '2px' }}>
-                        ({fb.value})
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+          <div key={index} className={`feedback-table-row ${feedback.isCorrect ? 'row-correct' : 'row-incorrect'}`}>
+            <div className="data-cell-name">Guess {index + 1}: {feedback.playerName}</div>
+            <div className="data-cell">{feedback.feedback.nationality}</div>
+            <div className="data-cell">{feedback.feedback.role}</div>
+            <div className="data-cell">{feedback.feedback.matches}</div>
           </div>
         ))}
 
-        <div className="clue-legend">
-          🔼 = Man of the Match had more | 🔽 = Man of the Match had less | ✅ = Same amount<br>
-          <strong>Remember:</strong> Any player can be Man of the Match - batsmen, bowlers, all-rounders, even wicket-keepers!
+        {/* LEGEND */}
+        <div className="feedback-legend-table">
+          ✅ = Match | ❌ = Different | 🔼 = MOTM had more | 🔽 = MOTM had less
         </div>
       </div>
     );
   };
 
-  /**
-   * Render game status with MOTM celebration
-   * DESIGN DECISION: Enhanced messaging for MOTM context
-   */
   const renderGameStatus = () => {
-    const targetPlayer = getTargetPlayer();
-    const targetPlayerName = targetPlayer?.fullName || "Unknown Player";
-
-    if (gameError) {
-      return (
-        <div className="status-error">
-          <div className="text-red-800 font-bold text-xl">⚠️ Game Error</div>
-          <div className="text-sm mt-2">{gameError}</div>
-          <div className="mt-4">
-            <button onClick={resetPuzzleState} className="btn btn-blue">
-              Try Again
-            </button>
-          </div>
-        </div>
-      );
-    }
-
     if (gameWon) {
       return (
         <div className="status-win">
-          <div className="text-green-800 font-bold text-xl">🏆 Brilliant!</div>
-          <div className="text-sm mt-2">
-            You found the Man of the Match <strong>{targetPlayerName}</strong> in{" "}
-            {squadFeedback.length} {squadFeedback.length === 1 ? 'try' : 'tries'}!
+          <div className="text-2xl mb-2">🏆 Congratulations!</div>
+          <div className="mb-3">
+            You found the Man of the Match: <strong>{targetPlayer?.fullName}</strong>
           </div>
-          {currentPuzzle?.trivia && (
-            <div className="mt-3 p-3 bg-green-50 rounded text-sm text-left">
-              <strong>Cricket Trivia:</strong> {currentPuzzle.trivia}
-            </div>
-          )}
-          <div className="mt-4 space-x-3">
-            <button onClick={resetPuzzleState} className="btn btn-blue">
-              Try Again
-            </button>
-            {currentPuzzleIndex < PUZZLE_CONFIG.puzzles.length - 1 && (
-              <button onClick={nextPuzzle} className="btn btn-green">
-                Next Puzzle →
-              </button>
-            )}
+          <div className="text-sm mb-4">
+            Solved in {squadFeedback.length} guess{squadFeedback.length !== 1 ? 'es' : ''}!
           </div>
+          <button onClick={nextPuzzle} className="btn btn-green">
+            Next Puzzle →
+          </button>
         </div>
       );
     }
@@ -679,25 +614,16 @@ const CricGuess = () => {
     if (gameOver && !gameWon) {
       return (
         <div className="status-lose">
-          <div className="text-red-800 font-bold text-xl">🎯 Close One!</div>
-          <div className="text-sm mt-2">
-            The Man of the Match was: <strong>{targetPlayerName}</strong>
+          <div className="text-2xl mb-2">💀 Game Over!</div>
+          <div className="mb-3">
+            The Man of the Match was: <strong>{targetPlayer?.fullName}</strong>
           </div>
-          {currentPuzzle?.trivia && (
-            <div className="mt-3 p-3 bg-red-50 rounded text-sm text-left">
-              <strong>Cricket Trivia:</strong> {currentPuzzle.trivia}
-            </div>
-          )}
-          <div className="mt-4 space-x-3">
-            <button onClick={resetPuzzleState} className="btn btn-blue">
-              Try Again
-            </button>
-            {currentPuzzleIndex < PUZZLE_CONFIG.puzzles.length - 1 && (
-              <button onClick={nextPuzzle} className="btn btn-orange">
-                Next Puzzle →
-              </button>
-            )}
+          <div className="text-sm mb-4">
+            Better luck next time!
           </div>
+          <button onClick={nextPuzzle} className="btn btn-blue">
+            Next Puzzle →
+          </button>
         </div>
       );
     }
@@ -705,10 +631,124 @@ const CricGuess = () => {
     return null;
   };
 
-  // ============================================================================
-  // MAIN RENDER - Complete MOTM game interface
-  // ============================================================================
+  const renderSquadDisplay = () => {
+    if (squadPlayers.error) {
+      return (
+        <div className="status-error">
+          <div className="text-red-600 mb-2">⚠️ Squad Loading Error</div>
+          <div className="text-sm">{squadPlayers.error}</div>
+        </div>
+      );
+    }
 
+    const isPlayerSelected = (player) => {
+      return selectedPlayers.has(player.key) || 
+             (currentPuzzle?.matchData?.playerPerformances && 
+              Object.keys(currentPuzzle.matchData.playerPerformances).some(perfKey => 
+                selectedPlayers.has(perfKey) && resolvePlayerKey(perfKey) === player.key
+              ));
+    };
+
+    const isPlayerCorrect = (player) => {
+      const keyForComparison = player.resolvedKey || player.key;
+      return gameWon && keyForComparison === targetPlayer?.key;
+    };
+
+    const getPlayerStateClass = (player) => {
+      if (isPlayerCorrect(player)) return "player-item-mobile player-correct";
+      if (isPlayerSelected(player)) return "player-item-mobile player-selected";
+      if (gameOver) return "player-item-mobile player-disabled";
+      return "player-item-mobile player-selectable";
+    };
+
+    const shouldShowStats = (player) => {
+      return gameOver || isPlayerSelected(player);
+    };
+
+    const getPlayerStats = (player) => {
+      if (!currentPuzzle?.matchData?.playerPerformances) return "0r 0bf 0w";
+
+      let performance = null;
+      const performances = currentPuzzle.matchData.playerPerformances;
+
+      if (performances[player.originalKey || player.key]) {
+        performance = performances[player.originalKey || player.key];
+      } else {
+        for (const [originalKey, perf] of Object.entries(performances)) {
+          if (resolvePlayerKey(originalKey) === player.resolvedKey) {
+            performance = perf;
+            break;
+          }
+        }
+      }
+
+      if (!performance) return "0r 0bf 0w";
+
+      const runs = performance.runs_in_match || 0;
+      const ballsFaced = performance.balls_faced || 0;
+      const wickets = performance.wickets_in_match || 0;
+
+      return `${runs}r ${ballsFaced}bf ${wickets}w`;
+    };
+
+    return (
+      <div className="squads-container-mobile">
+        {/* Team 1 */}
+        <div className="team-squad-mobile">
+          <div className="squad-header-mobile">
+            <div className="team-name-mobile">{squadPlayers.team1Name}</div>
+            <div className="player-count-mobile">({squadPlayers.team1.length} players)</div>
+          </div>
+          <div className="players-list-mobile">
+            {squadPlayers.team1.map((player) => (
+              <div
+                key={player.key} // ✅ Now using unique original key
+                className={getPlayerStateClass(player)}
+                onClick={() => !gameOver && handlePlayerSelection(player)}
+              >
+                <div className="player-info-mobile">
+                  <div className="player-name-mobile">{player.name}</div>
+                  <div className="player-role-mobile">{player.role}</div>
+                </div>
+                <div className={shouldShowStats(player) ? "stats-mobile-revealed" : "stats-mobile-hidden"}>
+                  {shouldShowStats(player) ? getPlayerStats(player) : ""}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Team 2 */}
+        <div className="team-squad-mobile">
+          <div className="squad-header-mobile">
+            <div className="team-name-mobile">{squadPlayers.team2Name}</div>
+            <div className="player-count-mobile">({squadPlayers.team2.length} players)</div>
+          </div>
+          <div className="players-list-mobile">
+            {squadPlayers.team2.map((player) => (
+              <div
+                key={player.key} // ✅ Now using unique original key
+                className={getPlayerStateClass(player)}
+                onClick={() => !gameOver && handlePlayerSelection(player)}
+              >
+                <div className="player-info-mobile">
+                  <div className="player-name-mobile">{player.name}</div>
+                  <div className="player-role-mobile">{player.role}</div>
+                </div>
+                <div className={shouldShowStats(player) ? "stats-mobile-revealed" : "stats-mobile-hidden"}>
+                  {shouldShowStats(player) ? getPlayerStats(player) : ""}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ============================================================================
+  // MAIN RENDER - Clean production interface
+  // ============================================================================
   if (!currentPuzzle) {
     return (
       <div className="page-background">
@@ -729,27 +769,26 @@ const CricGuess = () => {
 
   return (
     <div className="page-background">
-      {/* How to Play Popup - ENHANCED for MOTM */}
+      {/* How to Play Modal */}
       {showHowToPlay && (
         <div className="popup-overlay" onClick={() => setShowHowToPlay(false)}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <button className="popup-close" onClick={() => setShowHowToPlay(false)}>×</button>
             <h2 className="popup-title">How To Play</h2>
             <p className="popup-subtitle">
-              Guess the Man of the Match from the cricket scorecard in {PUZZLE_CONFIG.maxGuesses} tries.
+              Guess the Man of the Match from the cricket scorecard in {STABLE_PUZZLE_CONFIG.maxGuesses} tries.
             </p>
-            <div className="popup-rules">
+            <div className="popup-text">
               <ul>
-                <li>🏆 Look at the match scorecard and team squads</li>
-                <li>🎯 Select players from either team to get performance clues</li>
-                <li>📊 Use batting order, runs, and wickets clues to narrow down the MOTM</li>
-                <li>🔼 = MOTM had more | 🔽 = MOTM had less | ✅ = Same amount</li>
-                <li>⚡ Any player can be MOTM - batsmen, bowlers, all-rounders, wicket-keepers!</li>
-                <li>🎪 Find the MOTM in {PUZZLE_CONFIG.maxGuesses} tries for maximum points!</li>
+                <li>🏏 Study the cricket scorecard above</li>
+                <li>🔍 Use the team rosters to identify players</li>
+                <li>🎯 Click on players to make your guess</li>
+                <li>📊 Get feedback clues: Nationality, Role, Total Matches</li>
+                <li>🏆 Find the Man of the Match to win!</li>
               </ul>
             </div>
             <div className="popup-footer">
-              <p>Experience the nostalgia of cricket's greatest moments! 🏏</p>
+              Good luck, cricket detective! 🕵️‍♂️
             </div>
           </div>
         </div>
@@ -758,63 +797,35 @@ const CricGuess = () => {
       <div className="game-container">
         {/* Header */}
         <div className="header-section">
-          <h1 className="text-3xl font-bold text-center text-blue-600">🏏 CricGuess</h1>
-          <button className="how-to-play-btn" onClick={() => setShowHowToPlay(true)}>
+          <h1 className="text-3xl font-bold text-blue-600 text-center mb-4">🏏 CricGuess</h1>
+          <button 
+            onClick={() => setShowHowToPlay(true)} 
+            className="how-to-play-btn"
+          >
             How to Play
           </button>
         </div>
 
-        {/* Debug Info - ENHANCED for MOTM mode */}
-        {FEATURES.showDebugInfo && (
-          <div className="debug-info">
-            <div className="text-xs text-gray-500 text-center mb-2">
-              🔧 Mode: {FEATURES.useManOfTheMatch ? "Man of the Match" : "Any Player"} | 
-              Puzzle {currentPuzzleIndex + 1}/{PUZZLE_CONFIG.puzzles.length} | 
-              Max Guesses: {PUZZLE_CONFIG.maxGuesses}
-            </div>
-          </div>
-        )}
-
-        {/* Puzzle Header with MOTM Focus */}
-        <div className="text-center mb-4">
-          <div className="puzzle-hint">🏆 Guess the Man of the Match!</div>
-          <div className="text-sm text-gray-600">
-            Puzzle {currentPuzzleIndex + 1} of {PUZZLE_CONFIG.puzzles.length}
-          </div>
-          {!gameOver && (
-            <div className="guess-counter">
-              Guess {squadFeedback.length + 1} of {PUZZLE_CONFIG.maxGuesses}
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill" 
-                  style={{ width: `${(squadFeedback.length / PUZZLE_CONFIG.maxGuesses) * 100}%` }}
-                ></div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Cricket Scorecard - Full broadcast style */}
+        {/* Cricket Scorecard */}
         {renderScorecard()}
 
         {/* Game Status */}
         {renderGameStatus()}
 
-        {/* Squad Discovery Interface */}
-        {!gameOver && renderSquadDiscovery()}
+        {/* Feedback Display */}
+        {renderFeedbackDisplay()}
 
-        {/* Feedback History */}
-        {renderFeedbackHistory()}
+        {/* Squad Display */}
+        {renderSquadDisplay()}
 
-        {/* Footer with version info */}
-        <div className="mt-8 text-center text-xs text-gray-400">
-          <div>Players in database: {Object.keys(playersData).length}</div>
-          <div>Match puzzles: {PUZZLE_CONFIG.puzzles.length}</div>
-          <div className="mt-1">🏏 Built for cricket lovers</div>
-          <div className="mt-1 text-xs">
-            Version: Man of the Match Discovery v3.0
+        {/* Debug info */}
+        {STABLE_FEATURES.showDebugInfo && (
+          <div className="mt-6 text-xs text-gray-500 text-center">
+            Debug: Puzzle {currentPuzzleIndex + 1}/{STABLE_PUZZLE_CONFIG.puzzles.length} | 
+            Target: {targetPlayer?.fullName} ({targetPlayer?.key}) | 
+            Guesses: {squadFeedback.length}/{STABLE_PUZZLE_CONFIG.maxGuesses}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
