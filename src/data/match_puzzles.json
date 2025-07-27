@@ -8,10 +8,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Royal Challengers Bangalore",
-            "Kolkata Knight Riders"
-          ],
+          "teams": ["Royal Challengers Bangalore", "Kolkata Knight Riders"],
           "venue": "M Chinnaswamy Stadium",
           "date": "2008/04/18",
           "season": "2007/08",
@@ -327,10 +324,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "New Zealand",
-            "India"
-          ],
+          "teams": ["New Zealand", "India"],
           "venue": "McLean Park, Napier",
           "date": "2002-12-29",
           "season": "2001/02",
@@ -646,10 +640,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Kings XI Punjab",
-            "Chennai Super Kings"
-          ],
+          "teams": ["Kings XI Punjab", "Chennai Super Kings"],
           "venue": "Punjab Cricket Association Stadium, Mohali",
           "date": "2008/04/19",
           "season": "2007/08",
@@ -1155,16 +1146,29 @@
             },
             "played_in_match": true
           },
-          "SHOAIBMALIK": {
-            "full_name": "Shoaib Malik",
+          "INZAMAMULHAQ": {
+            "full_name": "Inzamam-ul-Haq",
             "team": "Pakistan",
-            "runs_in_match": 86,
-            "wickets_in_match": 3,
-            "balls_faced": 104,
-            "balls_bowled": 60,
+            "runs_in_match": 35,
+            "wickets_in_match": 0,
+            "balls_faced": 42,
+            "balls_bowled": 0,
+            "boundaries": {
+              "fours": 4,
+              "sixes": 0
+            },
+            "played_in_match": true
+          },
+          "YOUNISKHAN": {
+            "full_name": "Younis Khan",
+            "team": "Pakistan",
+            "runs_in_match": 28,
+            "wickets_in_match": 0,
+            "balls_faced": 35,
+            "balls_bowled": 0,
             "boundaries": {
               "fours": 3,
-              "sixes": 1
+              "sixes": 0
             },
             "played_in_match": true
           },
@@ -1177,6 +1181,19 @@
             "balls_bowled": 0,
             "boundaries": {
               "fours": 7,
+              "sixes": 1
+            },
+            "played_in_match": true
+          },
+          "SHOAIBMALIK": {
+            "full_name": "Shoaib Malik",
+            "team": "Pakistan",
+            "runs_in_match": 86,
+            "wickets_in_match": 3,
+            "balls_faced": 104,
+            "balls_bowled": 60,
+            "boundaries": {
+              "fours": 3,
               "sixes": 1
             },
             "played_in_match": true
@@ -1258,10 +1275,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Delhi Daredevils",
-            "Rajasthan Royals"
-          ],
+          "teams": ["Delhi Daredevils", "Rajasthan Royals"],
           "venue": "Feroz Shah Kotla",
           "date": "2008/04/19",
           "season": "2007/08",
@@ -1577,10 +1591,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Australia",
-            "Sri Lanka"
-          ],
+          "teams": ["Australia", "Sri Lanka"],
           "venue": "Adelaide Oval",
           "date": "2006-02-10",
           "season": "2005/06",
@@ -1909,10 +1920,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Mumbai Indians",
-            "Royal Challengers Bangalore"
-          ],
+          "teams": ["Mumbai Indians", "Royal Challengers Bangalore"],
           "venue": "Wankhede Stadium",
           "date": "2008/04/20",
           "season": "2007/08",
@@ -2215,10 +2223,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Bangladesh",
-            "Australia"
-          ],
+          "teams": ["Bangladesh", "Australia"],
           "venue": "Bundaberg Rum Stadium, Cairns",
           "date": "2003-08-02",
           "season": "2002/03",
@@ -2508,10 +2513,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Rajasthan Royals",
-            "Kings XI Punjab"
-          ],
+          "teams": ["Rajasthan Royals", "Kings XI Punjab"],
           "venue": "Sawai Mansingh Stadium",
           "date": "2008/04/21",
           "season": "2007/08",
@@ -2801,10 +2803,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Zimbabwe",
-            "West Indies"
-          ],
+          "teams": ["Zimbabwe", "West Indies"],
           "venue": "Harare Sports Club",
           "date": "2003-11-30",
           "season": "2002/03",
@@ -3081,10 +3080,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Deccan Chargers",
-            "Delhi Daredevils"
-          ],
+          "teams": ["Deccan Chargers", "Delhi Daredevils"],
           "venue": "Rajiv Gandhi International Stadium, Uppal",
           "date": "2008/04/22",
           "season": "2007/08",
@@ -3400,10 +3396,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "New Zealand",
-            "India"
-          ],
+          "teams": ["New Zealand", "India"],
           "venue": "Westpac Stadium, Wellington",
           "date": "2003-01-08",
           "season": "2002/03",
@@ -3719,10 +3712,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Chennai Super Kings",
-            "Mumbai Indians"
-          ],
+          "teams": ["Chennai Super Kings", "Mumbai Indians"],
           "venue": "MA Chidambaram Stadium, Chepauk",
           "date": "2008/04/23",
           "season": "2007/08",
@@ -4038,10 +4028,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Bangladesh",
-            "England"
-          ],
+          "teams": ["Bangladesh", "England"],
           "venue": "Bangabandhu National Stadium, Dhaka",
           "date": "2003-11-10",
           "season": "2002/03",
@@ -4344,10 +4331,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Deccan Chargers",
-            "Rajasthan Royals"
-          ],
+          "teams": ["Deccan Chargers", "Rajasthan Royals"],
           "venue": "Rajiv Gandhi International Stadium, Uppal",
           "date": "2008/04/24",
           "season": "2007/08",
@@ -4650,10 +4634,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Kings XI Punjab",
-            "Mumbai Indians"
-          ],
+          "teams": ["Kings XI Punjab", "Mumbai Indians"],
           "venue": "Punjab Cricket Association Stadium, Mohali",
           "date": "2008/04/25",
           "season": "2007/08",
@@ -4943,10 +4924,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Royal Challengers Bangalore",
-            "Rajasthan Royals"
-          ],
+          "teams": ["Royal Challengers Bangalore", "Rajasthan Royals"],
           "venue": "M Chinnaswamy Stadium",
           "date": "2008/04/26",
           "season": "2007/08",
@@ -5249,10 +5227,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "New Zealand",
-            "India"
-          ],
+          "teams": ["New Zealand", "India"],
           "venue": "Westpac Stadium, Wellington",
           "date": "2003-01-08",
           "season": "2002/03",
@@ -5568,10 +5543,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "New Zealand",
-            "India"
-          ],
+          "teams": ["New Zealand", "India"],
           "venue": "McLean Park, Napier",
           "date": "2002-12-29",
           "season": "2001/02",
@@ -5887,10 +5859,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Australia",
-            "Sri Lanka"
-          ],
+          "teams": ["Australia", "Sri Lanka"],
           "venue": "Adelaide Oval",
           "date": "2006-02-10",
           "season": "2005/06",
@@ -6219,10 +6188,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Zimbabwe",
-            "West Indies"
-          ],
+          "teams": ["Zimbabwe", "West Indies"],
           "venue": "Harare Sports Club",
           "date": "2003-11-30",
           "season": "2002/03",
@@ -6499,10 +6465,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Bangladesh",
-            "England"
-          ],
+          "teams": ["Bangladesh", "England"],
           "venue": "Bangabandhu National Stadium, Dhaka",
           "date": "2003-11-10",
           "season": "2002/03",
@@ -6805,10 +6768,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Sri Lanka",
-            "Pakistan"
-          ],
+          "teams": ["Sri Lanka", "Pakistan"],
           "venue": "National Stadium",
           "date": "2004-10-06",
           "season": "2003/04",
@@ -7098,10 +7058,7 @@
       "puzzleDescription": "Guess the Player of the Match",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Bangladesh",
-            "Australia"
-          ],
+          "teams": ["Bangladesh", "Australia"],
           "venue": "Bundaberg Rum Stadium, Cairns",
           "date": "2003-08-02",
           "season": "2002/03",

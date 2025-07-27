@@ -1,20 +1,23 @@
 /*
- * CricGuess - FORMAT-SPECIFIC ENHANCED FEEDBACK SYSTEM
- *
- * MAJOR UPDATES:
- * =============
- * ✅ 1. Updated to use format-specific player database (updatedplayers.json)
- * ✅ 2. Fixed generateEnhancedFeedback for IPL/ODI format-specific stats
- * ✅ 3. Added puzzle format detection (IPL vs ODI)
- * ✅ 4. Enhanced player key mapping for first 3 puzzles
- * ✅ 5. Format-specific UI headers and feedback display
- * ✅ 6. Comprehensive fallback system for missing players
- *
- * PUZZLE COVERAGE:
- * ===============
- * 🎯 Puzzle 1: MCCULLUM (IPL) - RCB vs KKR
- * 🎯 Puzzle 2: VSEHWAG (ODI) - NZ vs IND
- * 🎯 Puzzle 3: HUSSEY (IPL) - KXIP vs CSK
+ * CricGuess - COMPLETE ENHANCED VERSION WITH RESTORED DATA PROCESSING
+ * 
+ * ENHANCED FEATURES PRESERVED:
+ * ============================
+ * 🎨 Team-specific colors for authentic cricket branding
+ * 📺 Professional TV broadcast scorecard design
+ * 🎉 Success/Failure overlays with celebrations and trivia
+ * 📤 Native share functionality (Wordle-style)
+ * 🔍 Feedback system moved to top for persistent visibility
+ * ✨ Enhanced visual feedback and animations
+ * 🏏 Authentic cricket team color schemes
+ * 
+ * CRITICAL FIXES RESTORED:
+ * ========================
+ * 🔧 Enhanced squad processing using match_puzzles.json playerPerformances data
+ * 🎯 Smart feedback generation with Pakistani placeholder player support  
+ * 🏏 Format-specific stat comparison logic for ODI vs IPL matches
+ * 🔍 Multi-strategy player key resolution with fallback handling
+ * 📊 Comprehensive debug logging for troubleshooting
  */
 
 import React, { useState, useMemo } from "react";
@@ -23,13 +26,12 @@ import matchPuzzlesData from "./data/match_puzzles.json";
 import "./App.css";
 
 // ============================================================================
-// STABLE CONFIG - Performance optimized, moved outside component
+// STABLE CONFIG - Performance optimized
 // ============================================================================
-
 const STABLE_FEATURES = {
   useSquadDiscovery: true,
   useManOfTheMatch: true,
-  showDebugInfo: false,
+  showDebugInfo: true, // RESTORED: Enable debug logging
   maxGuesses: 3,
   enhancedMobileLayout: true,
   hidePlayerStats: true,
@@ -44,27 +46,71 @@ const STABLE_PUZZLE_CONFIG = {
 };
 
 // ============================================================================
-// PUZZLE FORMAT DETECTION - Critical for format-specific feedback
+// PUZZLE FORMAT DETECTION - Smart team-based detection
 // ============================================================================
-const getPuzzleFormat = (puzzleId) => {
-  const formatMap = {
-    1: "IPL", // Puzzle 1: RCB vs KKR
-    2: "ODI", // Puzzle 2: NZ vs IND
-    3: "IPL", // Puzzle 3: KXIP vs CSK
-    4: "IPL", // Future puzzles...
-    5: "ODI",
-  };
-  return formatMap[puzzleId] || "IPL";
+const getPuzzleFormat = (puzzle) => {
+  if (!puzzle?.matchData?.scorecard?.teams) {
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: No teams data, defaulting to IPL format");
+    }
+    return "IPL";
+  }
+
+  const teams = puzzle.matchData.scorecard.teams;
+  if (STABLE_FEATURES.showDebugInfo) {
+    console.log("🔍 DEBUG: Format detection for teams:", teams);
+  }
+
+  const internationalTeams = [
+    "India", "Pakistan", "Sri Lanka", "Australia", "England", 
+    "New Zealand", "South Africa", "West Indies", "Bangladesh", 
+    "Zimbabwe", "Afghanistan", "Ireland", "Scotland", "Netherlands"
+  ];
+
+  const iplTeams = [
+    "Mumbai Indians", "Chennai Super Kings", "Royal Challengers Bangalore",
+    "Kolkata Knight Riders", "Delhi Daredevils", "Delhi Capitals", 
+    "Rajasthan Royals", "Kings XI Punjab", "Punjab Kings",
+    "Sunrisers Hyderabad", "Deccan Chargers", "Gujarat Lions",
+    "Rising Pune Supergiant", "Kochi Tuskers Kerala", "Pune Warriors India",
+    "Lucknow Super Giants", "Gujarat Titans"
+  ];
+
+  const isInternationalMatch = teams.every(team => 
+    internationalTeams.some(intlTeam => 
+      team.toLowerCase().includes(intlTeam.toLowerCase())
+    )
+  );
+
+  const isIPLMatch = teams.some(team => 
+    iplTeams.some(iplTeam => 
+      team.toLowerCase().includes(iplTeam.toLowerCase()) ||
+      iplTeam.toLowerCase().includes(team.toLowerCase())
+    )
+  );
+
+  let detectedFormat;
+  if (isInternationalMatch) {
+    detectedFormat = "ODI";
+  } else if (isIPLMatch) {
+    detectedFormat = "IPL";
+  } else {
+    detectedFormat = "IPL";
+  }
+
+  if (STABLE_FEATURES.showDebugInfo) {
+    console.log("🔍 DEBUG: Format detected:", detectedFormat, "for teams:", teams);
+  }
+
+  return detectedFormat;
 };
 
 // ============================================================================
-// COMPREHENSIVE PLAYER KEY MAPPING - First 3 puzzles focus
+// ENHANCED PLAYER KEY MAPPING - Multi-strategy resolution
 // ============================================================================
 const PLAYER_KEY_MAPPING = {};
 
-// Create comprehensive mapping from short keys to full keys
 Object.keys(playersData).forEach((fullKey) => {
-  // Try different substring lengths to catch more variations
   for (let i = 1; i <= 4; i++) {
     if (fullKey.length > i) {
       const shortKey = fullKey.substring(i);
@@ -75,116 +121,107 @@ Object.keys(playersData).forEach((fullKey) => {
   }
 });
 
-// CRITICAL: Manual mappings for first 3 puzzles
 const MANUAL_MAPPINGS = {
-  // Puzzle 1 (IPL: RCB vs KKR)
   MCCULLUM: "BBMCCULLUM",
-  GANGULY: "SCGANGULY",
-  DRAVID: "RDRAVID",
-  LAXMAN: "VVSLAXMAN",
-  HAYDEN: "MLHAYDEN",
-  HARBHAJAN: "HARBHAJANSINGH",
-  ZAHEER: "ZKHAN",
-
-  // Puzzle 2 (ODI: NZ vs IND)
-  SEHWAG: "VSEHWAG",
-  FLEMING: "SPFLEMING",
-  ASTLE: "NJASTLE",
-  SINCLAIR: "MSSINCLAIR",
-  VINCENT: "LVINCENT",
-  MCMILLAN: "CDMCMILLAN",
-  ORAM: "JDPORAM",
-  MILLS: "KDMILLS",
-  VETTORI: "DLVETTORI",
-  TUFFEY: "DRTUFFEY",
-  HITCHCOCK: "PAHITCHCOCK",
-  BANGAR: "SBBANGAR",
-  NEHRA: "ANEHRA",
-  SRINATH: "JSRINATH",
-
-  // Puzzle 3 (IPL: KXIP vs CSK)
-  HUSSEY: "HUSSEY", // Already correct format
-  DHONI: "DHONI", // Already correct format
-  RAINA: "RAINA", // Already correct format
-  MORKEL: "MORKEL", // Already correct format
-  MURALITHARAN: "MURALITHARAN", // Already correct format
-  JADEJA: "JADEJA", // Already correct format
-  BADRINATH: "BADRINATH", // Already correct format
-  BALAJI: "BALAJI", // Already correct format
-  GONY: "GONY", // Already correct format
+  VSEHWAG: "VSEHWAG", 
+  HUSSEY: "MEHUSSEY",
+  SHOAIBMALIK: "SHOAIBMALIK",
 };
 
-// Apply manual mappings (these override automatic mappings)
 Object.assign(PLAYER_KEY_MAPPING, MANUAL_MAPPINGS);
 
-console.log(
-  "🔑 Player Key Mapping initialized for first 3 puzzles:",
-  Object.keys(PLAYER_KEY_MAPPING).length,
-  "mappings",
-);
+// ============================================================================
+// TEAM COLOR UTILITY
+// ============================================================================
+const getTeamColorClass = (teamName) => {
+  const teamColors = {
+    'Mumbai Indians': 'team-colors-mumbai',
+    'Chennai Super Kings': 'team-colors-chennai',
+    'Royal Challengers Bangalore': 'team-colors-rcb',
+    'Kolkata Knight Riders': 'team-colors-kkr',
+    'Delhi Daredevils': 'team-colors-delhi',
+    'Delhi Capitals': 'team-colors-delhi',
+    'Kings XI Punjab': 'team-colors-punjab',
+    'Punjab Kings': 'team-colors-punjab',
+    'Rajasthan Royals': 'team-colors-rajasthan',
+    'Sunrisers Hyderabad': 'team-colors-sunrisers',
+    'Lucknow Super Giants': 'team-colors-lucknow',
+    'Gujarat Titans': 'team-colors-gujarat',
+    'India': 'team-colors-india',
+    'Pakistan': 'team-colors-pakistan',
+    'Sri Lanka': 'team-colors-srilanka',
+    'Australia': 'team-colors-australia',
+    'England': 'team-colors-england',
+    'New Zealand': 'team-colors-newzealand'
+  };
+
+  return teamColors[teamName] || 'team-colors-rcb';
+};
 
 const CricGuess = () => {
   // ============================================================================
-  // GAME STATE MANAGEMENT - Clean and minimal
+  // GAME STATE MANAGEMENT
   // ============================================================================
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
   const [gameWon, setGameWon] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [gameError, setGameError] = useState(null);
   const [squadFeedback, setSquadFeedback] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState(new Set());
 
   // ============================================================================
-  // BULLETPROOF PLAYER KEY RESOLUTION - Enhanced for first 3 puzzles
+  // ENHANCED PLAYER KEY RESOLUTION - Multi-strategy with debug logging
   // ============================================================================
   const resolvePlayerKey = (puzzleKey) => {
-    console.log(`🔍 Resolving key: "${puzzleKey}"`);
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: Player key resolution:", puzzleKey);
+    }
 
-    // Strategy 1: Direct lookup first
+    // Strategy 1: Direct match
     if (playersData[puzzleKey]) {
-      console.log(`✅ Direct match found: ${puzzleKey}`);
+      if (STABLE_FEATURES.showDebugInfo) {
+        console.log("🔍 DEBUG: Direct match found:", puzzleKey);
+      }
       return puzzleKey;
     }
 
-    // Strategy 2: Manual mapping lookup (highest priority)
+    // Strategy 2: Manual mapping
     if (PLAYER_KEY_MAPPING[puzzleKey]) {
       const mappedKey = PLAYER_KEY_MAPPING[puzzleKey];
       if (playersData[mappedKey]) {
-        console.log(`🔑 Manual mapping: ${puzzleKey} -> ${mappedKey}`);
+        if (STABLE_FEATURES.showDebugInfo) {
+          console.log("🔍 DEBUG: Manual mapping found:", puzzleKey, "→", mappedKey);
+        }
         return mappedKey;
       }
     }
 
-    // Strategy 3: Dynamic substring matching (fallback)
+    // Strategy 3: Substring matching
     for (const fullKey of Object.keys(playersData)) {
       for (let i = 1; i <= 4; i++) {
         if (fullKey.length > i && fullKey.substring(i) === puzzleKey) {
-          console.log(`🔗 Dynamic mapping: ${puzzleKey} -> ${fullKey}`);
+          if (STABLE_FEATURES.showDebugInfo) {
+            console.log("🔍 DEBUG: Substring match found:", puzzleKey, "→", fullKey);
+          }
           return fullKey;
         }
       }
     }
 
-    // Strategy 4: Case variations
-    const upperKey = puzzleKey.toUpperCase();
-    if (playersData[upperKey]) {
-      console.log(`📝 Case variation match: ${puzzleKey} -> ${upperKey}`);
-      return upperKey;
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: No player key resolution found for:", puzzleKey);
     }
-
-    console.log(`❌ UNRESOLVED: "${puzzleKey}" - no mapping found`);
     return null;
   };
 
   // ============================================================================
-  // MEMOIZED CURRENT PUZZLE - Prevents unnecessary re-processing
+  // MEMOIZED CURRENT PUZZLE
   // ============================================================================
   const currentPuzzle = useMemo(() => {
-    if (
-      !STABLE_PUZZLE_CONFIG.puzzles ||
-      STABLE_PUZZLE_CONFIG.puzzles.length === 0
-    ) {
+    if (!STABLE_PUZZLE_CONFIG.puzzles || STABLE_PUZZLE_CONFIG.puzzles.length === 0) {
       setGameError("No puzzles found in match_puzzles.json");
       return null;
     }
@@ -195,17 +232,14 @@ const CricGuess = () => {
     }
 
     const puzzle = STABLE_PUZZLE_CONFIG.puzzles[currentPuzzleIndex];
-    console.log(
-      "🧩 Loading puzzle:",
-      puzzle.id,
-      "Target:",
-      puzzle.targetPlayer,
-    );
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: Current puzzle loaded:", puzzle.id, "Target:", puzzle.targetPlayer);
+    }
     return puzzle;
   }, [currentPuzzleIndex]);
 
   // ============================================================================
-  // MEMOIZED TARGET PLAYER - Enhanced resolution with multiple strategies
+  // MEMOIZED TARGET PLAYER
   // ============================================================================
   const targetPlayer = useMemo(() => {
     if (!currentPuzzle) return null;
@@ -213,65 +247,52 @@ const CricGuess = () => {
     try {
       let targetPlayerKey = null;
 
-      // Strategy 1: Direct key resolution
+      // Strategy 1: Direct resolution
       const directKey = resolvePlayerKey(currentPuzzle.targetPlayer);
       if (directKey && playersData[directKey]) {
         targetPlayerKey = directKey;
-        console.log(
-          `✅ Direct resolution: ${currentPuzzle.targetPlayer} -> ${targetPlayerKey}`,
-        );
       }
 
-      // Strategy 2: Match against Player of the Match name
-      if (
-        !targetPlayerKey &&
-        currentPuzzle.matchData?.scorecard?.player_of_match
-      ) {
-        const pomName =
-          currentPuzzle.matchData.scorecard.player_of_match.toUpperCase();
-        console.log(`🎯 Searching for MOTM: "${pomName}"`);
-
-        // Try to find player by full name match
+      // Strategy 2: Player of the Match lookup
+      if (!targetPlayerKey && currentPuzzle.matchData?.scorecard?.player_of_match) {
+        const pomName = currentPuzzle.matchData.scorecard.player_of_match.toUpperCase();
         const foundPlayer = Object.entries(playersData).find(
           ([key, player]) => {
             return player.fullName && player.fullName.toUpperCase() === pomName;
-          },
+          }
         );
 
         if (foundPlayer) {
           targetPlayerKey = foundPlayer[0];
-          console.log(`🎯 MOTM name match: ${pomName} -> ${targetPlayerKey}`);
         }
       }
 
-      // Strategy 3: Use original target player key as fallback
+      // Strategy 3: Fallback to puzzle target
       if (!targetPlayerKey) {
         targetPlayerKey = currentPuzzle.targetPlayer;
-        console.log(
-          "⚠️ Using original target key as fallback:",
-          targetPlayerKey,
-        );
       }
 
       const targetPlayerData = playersData[targetPlayerKey];
       if (!targetPlayerData) {
-        console.error(
-          "❌ Target player not found in players.json:",
-          targetPlayerKey,
-        );
+        if (STABLE_FEATURES.showDebugInfo) {
+          console.log("🔍 DEBUG: Target player not found:", targetPlayerKey);
+        }
         return { key: targetPlayerKey, fullName: "Unknown Player" };
       }
 
-      console.log("✅ Target player resolved:", targetPlayerData.fullName);
+      if (STABLE_FEATURES.showDebugInfo) {
+        console.log("🔍 DEBUG: Target player resolved:", targetPlayerKey, "→", targetPlayerData.fullName);
+      }
+
       return { ...targetPlayerData, key: targetPlayerKey };
     } catch (error) {
-      console.error("❌ Error getting target player:", error);
+      console.error("Error getting target player:", error);
       return { key: "ERROR", fullName: "Unknown Player" };
     }
   }, [currentPuzzle]);
 
   // ============================================================================
-  // MEMOIZED SQUAD PROCESSING - Enhanced error handling and team assignment
+  // ENHANCED SQUAD PROCESSING - Using match_puzzles.json playerPerformances for accurate team assignment
   // ============================================================================
   const squadPlayers = useMemo(() => {
     if (!currentPuzzle || !targetPlayer) {
@@ -299,124 +320,65 @@ const CricGuess = () => {
       const scorecard = currentPuzzle.matchData.scorecard;
       const team1Name = scorecard?.teams?.[0] || "Team 1";
       const team2Name = scorecard?.teams?.[1] || "Team 2";
-      const currentFormat = getPuzzleFormat(currentPuzzle.id);
+      const currentFormat = getPuzzleFormat(currentPuzzle);
+
+      if (STABLE_FEATURES.showDebugInfo) {
+        console.log("🔍 DEBUG: Squad processing - Teams:", team1Name, "vs", team2Name);
+        console.log("🔍 DEBUG: Performance data entries:", Object.keys(performances).length);
+      }
 
       const team1Players = [];
       const team2Players = [];
-      let playerIndex = 0;
 
+      // Enhanced squad processing using match_puzzles.json playerPerformances for accurate team assignment
       Object.entries(performances).forEach(([playerKey, perf]) => {
-        const resolvedKey = resolvePlayerKey(playerKey);
-        const player = resolvedKey ? playersData[resolvedKey] : null;
+        let resolvedKey = null;
+        let player = null;
 
-        playerIndex++;
-        const fallbackBattingOrder = playerIndex;
-
-        if (!player) {
-          // Create fallback player with format-specific structure
-          const fallbackPlayer = {
-            key: playerKey, // ✅ USE ORIGINAL KEY for uniqueness
-            originalKey: playerKey,
-            resolvedKey: null,
-            name:
-              playerKey.charAt(0).toUpperCase() +
-              playerKey.slice(1).toLowerCase(),
-            team: perf.team,
-            role: "Player",
-            runs: perf.runs_in_match || 0,
-            wickets: perf.wickets_in_match || 0,
-            battingOrder: fallbackBattingOrder,
-            isCaptain: false,
-            isWicketkeeper: false,
-            // Add format-specific fallback data
-            country: "Unknown",
-            countryFlag: "🏳️",
-            iplMatches: 0,
-            iplRuns: 0,
-            iplWickets: 0,
-            odiMatches: 0,
-            odiRuns: 0,
-            odiWickets: 0,
-            teams: "Unknown",
-            notable: "Missing player data",
-          };
-
-          // Team assignment logic
-          const teamName = perf.team;
-          if (
-            teamName === team1Name ||
-            teamName.includes(team1Name) ||
-            team1Name.includes(teamName)
-          ) {
-            team1Players.push(fallbackPlayer);
-          } else if (
-            teamName === team2Name ||
-            teamName.includes(team2Name) ||
-            team2Name.includes(teamName)
-          ) {
-            team2Players.push(fallbackPlayer);
-          } else {
-            if (team1Players.length <= team2Players.length) {
-              team1Players.push(fallbackPlayer);
-            } else {
-              team2Players.push(fallbackPlayer);
-            }
+        // Puzzle 5 special case: Don't resolve KOHLI to Virat Kohli, use T Kohli from match data
+        if (currentPuzzle.id === 5 && playerKey === 'KOHLI') {
+          resolvedKey = null; // Force use of match data
+          player = null;
+          if (STABLE_FEATURES.showDebugInfo) {
+            console.log("🔍 DEBUG: Puzzle 5 - Using T Kohli from match data, not resolving to Virat Kohli");
           }
-          return;
+        } else {
+          resolvedKey = resolvePlayerKey(playerKey);
+          player = resolvedKey ? playersData[resolvedKey] : null;
         }
 
-        // Create enhanced player object with format-specific feedback data
-        const enhancedPlayer = {
-          ...player,
-          key: playerKey, // ✅ USE ORIGINAL KEY for React uniqueness
-          originalKey: playerKey,
-          resolvedKey: resolvedKey,
-          name: player.fullName,
+        const playerData = {
+          key: playerKey,
+          name: player?.fullName || perf.full_name || playerKey,
+          role: player?.role || "Player",
           team: perf.team,
-          runs: perf.runs_in_match || 0,
-          wickets: perf.wickets_in_match || 0,
-          battingOrder: fallbackBattingOrder,
-          // Ensure we have all required format-specific fields
-          country: player.country || "Unknown",
-          countryFlag: player.countryFlag || "🏳️",
-          role: player.role || "Player",
-          iplMatches: player.iplMatches || 0,
-          iplRuns: player.iplRuns || 0,
-          iplWickets: player.iplWickets || 0,
-          odiMatches: player.odiMatches || 0,
-          odiRuns: player.odiRuns || 0,
-          odiWickets: player.odiWickets || 0,
-          teams: player.teams || "Unknown",
-          notable: player.notable || "",
+          played_in_match: perf.played_in_match || false,
         };
 
-        // Team assignment
-        const teamName = perf.team;
-        if (
-          teamName === team1Name ||
-          teamName.includes(team1Name) ||
-          team1Name.includes(teamName)
-        ) {
-          team1Players.push(enhancedPlayer);
-        } else if (
-          teamName === team2Name ||
-          teamName.includes(team2Name) ||
-          team2Name.includes(teamName)
-        ) {
-          team2Players.push(enhancedPlayer);
+        if (STABLE_FEATURES.showDebugInfo) {
+          console.log("🔍 DEBUG: Player assignment:", playerKey, "→", perf.team, 
+                     player ? `(resolved: ${player.fullName})` : "(unresolved)");
+        }
+
+        // Using match_puzzles.json playerPerformances for accurate team assignment
+        if (perf.team === team1Name) {
+          team1Players.push(playerData);
+        } else if (perf.team === team2Name) {
+          team2Players.push(playerData);
         } else {
-          if (team1Players.length <= team2Players.length) {
-            team1Players.push(enhancedPlayer);
-          } else {
-            team2Players.push(enhancedPlayer);
+          if (STABLE_FEATURES.showDebugInfo) {
+            console.log("🔍 DEBUG: Player team mismatch:", playerKey, "team:", perf.team, 
+                       "expected:", team1Name, "or", team2Name);
           }
         }
       });
 
-      console.log("🏏 Squad Processing Results:");
-      console.log(`Team 1 (${team1Name}): ${team1Players.length} players`);
-      console.log(`Team 2 (${team2Name}): ${team2Players.length} players`);
-      console.log(`Format: ${currentFormat}`);
+      if (STABLE_FEATURES.showDebugInfo) {
+        console.log("🔍 DEBUG: Final squad assignment:", {
+          team1: `${team1Name} (${team1Players.length} players)`,
+          team2: `${team2Name} (${team2Players.length} players)`
+        });
+      }
 
       return {
         team1: team1Players,
@@ -427,7 +389,7 @@ const CricGuess = () => {
         error: null,
       };
     } catch (error) {
-      console.error("❌ Squad processing error:", error);
+      console.error("Squad processing error:", error);
       return {
         team1: [],
         team2: [],
@@ -440,326 +402,294 @@ const CricGuess = () => {
   }, [currentPuzzle, targetPlayer]);
 
   // ============================================================================
-  // FORMAT-SPECIFIC ENHANCED FEEDBACK SYSTEM - Core functionality
+  // ENHANCED FEEDBACK GENERATION - Smart feedback with placeholder support and format-specific comparisons
   // ============================================================================
   const generateEnhancedFeedback = (selectedPlayerKey, targetPlayerKey) => {
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: Feedback generation:", selectedPlayerKey, "vs", targetPlayerKey);
+    }
+
+    // Enhanced feedback with placeholder support and format-specific comparisons
     const selectedPlayer = playersData[selectedPlayerKey];
     const targetPlayerData = playersData[targetPlayerKey];
 
-    if (!selectedPlayer || !targetPlayerData) {
+    // CRITICAL: Puzzle-specific placeholder logic
+    const placeholderInfo = {};
+
+    // Puzzle 4: Pakistani placeholder players
+    if (currentPuzzle?.id === 4) {
+      placeholderInfo['INZAMAMULHAQ'] = { country: 'Pakistan', role: 'Batsman' };
+      placeholderInfo['YOUNISKHAN'] = { country: 'Pakistan', role: 'Batsman' };
+      if (STABLE_FEATURES.showDebugInfo) {
+        console.log("🔍 DEBUG: Puzzle 4 detected - Pakistani placeholder players enabled");
+      }
+    }
+
+    // Puzzle 5: KOHLI refers to Taruwar Kohli, not Virat Kohli
+    if (currentPuzzle?.id === 5 && selectedPlayerKey === 'KOHLI') {
+      placeholderInfo['KOHLI'] = { country: 'India', role: 'Batsman', matchesAlwaysUp: true };
+      if (STABLE_FEATURES.showDebugInfo) {
+        console.log("🔍 DEBUG: Puzzle 5 detected - KOHLI treated as Taruwar Kohli placeholder");
+      }
+    }
+
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: Placeholder player detected:", 
+                 placeholderInfo[selectedPlayerKey] ? "Yes" : "No");
+    }
+
+    // Smart feedback generation with placeholder handling
+    if (!selectedPlayer && !placeholderInfo[selectedPlayerKey]) {
+      if (STABLE_FEATURES.showDebugInfo) {
+        console.log("🔍 DEBUG: Selected player not found and no placeholder:", selectedPlayerKey);
+      }
       return {
-        nationality: "❌",
-        role: "❌",
-        matches: "❌",
-        runs: "❌",
-        wickets: "❌",
+        nationality: "❓",
+        role: "❓",
+        matches: "❓",
       };
     }
 
-    // Get current puzzle format
-    const currentFormat = getPuzzleFormat(currentPuzzle.id);
+    if (!targetPlayerData) {
+      if (STABLE_FEATURES.showDebugInfo) {
+        console.log("🔍 DEBUG: Target player not found:", targetPlayerKey);
+      }
+      return {
+        nationality: "❓",
+        role: "❓",
+        matches: "❓",
+      };
+    }
+
+    // Intelligent format detection based on team types (franchise vs international)
+    const currentFormat = getPuzzleFormat(currentPuzzle);
     const formatPrefix = currentFormat === "ODI" ? "odi" : "ipl";
 
-    // Format-specific stat comparison
-    const selectedMatches = selectedPlayer[`${formatPrefix}Matches`] || 0;
-    const targetMatches = targetPlayerData[`${formatPrefix}Matches`] || 0;
+    // Enhanced feedback with placeholder support and format-specific comparisons
+    const selectedInfo = selectedPlayer || placeholderInfo[selectedPlayerKey];
 
-    const selectedRuns = selectedPlayer[`${formatPrefix}Runs`] || 0;
-    const targetRuns = targetPlayerData[`${formatPrefix}Runs`] || 0;
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: Using player info:", selectedInfo, "for format:", currentFormat);
+    }
 
-    const selectedWickets = selectedPlayer[`${formatPrefix}Wickets`] || 0;
-    const targetWickets = targetPlayerData[`${formatPrefix}Wickets`] || 0;
+    // Format-specific stat comparison logic for ODI vs IPL matches
+    let selectedMatches, targetMatches;
 
-    // Generate comparison indicators
+    // Special handling for Taruwar Kohli placeholder - always show up arrow for matches
+    if (placeholderInfo[selectedPlayerKey]?.matchesAlwaysUp) {
+      selectedMatches = 0; // Always lower than target to show up arrow
+      targetMatches = 1;
+      if (STABLE_FEATURES.showDebugInfo) {
+        console.log("🔍 DEBUG: Taruwar Kohli placeholder - forcing matches up arrow");
+      }
+    } else {
+      selectedMatches = selectedPlayer ? (selectedPlayer[`${formatPrefix}Matches`] || 0) : 0;
+      targetMatches = targetPlayerData[`${formatPrefix}Matches`] || 0;
+    }
+
     const getComparison = (selected, target) => {
       if (selected === target) return "✅";
       return selected < target ? "🔼" : "🔽";
     };
 
-    return {
-      nationality:
-        selectedPlayer.country === targetPlayerData.country ? "✅" : "❌",
-      role: selectedPlayer.role === targetPlayerData.role ? "✅" : "❌",
+    const feedback = {
+      nationality: selectedInfo.country === targetPlayerData.country ? "✅" : "❌",
+      role: selectedInfo.role === targetPlayerData.role ? "✅" : "❌",
       matches: getComparison(selectedMatches, targetMatches),
-      runs: getComparison(selectedRuns, targetRuns),
-      wickets: getComparison(selectedWickets, targetWickets),
     };
-  };
 
-  const handlePlayerSelection = (selectedPlayer) => {
-    if (gameOver || gameWon || selectedPlayers.has(selectedPlayer.key)) {
-      return;
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: Generated feedback:", feedback);
     }
 
-    console.log(
-      `🎯 Player selected: ${selectedPlayer.name} (${selectedPlayer.key})`,
-    );
-    console.log(
-      `🎯 Target player: ${targetPlayer?.fullName} (${targetPlayer?.key})`,
-    );
+    return feedback;
+  };
 
-    // For feedback comparison, use the resolved key
-    const selectedKeyForComparison =
-      selectedPlayer.resolvedKey || selectedPlayer.key;
+  // ============================================================================
+  // GAME EVENT HANDLERS
+  // ============================================================================
+  const handlePlayerSelection = (player) => {
+    if (gameOver || gameWon || selectedPlayers.has(player.key)) return;
 
-    // WIN CONDITION CHECK
-    if (selectedKeyForComparison === targetPlayer?.key) {
-      console.log("🏆 CORRECT! Player wins!");
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: Player selected:", player.key, player.name);
+    }
 
-      const feedback = generateEnhancedFeedback(
-        selectedKeyForComparison,
-        targetPlayer.key,
-      );
-      const newFeedback = [
-        ...squadFeedback,
-        {
-          playerName: selectedPlayer.name,
-          isCorrect: true,
-          feedback,
-        },
-      ];
+    const newSelectedPlayers = new Set(selectedPlayers);
+    newSelectedPlayers.add(player.key);
+    setSelectedPlayers(newSelectedPlayers);
 
-      setSquadFeedback(newFeedback);
-      setSelectedPlayers(new Set([...selectedPlayers, selectedPlayer.key]));
+    const isCorrect = player.key === targetPlayer?.key;
+    const feedback = generateEnhancedFeedback(player.key, targetPlayer?.key);
+
+    const newFeedback = {
+      playerName: player.name,
+      playerKey: player.key,
+      isCorrect,
+      ...feedback,
+    };
+
+    const updatedFeedback = [...squadFeedback, newFeedback];
+    setSquadFeedback(updatedFeedback);
+
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: Feedback created:", newFeedback);
+    }
+
+    if (isCorrect) {
       setGameWon(true);
+      setTimeout(() => setShowSuccessModal(true), 800);
+    } else if (updatedFeedback.length >= STABLE_PUZZLE_CONFIG.maxGuesses) {
       setGameOver(true);
-      return;
+      setTimeout(() => setShowGameOverModal(true), 1000);
     }
-
-    // INCORRECT GUESS - Generate enhanced feedback clues
-    const feedback = generateEnhancedFeedback(
-      selectedKeyForComparison,
-      targetPlayer.key,
-    );
-    const newFeedback = [
-      ...squadFeedback,
-      {
-        playerName: selectedPlayer.name,
-        isCorrect: false,
-        feedback,
-      },
-    ];
-
-    setSquadFeedback(newFeedback);
-    setSelectedPlayers(new Set([...selectedPlayers, selectedPlayer.key]));
-
-    // LOSS CONDITION CHECK
-    if (newFeedback.length >= STABLE_PUZZLE_CONFIG.maxGuesses) {
-      console.log("💀 GAME OVER! Used all guesses.");
-      setGameOver(true);
-    }
-  };
-
-  // ============================================================================
-  // GAME CONTROL FUNCTIONS - Puzzle progression and state management
-  // ============================================================================
-  const resetPuzzleState = () => {
-    setSquadFeedback([]);
-    setSelectedPlayers(new Set());
-    setGameWon(false);
-    setGameOver(false);
-    setGameError(null);
   };
 
   const nextPuzzle = () => {
-    if (currentPuzzleIndex < STABLE_PUZZLE_CONFIG.puzzles.length - 1) {
-      setCurrentPuzzleIndex(currentPuzzleIndex + 1);
-      resetPuzzleState();
-    } else {
-      alert("🏆 Congratulations! You've completed all puzzles!");
+    if (currentPuzzleIndex + 1 >= STABLE_PUZZLE_CONFIG.puzzles.length) {
+      alert("You've completed all puzzles!");
+      return;
     }
+
+    setCurrentPuzzleIndex(currentPuzzleIndex + 1);
+    setGameWon(false);
+    setGameOver(false);
+    setShowSuccessModal(false);
+    setShowGameOverModal(false);
+    setSquadFeedback([]);
+    setSelectedPlayers(new Set());
   };
 
   // ============================================================================
-  // RENDER FUNCTIONS - UI component rendering
+  // ENHANCED SCORECARD RENDER
   // ============================================================================
-  const renderScorecard = () => {
-    if (!currentPuzzle?.matchData?.scorecard) return null;
+  const renderEnhancedScorecard = () => {
+    if (!currentPuzzle?.matchData?.scorecard) {
+      return (
+        <div className="scorecard-broadcast">
+          <div className="error-message">
+            No scorecard data available for this puzzle
+          </div>
+        </div>
+      );
+    }
 
     const scorecard = currentPuzzle.matchData.scorecard;
-    const currentFormat =
-      squadPlayers.format || getPuzzleFormat(currentPuzzle.id);
+    const currentFormat = getPuzzleFormat(currentPuzzle);
+    const team1Name = scorecard.teams?.[0];
+    const team2Name = scorecard.teams?.[1];
+    const team1Score = scorecard.team_scores?.[team1Name];
+    const team2Score = scorecard.team_scores?.[team2Name];
 
     return (
-      <div className="scorecard">
-        {/* ✅ Main Puzzle Header */}
-        <div className="puzzle-main-header">
-          Guess the man of the match of this game
-        </div>
-
-        {/* ✅ Format and Puzzle Info */}
-        <div className="puzzle-info">
-          <span className="puzzle-format">Format: {currentFormat}</span>
-          <span className="puzzle-number">Puzzle {currentPuzzle.id}</span>
-        </div>
-
-        {/* ✅ Match Title */}
-        <div className="match-title">
-          {scorecard.teams?.[0]} vs {scorecard.teams?.[1]}
-        </div>
-
-        {/* ✅ Venue and Date */}
-        <div className="venue-date">
-          {scorecard.venue} • {scorecard.date}
-        </div>
-
-        {/* ✅ Team Scores - INLINE FORMAT */}
-        <div className="team-scores-inline">
-          <div className="team-score-inline">
-            <span className="team-name-inline">{scorecard.teams?.[0]}</span>
-            <span className="score-inline">
-              {scorecard.team_scores?.[scorecard.teams?.[0]]?.runs || 0}/
-              {scorecard.team_scores?.[scorecard.teams?.[0]]?.wickets || 0}
-            </span>
+      <div className="scorecard-broadcast">
+        <div className="broadcast-header">
+          <div className="broadcast-title">
+            🏏 {currentFormat} Match - Puzzle {currentPuzzle.id}
           </div>
-          <div className="vs-inline">vs</div>
-          <div className="team-score-inline">
-            <span className="team-name-inline">{scorecard.teams?.[1]}</span>
-            <span className="score-inline">
-              {scorecard.team_scores?.[scorecard.teams?.[1]]?.runs || 0}/
-              {scorecard.team_scores?.[scorecard.teams?.[1]]?.wickets || 0}
-            </span>
+          <div className="live-indicator">● PUZZLE</div>
+        </div>
+
+        <div className="match-summary">
+          <div className="match-title-broadcast">
+            🏆 Find the Man of the Match
+          </div>
+          {scorecard.venue && (
+            <div className="venue-info-broadcast">
+              📍 {scorecard.venue} • {scorecard.date || "Date not available"}
+            </div>
+          )}
+        </div>
+
+        <div className="teams-score-display">
+          <div className="team-display">
+            <div className="team-name-broadcast">{team1Name}</div>
+            <div className="team-score-broadcast">
+              {team1Score?.runs || "N/A"}/{team1Score?.wickets || "N/A"}
+            </div>
+          </div>
+
+          <div className="vs-separator">VS</div>
+
+          <div className="team-display">
+            <div className="team-name-broadcast">{team2Name}</div>
+            <div className="team-score-broadcast">
+              {team2Score?.runs || "N/A"}/{team2Score?.wickets || "N/A"}
+            </div>
           </div>
         </div>
       </div>
     );
   };
 
-  const renderGameStatus = () => {
-    const currentFormat =
-      squadPlayers.format || getPuzzleFormat(currentPuzzle.id);
-
-    if (gameWon) {
-      return (
-        <div className="game-status-container">
-          <div className="game-status success">
-            🏆 Congratulations! You found the Man of the Match:{" "}
-            {targetPlayer?.fullName}
-          </div>
-          <button onClick={nextPuzzle} className="btn btn-green">
-            Next Puzzle
-          </button>
-        </div>
-      );
-    }
-
-    if (gameOver) {
-      return (
-        <div className="game-status-container">
-          <div className="game-status failure">
-            💀 Game Over! The Man of the Match was: {targetPlayer?.fullName}
-          </div>
-          <button onClick={nextPuzzle} className="btn btn-blue">
-            Next Puzzle
-          </button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="game-status-container">
-        <div className="game-status active">
-          🔍 Guesses: {squadFeedback.length}/{STABLE_PUZZLE_CONFIG.maxGuesses} |
-          Format: {currentFormat}
-        </div>
-      </div>
-    );
-  };
-
   // ============================================================================
-  // FORMAT-SPECIFIC FEEDBACK DISPLAY - Enhanced with format headers
+  // ENHANCED FEEDBACK DISPLAY
   // ============================================================================
-  const renderFeedbackDisplay = () => {
+  const renderEnhancedFeedbackDisplay = () => {
     if (squadFeedback.length === 0) return null;
 
-    const currentFormat =
-      squadPlayers.format || getPuzzleFormat(currentPuzzle.id);
+    const currentFormat = squadPlayers.format || getPuzzleFormat(currentPuzzle);
 
     return (
-      <div className="feedback-container">
-        <div className="feedback-header">
-          <h3>
-            🔍 Your Guesses ({squadFeedback.length}/
-            {STABLE_PUZZLE_CONFIG.maxGuesses})
-          </h3>
-        </div>
-
-        {/* FORMAT-SPECIFIC TABLE HEADERS */}
-        <div className="feedback-table-header">
-          <div className="header-cell-name">Player Name</div>
-          <div className="header-cell">COUNTRY</div>
-          <div className="header-cell">ROLE</div>
-          <div className="header-cell">{currentFormat} MATCHES</div>
-          <div className="header-cell">{currentFormat} RUNS</div>
-          <div className="header-cell">{currentFormat} WICKETS</div>
-        </div>
-
-        {/* SEPARATOR LINE */}
-        <div className="feedback-separator"></div>
-
-        {/* DATA ROWS */}
-        {squadFeedback.map((feedback, index) => (
-          <div
-            key={index}
-            className={`feedback-table-row ${feedback.isCorrect ? "correct" : "incorrect"}`}
-          >
-            <div className="feedback-cell-name">{feedback.playerName}</div>
-            <div className="feedback-cell">{feedback.feedback.nationality}</div>
-            <div className="feedback-cell">{feedback.feedback.role}</div>
-            <div className="feedback-cell">{feedback.feedback.matches}</div>
-            <div className="feedback-cell">{feedback.feedback.runs}</div>
-            <div className="feedback-cell">{feedback.feedback.wickets}</div>
+      <div className="feedback-container-enhanced">
+        <div className="feedback-header-enhanced">
+          <div className="feedback-title">
+            🔍 Your Guesses ({squadFeedback.length}/{STABLE_PUZZLE_CONFIG.maxGuesses})
           </div>
-        ))}
+          <div className="feedback-subtitle">Green = Correct, Red = Incorrect</div>
+        </div>
 
-        {/* FORMAT-SPECIFIC LEGEND */}
-        <div className="feedback-legend">
-          <p>
-            <strong>Legend:</strong> ✅ = Correct | ❌ = Incorrect | 🔼 = Target
-            is higher | 🔽 = Target is lower
-          </p>
-          <p>
-            <strong>Format:</strong> Stats shown are for {currentFormat} matches
-            only
-          </p>
+        <div className="feedback-table">
+          <div className="feedback-row header">
+            <div className="feedback-cell name">Player Name</div>
+            <div className="feedback-cell">COUNTRY</div>
+            <div className="feedback-cell">ROLE</div>
+            <div className="feedback-cell">{currentFormat} MATCHES</div>
+          </div>
+
+          {squadFeedback.map((feedback, index) => (
+            <div
+              key={index}
+              className={`feedback-row ${feedback.isCorrect ? 'correct' : 'incorrect'}`}
+            >
+              <div className="feedback-cell name">{feedback.playerName}</div>
+              <div className="feedback-cell">
+                <span className="feedback-icon">{feedback.nationality}</span>
+              </div>
+              <div className="feedback-cell">
+                <span className="feedback-icon">{feedback.role}</span>
+              </div>
+              <div className="feedback-cell">
+                <span className="feedback-icon">{feedback.matches}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
   };
 
   // ============================================================================
-  // SQUAD DISPLAY - Mobile optimized with enhanced player states
+  // ENHANCED SQUAD DISPLAY
   // ============================================================================
-  const getPlayerStateClass = (player) => {
-    const isSelected = selectedPlayers.has(player.key);
-    const isCorrect = gameWon && player.resolvedKey === targetPlayer?.key;
+  const getEnhancedPlayerStateClass = (player) => {
+    let baseClass = "player-card-enhanced";
 
-    if (isCorrect) return "player-card-mobile correct";
-    if (isSelected) return "player-card-mobile selected";
-    if (gameOver) return "player-card-mobile disabled";
-    return "player-card-mobile";
+    if (selectedPlayers.has(player.key)) {
+      if (player.key === targetPlayer?.key) {
+        baseClass += " correct";
+      } else {
+        baseClass += " incorrect";
+      }
+      baseClass += " disabled";
+    } else if (gameOver && !gameWon) {
+      baseClass += " disabled";
+    }
+
+    return baseClass;
   };
 
-  const shouldShowStats = (player) => {
-    return (
-      selectedPlayers.has(player.key) ||
-      (gameWon && player.resolvedKey === targetPlayer?.key)
-    );
-  };
-
-  const getPlayerStats = (player) => {
-    const currentFormat =
-      squadPlayers.format || getPuzzleFormat(currentPuzzle.id);
-    const formatPrefix = currentFormat === "ODI" ? "odi" : "ipl";
-
-    const matches = player[`${formatPrefix}Matches`] || 0;
-    const runs = player[`${formatPrefix}Runs`] || 0;
-    const wickets = player[`${formatPrefix}Wickets`] || 0;
-
-    return `${currentFormat}: ${matches}M, ${runs}R, ${wickets}W`;
-  };
-
-  const renderSquadDisplay = () => {
+  const renderEnhancedSquadDisplay = () => {
     if (squadPlayers.error) {
       return (
         <div className="error-container">
@@ -771,34 +701,27 @@ const CricGuess = () => {
     }
 
     return (
-      <div className="squad-container-mobile">
+      <div className="squads-container-enhanced">
         {/* Team 1 */}
-        <div className="team-squad-mobile">
-          <div className="squad-header-mobile">
-            <div className="team-name-mobile">{squadPlayers.team1Name}</div>
-            <div className="player-count-mobile">
+        <div className="team-squad-enhanced">
+          <div className={`squad-header-enhanced ${getTeamColorClass(squadPlayers.team1Name)}`}>
+            <div className="team-name-enhanced">{squadPlayers.team1Name}</div>
+            <div className="player-count-enhanced">
               ({squadPlayers.team1.length} players)
             </div>
           </div>
-          <div className="players-list-mobile">
+          <div className="players-grid-enhanced">
             {squadPlayers.team1.map((player) => (
               <div
-                key={player.key} // ✅ Now using unique original key
-                className={getPlayerStateClass(player)}
-                onClick={() => !gameOver && handlePlayerSelection(player)}
+                key={player.key}
+                className={getEnhancedPlayerStateClass(player)}
+                onClick={() => handlePlayerSelection(player)}
               >
-                <div className="player-info-mobile">
-                  <div className="player-name-mobile">{player.name}</div>
-                  <div className="player-role-mobile">{player.role}</div>
-                </div>
-                <div
-                  className={
-                    shouldShowStats(player)
-                      ? "stats-mobile-revealed"
-                      : "stats-mobile-hidden"
-                  }
-                >
-                  {shouldShowStats(player) ? getPlayerStats(player) : ""}
+                <div className="player-info-enhanced">
+                  <div className="player-details">
+                    <div className="player-name-enhanced">{player.name}</div>
+                    <div className="player-role-enhanced">{player.role}</div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -806,32 +729,25 @@ const CricGuess = () => {
         </div>
 
         {/* Team 2 */}
-        <div className="team-squad-mobile">
-          <div className="squad-header-mobile">
-            <div className="team-name-mobile">{squadPlayers.team2Name}</div>
-            <div className="player-count-mobile">
+        <div className="team-squad-enhanced">
+          <div className={`squad-header-enhanced ${getTeamColorClass(squadPlayers.team2Name)}`}>
+            <div className="team-name-enhanced">{squadPlayers.team2Name}</div>
+            <div className="player-count-enhanced">
               ({squadPlayers.team2.length} players)
             </div>
           </div>
-          <div className="players-list-mobile">
+          <div className="players-grid-enhanced">
             {squadPlayers.team2.map((player) => (
               <div
-                key={player.key} // ✅ Now using unique original key
-                className={getPlayerStateClass(player)}
-                onClick={() => !gameOver && handlePlayerSelection(player)}
+                key={player.key}
+                className={getEnhancedPlayerStateClass(player)}
+                onClick={() => handlePlayerSelection(player)}
               >
-                <div className="player-info-mobile">
-                  <div className="player-name-mobile">{player.name}</div>
-                  <div className="player-role-mobile">{player.role}</div>
-                </div>
-                <div
-                  className={
-                    shouldShowStats(player)
-                      ? "stats-mobile-revealed"
-                      : "stats-mobile-hidden"
-                  }
-                >
-                  {shouldShowStats(player) ? getPlayerStats(player) : ""}
+                <div className="player-info-enhanced">
+                  <div className="player-details">
+                    <div className="player-name-enhanced">{player.name}</div>
+                    <div className="player-role-enhanced">{player.role}</div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -842,26 +758,243 @@ const CricGuess = () => {
   };
 
   // ============================================================================
-  // MAIN RENDER - Clean production interface
+  // GAME STATUS DISPLAY
+  // ============================================================================
+  const renderGameStatus = () => {
+    const currentFormat = squadPlayers.format || getPuzzleFormat(currentPuzzle);
+
+    if (gameWon) {
+      return (
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)',
+            border: '2px solid #10b981',
+            padding: '1rem',
+            borderRadius: '0.75rem',
+            color: '#059669',
+            fontWeight: '600'
+          }}>
+            🏆 Congratulations! You found the Man of the Match!
+          </div>
+        </div>
+      );
+    }
+
+    if (gameOver) {
+      return (
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #fee2e2, #fecaca)',
+            border: '2px solid #ef4444',
+            padding: '1rem',
+            borderRadius: '0.75rem',
+            color: '#dc2626',
+            fontWeight: '600'
+          }}>
+            💀 Game Over! The Man of the Match was {targetPlayer?.fullName}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+        <div style={{
+          background: '#f0f9ff',
+          border: '2px solid #0ea5e9',
+          padding: '1rem',
+          borderRadius: '0.75rem',
+          color: '#0369a1',
+          fontWeight: '600'
+        }}>
+          🔍 Guesses: {squadFeedback.length}/{STABLE_PUZZLE_CONFIG.maxGuesses} | Format: {currentFormat}
+        </div>
+      </div>
+    );
+  };
+
+  // ============================================================================
+  // SHARE FUNCTIONALITY
+  // ============================================================================
+  const generateShareText = () => {
+    const attemptCount = squadFeedback.length;
+    const result = gameWon ? '✅' : '❌';
+    const emojis = gameWon ? 
+      '🏆🎉🏏'.repeat(attemptCount) : 
+      '💀😞🏏'.repeat(attemptCount);
+
+    return `🏏 CricGuess Puzzle ${currentPuzzle?.id || '?'}\n${result} ${attemptCount}/${STABLE_PUZZLE_CONFIG.maxGuesses}\n${emojis}`;
+  };
+
+  const handleShare = async () => {
+    const shareText = generateShareText();
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'CricGuess',
+          text: shareText,
+        });
+      } catch (err) {
+        navigator.clipboard.writeText(shareText);
+      }
+    } else {
+      navigator.clipboard.writeText(shareText);
+      alert('Result copied to clipboard!');
+    }
+  };
+
+  // ============================================================================
+  // SUCCESS/FAILURE MODALS - Centered overlay system
+  // ============================================================================
+  const renderSuccessModal = () => (
+    showSuccessModal && (
+      <div className="game-overlay">
+        <div className="success-modal">
+          <div className="celebration-emoji">🏆</div>
+          <div className="overlay-title">Brilliant!</div>
+          <div className="overlay-subtitle">
+            You found {targetPlayer?.fullName} as the Man of the Match!
+          </div>
+
+          <div className="trivia-section">
+            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>🏏 Cricket Trivia:</div>
+            <div className="trivia-text">
+              {currentPuzzle?.trivia || "Another classic cricket moment to remember!"}
+            </div>
+          </div>
+
+          <div className="share-section">
+            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Share your success:</div>
+            <div className="share-result">{generateShareText()}</div>
+
+            <div className="modal-buttons">
+              <button className="btn-enhanced btn-secondary" onClick={handleShare}>
+                📤 Share
+              </button>
+              <button className="btn-enhanced btn-primary" onClick={nextPuzzle}>
+                ➡️ Next Puzzle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  );
+
+  const renderGameOverModal = () => (
+    showGameOverModal && (
+      <div className="game-overlay">
+        <div className="failure-modal">
+          <div className="celebration-emoji">💀</div>
+          <div className="overlay-title">So Close!</div>
+          <div className="overlay-subtitle">
+            The Man of the Match was {targetPlayer?.fullName}
+          </div>
+
+          <div className="trivia-section">
+            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>🏏 Cricket Trivia:</div>
+            <div className="trivia-text">
+              {currentPuzzle?.trivia || "Every cricket legend has missed a few catches!"}
+            </div>
+          </div>
+
+          <div className="share-section">
+            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Share your attempt:</div>
+            <div className="share-result">{generateShareText()}</div>
+
+            <div className="modal-buttons">
+              <button className="btn-enhanced btn-secondary" onClick={handleShare}>
+                📤 Share
+              </button>
+              <button className="btn-enhanced btn-primary" onClick={nextPuzzle}>
+                ➡️ Next Puzzle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  );
+
+  // ============================================================================
+  // HOW TO PLAY MODAL - Centered overlay system
+  // ============================================================================
+  const renderHowToPlayModal = () => (
+    showHowToPlay && (
+      <div className="game-overlay">
+        <div className="how-to-play-modal">
+          <div className="modal-header">
+            <h2>🏏 How to Play CricGuess</h2>
+            <button
+              onClick={() => setShowHowToPlay(false)}
+              className="close-button"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="instructions">
+            <div className="instruction-item">
+              <div className="instruction-icon">🎯</div>
+              <div>
+                <strong>Objective:</strong> Guess the "Man of the Match" from the cricket scorecard
+              </div>
+            </div>
+
+            <div className="instruction-item">
+              <div className="instruction-icon">🔍</div>
+              <div>
+                <strong>Clues:</strong> You get feedback on country, role, and career stats for each guess
+              </div>
+            </div>
+
+            <div className="instruction-item">
+              <div className="instruction-icon">⚡</div>
+              <div>
+                <strong>Attempts:</strong> You have only 3 guesses to find the correct player
+              </div>
+            </div>
+
+            <div className="instruction-item">
+              <div className="instruction-icon">🏆</div>
+              <div>
+                <strong>Feedback:</strong>
+                <br />✅ = Correct match
+                <br />❌ = Wrong match  
+                <br />🔼 = Target has more career matches
+                <br />🔽 = Target has fewer career matches
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setShowHowToPlay(false)}
+            className="btn-enhanced btn-primary"
+            style={{ width: '100%', marginTop: '1rem' }}
+          >
+            Start Playing! 🏏
+          </button>
+        </div>
+      </div>
+    )
+  );
+
+  // ============================================================================
+  // MAIN RENDER
   // ============================================================================
   if (!currentPuzzle) {
     return (
       <div className="page-background">
         <div className="game-container">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-blue-600 mb-4">
+          <div style={{ textAlign: 'center' }}>
+            <h1 style={{ fontSize: '2rem', fontWeight: 700, color: '#2563eb', marginBottom: '1rem' }}>
               🏏 CricGuess
             </h1>
-            <div className="text-red-600 mb-4">
-              {gameError ||
-                "No puzzles available. Please check match_puzzles.json"}
+            <div style={{ color: '#dc2626', marginBottom: '1rem' }}>
+              {gameError || "No puzzles available."}
             </div>
-            <button
-              onClick={() => window.location.reload()}
-              className="btn btn-blue"
-            >
-              Reload Game
-            </button>
+            <p style={{ color: '#6b7280' }}>Please check your data files.</p>
           </div>
         </div>
       </div>
@@ -870,74 +1003,57 @@ const CricGuess = () => {
 
   return (
     <div className="page-background">
-      {/* How to Play Modal */}
-      {showHowToPlay && (
-        <div className="popup-overlay" onClick={() => setShowHowToPlay(false)}>
-          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="popup-close"
-              onClick={() => setShowHowToPlay(false)}
-            >
-              ×
-            </button>
-            <h2 className="popup-title">How To Play</h2>
-            <p className="popup-subtitle">
-              Guess the Man of the Match from the cricket scorecard in{" "}
-              {STABLE_PUZZLE_CONFIG.maxGuesses} tries.
-            </p>
-            <div className="popup-text">
-              <ul>
-                <li>🏏 Study the cricket scorecard above</li>
-                <li>🔍 Use the team rosters to identify players</li>
-                <li>🎯 Click on players to make your guess</li>
-                <li>
-                  📊 Get format-specific feedback clues: Country, Role,{" "}
-                  {squadPlayers.format || "IPL"} Stats
-                </li>
-                <li>🏆 Find the Man of the Match to win!</li>
-              </ul>
-            </div>
-            <div className="popup-footer">Good luck, cricket detective! 🕵️‍♂️</div>
-          </div>
-        </div>
-      )}
+      {/* Centered Modal Overlays */}
+      {renderHowToPlayModal()}
+      {renderSuccessModal()}
+      {renderGameOverModal()}
 
       <div className="game-container">
-        {/* Header */}
-        <div className="header-section">
-          <h1 className="text-3xl font-bold text-blue-600 text-center mb-4">
+        {/* Header Section */}
+        <div style={{ position: 'relative', marginBottom: '2rem' }}>
+          <h1 style={{ 
+            fontSize: '2rem', 
+            fontWeight: 700, 
+            color: '#1f2937', 
+            textAlign: 'center', 
+            marginBottom: '0.5rem' 
+          }}>
             🏏 CricGuess
           </h1>
+          <p style={{ 
+            color: '#6b7280', 
+            fontSize: '0.9rem', 
+            textAlign: 'center',
+            marginBottom: '1rem'
+          }}>
+            Cricket Nostalgia Puzzle Game
+          </p>
           <button
             onClick={() => setShowHowToPlay(true)}
-            className="how-to-play-btn"
+            className="btn-enhanced btn-secondary"
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              padding: '0.5rem 0.75rem',
+              fontSize: '0.75rem'
+            }}
           >
-            How to Play
+            📖 How to Play
           </button>
         </div>
 
-        {/* Cricket Scorecard */}
-        {renderScorecard()}
+        {/* Enhanced TV Broadcast Scorecard */}
+        {renderEnhancedScorecard()}
 
         {/* Game Status */}
         {renderGameStatus()}
 
-        {/* Feedback Display */}
-        {renderFeedbackDisplay()}
+        {/* Enhanced Feedback Display - TOP POSITION */}
+        {renderEnhancedFeedbackDisplay()}
 
-        {/* Squad Display */}
-        {renderSquadDisplay()}
-
-        {/* Debug info */}
-        {STABLE_FEATURES.showDebugInfo && (
-          <div className="mt-6 text-xs text-gray-500 text-center">
-            Debug: Puzzle {currentPuzzleIndex + 1}/
-            {STABLE_PUZZLE_CONFIG.puzzles.length} | Target:{" "}
-            {targetPlayer?.fullName} ({targetPlayer?.key}) | Format:{" "}
-            {squadPlayers.format || getPuzzleFormat(currentPuzzle.id)} |
-            Guesses: {squadFeedback.length}/{STABLE_PUZZLE_CONFIG.maxGuesses}
-          </div>
-        )}
+        {/* Enhanced Squad Display with Team Colors */}
+        {renderEnhancedSquadDisplay()}
       </div>
     </div>
   );
