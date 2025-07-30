@@ -1,18 +1,21 @@
 /*
- * CricGuess - COMPLETE ENHANCED VERSION WITH RESTORED DATA PROCESSING
+ * CricGuess - ENHANCED VERSION WITH CRICKET NOSTALGIA SHARE & CAREER HIGHLIGHTS
  * 
- * ENHANCED FEATURES PRESERVED:
- * ============================
+ * NEW ENHANCEMENTS:
+ * =================
+ * 🏏 Cricket nostalgia share format with venue, year, teams
+ * 🌟 Player career highlights in success/failure modals
+ * 📤 "Smashed today's Bowldem" vs "Clean bowled by today's Bowldem" messaging
+ * 🔗 www.bowldem.com branding
+ * 
+ * PRESERVED FEATURES:
+ * ===================
  * 🎨 Team-specific colors for authentic cricket branding
  * 📺 Professional TV broadcast scorecard design
- * 🎉 Success/Failure overlays with celebrations and trivia
- * 📤 Native share functionality (Wordle-style)
+ * 🎉 Success/Failure overlays with celebrations
  * 🔍 Feedback system moved to top for persistent visibility
  * ✨ Enhanced visual feedback and animations
  * 🏏 Authentic cricket team color schemes
- * 
- * CRITICAL FIXES RESTORED:
- * ========================
  * 🔧 Enhanced squad processing using match_puzzles.json playerPerformances data
  * 🎯 Smart feedback generation with Pakistani placeholder player support  
  * 🏏 Format-specific stat comparison logic for ODI vs IPL matches
@@ -99,7 +102,7 @@ const getPuzzleFormat = (puzzle) => {
   }
 
   if (STABLE_FEATURES.showDebugInfo) {
-    console.log("🔍 DEBUG: Format detected:", detectedFormat, "for teams:", teams);
+    console.log("🔍 DEBUG: Format detected:", detectedFormat);
   }
 
   return detectedFormat;
@@ -109,7 +112,6 @@ const getPuzzleFormat = (puzzle) => {
 // ENHANCED PLAYER KEY MAPPING - Multi-strategy resolution
 // ============================================================================
 const PLAYER_KEY_MAPPING = {};
-
 Object.keys(playersData).forEach((fullKey) => {
   for (let i = 1; i <= 4; i++) {
     if (fullKey.length > i) {
@@ -130,34 +132,6 @@ const MANUAL_MAPPINGS = {
 
 Object.assign(PLAYER_KEY_MAPPING, MANUAL_MAPPINGS);
 
-// ============================================================================
-// TEAM COLOR UTILITY
-// ============================================================================
-const getTeamColorClass = (teamName) => {
-  const teamColors = {
-    'Mumbai Indians': 'team-colors-mumbai',
-    'Chennai Super Kings': 'team-colors-chennai',
-    'Royal Challengers Bangalore': 'team-colors-rcb',
-    'Kolkata Knight Riders': 'team-colors-kkr',
-    'Delhi Daredevils': 'team-colors-delhi',
-    'Delhi Capitals': 'team-colors-delhi',
-    'Kings XI Punjab': 'team-colors-punjab',
-    'Punjab Kings': 'team-colors-punjab',
-    'Rajasthan Royals': 'team-colors-rajasthan',
-    'Sunrisers Hyderabad': 'team-colors-sunrisers',
-    'Lucknow Super Giants': 'team-colors-lucknow',
-    'Gujarat Titans': 'team-colors-gujarat',
-    'India': 'team-colors-india',
-    'Pakistan': 'team-colors-pakistan',
-    'Sri Lanka': 'team-colors-srilanka',
-    'Australia': 'team-colors-australia',
-    'England': 'team-colors-england',
-    'New Zealand': 'team-colors-newzealand'
-  };
-
-  return teamColors[teamName] || 'team-colors-rcb';
-};
-
 const CricGuess = () => {
   // ============================================================================
   // GAME STATE MANAGEMENT
@@ -168,6 +142,7 @@ const CricGuess = () => {
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showGameOverModal, setShowGameOverModal] = useState(false);
+  const [showShareConfirmation, setShowShareConfirmation] = useState(false);
   const [gameError, setGameError] = useState(null);
   const [squadFeedback, setSquadFeedback] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState(new Set());
@@ -258,7 +233,7 @@ const CricGuess = () => {
         const pomName = currentPuzzle.matchData.scorecard.player_of_match.toUpperCase();
         const foundPlayer = Object.entries(playersData).find(
           ([key, player]) => {
-            return player.fullName && player.fullName.toUpperCase() === pomName;
+          return player.fullName && player.fullName.toUpperCase() === pomName;
           }
         );
 
@@ -561,6 +536,254 @@ const CricGuess = () => {
   };
 
   // ============================================================================
+  // ENHANCED SHARE FUNCTIONALITY - Cricket Nostalgia Format with Career Highlights
+  // ============================================================================
+  const generateShareText = () => {
+    const attemptCount = squadFeedback.length;
+    const scorecard = currentPuzzle.matchData.scorecard;
+    const currentFormat = getPuzzleFormat(currentPuzzle);
+
+    // Use existing displayed data from React
+    const team1 = scorecard.teams[0];
+    const team2 = scorecard.teams[1];
+    const venue = scorecard.venue || "Unknown Venue";
+    const year = scorecard.date?.substring(0,4) || "Unknown Year";
+
+    // Keep raw feedback emojis exactly as they are (✅❌🔼🔽)
+    const feedbackGrid = squadFeedback.map(fb => 
+      `${fb.nationality}${fb.role}${fb.matches}`
+    ).join('\n');
+
+    // Cricket-emotional messaging based on outcome
+    const result = gameWon ? 
+      `Smashed today's Bowldem ${attemptCount}/3` : 
+      `Clean bowled by today's Bowldem ${attemptCount}/3`;
+
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: Enhanced share text generated:", {
+        teams: `${team1} vs ${team2}`,
+        venue: `${venue}, ${currentFormat} ${year}`,
+        result,
+        feedbackGrid
+      });
+    }
+
+    return `🏏 ${team1} vs ${team2}\n📍 ${venue}, ${currentFormat} ${year}\n${result}\n\n${feedbackGrid}\n\nwww.bowldem.com`;
+  };
+
+  const handleShare = async () => {
+    const shareText = generateShareText();
+
+    // Always copy to clipboard and show in-game confirmation
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setShowShareConfirmation(true);
+      // Auto-hide after 3 seconds
+      setTimeout(() => setShowShareConfirmation(false), 3000);
+    } catch (err) {
+      // Fallback for browsers that don't support clipboard API
+      console.error('Clipboard API not supported, using fallback');
+
+      // Create a temporary textarea to copy text
+      const textArea = document.createElement('textarea');
+      textArea.value = shareText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+
+      setShowShareConfirmation(true);
+      setTimeout(() => setShowShareConfirmation(false), 3000);
+    }
+
+    if (STABLE_FEATURES.showDebugInfo) {
+      console.log("🔍 DEBUG: Share text copied to clipboard:", shareText);
+    }
+  };
+
+  // ============================================================================
+  // SHARE CONFIRMATION NOTIFICATION - In-game style
+  // ============================================================================
+  const renderShareConfirmation = () => (
+    showShareConfirmation && (
+      <div style={{
+        position: 'fixed',
+        top: '2rem',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        background: 'linear-gradient(135deg, #dcfce7, #bbf7d0)',
+        border: '2px solid #10b981',
+        borderRadius: '1rem',
+        padding: '1rem 2rem',
+        color: '#059669',
+        fontWeight: '600',
+        zIndex: 1001,
+        boxShadow: '0 8px 20px rgba(16, 185, 129, 0.3)',
+        animation: 'slideDown 0.3s ease-out'
+      }}>
+        ✅ Results copied to clipboard!
+      </div>
+    )
+  );
+  const getPlayerCareerHighlights = (playerKey) => {
+    const resolvedKey = resolvePlayerKey(playerKey);
+    const playerData = playersData[resolvedKey];
+
+    if (playerData?.notable) {
+      return playerData.notable;
+    }
+
+    // Fallback for placeholders or unknown players
+    return "A cricket legend who left their mark on the game.";
+  };
+
+  // ============================================================================
+  // SUCCESS/FAILURE MODALS - Enhanced with Cricket Career Highlights
+  // ============================================================================
+  const renderSuccessModal = () => (
+    showSuccessModal && (
+      <div className="game-overlay">
+        <div className="success-modal">
+          <div className="celebration-emoji">🏆</div>
+          <div className="overlay-title">Brilliant!</div>
+          <div className="overlay-subtitle">
+            You found {targetPlayer?.fullName} as the Man of the Match!
+          </div>
+
+          <div className="trivia-section">
+            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>🌟 Cricket Legend:</div>
+            <div className="trivia-text">
+              {getPlayerCareerHighlights(targetPlayer?.key)}
+            </div>
+          </div>
+
+          <div className="share-section">
+            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Share your success:</div>
+            <div className="share-result">{generateShareText()}</div>
+
+            <div className="modal-buttons">
+              <button className="btn-enhanced btn-secondary" onClick={handleShare}>
+                📤 Share
+              </button>
+              <button className="btn-enhanced btn-primary" onClick={nextPuzzle}>
+                ➡️ Next Puzzle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  );
+
+  const renderGameOverModal = () => (
+    showGameOverModal && (
+      <div className="game-overlay">
+        <div className="failure-modal">
+          <div className="celebration-emoji">💀</div>
+          <div className="overlay-title">So Close!</div>
+          <div className="overlay-subtitle">
+            The Man of the Match was {targetPlayer?.fullName}
+          </div>
+
+          <div className="trivia-section">
+            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>🌟 Cricket Legend:</div>
+            <div className="trivia-text">
+              {getPlayerCareerHighlights(targetPlayer?.key)}
+            </div>
+          </div>
+
+          <div className="share-section">
+            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Share your attempt:</div>
+            <div className="share-result">{generateShareText()}</div>
+
+            <div className="modal-buttons">
+              <button className="btn-enhanced btn-secondary" onClick={handleShare}>
+                📤 Share
+              </button>
+              <button className="btn-enhanced btn-primary" onClick={nextPuzzle}>
+                ➡️ Next Puzzle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  );
+
+  // ============================================================================
+  // HOW TO PLAY MODAL - Fixed overlay system
+  // ============================================================================
+  const renderHowToPlayModal = () => (
+    showHowToPlay && (
+      <div className="game-overlay">
+        <div className="how-to-play-modal">
+          <div className="modal-header">
+            <h2 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 700, color: '#1f2937' }}>
+              🏏 How to Play Bowldem
+            </h2>
+            <button
+              onClick={() => setShowHowToPlay(false)}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: '1.5rem',
+                cursor: 'pointer',
+                color: '#6b7280',
+                padding: '0.25rem',
+                borderRadius: '0.25rem'
+              }}
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="instructions">
+            <div className="instruction-item">
+              <div className="instruction-icon">🎯</div>
+              <div>
+                <strong>Objective:</strong> Guess the "Man of the Match" from the cricket scorecard
+              </div>
+            </div>
+
+            <div className="instruction-item">
+              <div className="instruction-icon">🔍</div>
+              <div>
+                <strong>Clues:</strong> You get feedback on country, role, and career stats for each guess
+              </div>
+            </div>
+
+            <div className="instruction-item">
+              <div className="instruction-icon">⚡</div>
+              <div>
+                <strong>Attempts:</strong> You have only 3 guesses to find the correct player
+              </div>
+            </div>
+
+            <div className="instruction-item">
+              <div className="instruction-icon">🏆</div>
+              <div>
+                <strong>Feedback:</strong>
+                <br />✅ = Correct match
+                <br />❌ = Wrong match  
+                <br />🔼 = Target has more career matches
+                <br />🔽 = Target has fewer career matches
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setShowHowToPlay(false)}
+            className="btn-enhanced btn-primary"
+            style={{ width: '100%', marginTop: '1.5rem' }}
+          >
+            Start Playing!
+          </button>
+        </div>
+      </div>
+    )
+  );
+
+  // ============================================================================
   // ENHANCED SCORECARD RENDER
   // ============================================================================
   const renderEnhancedScorecard = () => {
@@ -650,7 +873,7 @@ const CricGuess = () => {
           {squadFeedback.map((feedback, index) => (
             <div
               key={index}
-              className={`feedback-row ${feedback.isCorrect ? 'correct' : 'incorrect'}`}
+              className={`feedback-row ${feedback.isCorrect ? "correct" : "incorrect"}`}
             >
               <div className="feedback-cell name">{feedback.playerName}</div>
               <div className="feedback-cell">
@@ -670,20 +893,53 @@ const CricGuess = () => {
   };
 
   // ============================================================================
-  // ENHANCED SQUAD DISPLAY
+  // ENHANCED SQUAD DISPLAY with Team Colors
   // ============================================================================
+  const getTeamColorClass = (teamName) => {
+    const team = teamName.toLowerCase();
+
+    // IPL team colors
+    if (team.includes("mumbai")) return "team-colors-mumbai";
+    if (team.includes("chennai")) return "team-colors-chennai";
+    if (team.includes("bangalore") || team.includes("rcb")) return "team-colors-rcb";
+    if (team.includes("kolkata") || team.includes("kkr")) return "team-colors-kkr";
+    if (team.includes("delhi")) return "team-colors-delhi";
+    if (team.includes("punjab") || team.includes("kings xi")) return "team-colors-punjab";
+    if (team.includes("rajasthan")) return "team-colors-rajasthan";
+    if (team.includes("sunrisers") || team.includes("hyderabad")) return "team-colors-sunrisers";
+    if (team.includes("lucknow")) return "team-colors-lucknow";
+    if (team.includes("gujarat")) return "team-colors-gujarat";
+
+    // International team colors
+    if (team.includes("india")) return "team-colors-india";
+    if (team.includes("pakistan")) return "team-colors-pakistan";
+    if (team.includes("sri lanka")) return "team-colors-srilanka";
+    if (team.includes("australia")) return "team-colors-australia";
+    if (team.includes("england")) return "team-colors-england";
+    if (team.includes("new zealand")) return "team-colors-newzealand";
+    if (team.includes("south africa")) return "team-colors-southafrica";
+    if (team.includes("west indies")) return "team-colors-westindies";
+    if (team.includes("bangladesh")) return "team-colors-bangladesh";
+    if (team.includes("zimbabwe")) return "team-colors-zimbabwe";
+
+    return "team-colors-default";
+  };
+
   const getEnhancedPlayerStateClass = (player) => {
-    let baseClass = "player-card-enhanced";
+    const baseClass = "player-card-enhanced";
+
+    if (gameWon || gameOver) {
+      if (player.key === targetPlayer?.key) {
+        return `${baseClass} correct`;
+      } else if (selectedPlayers.has(player.key)) {
+        return `${baseClass} incorrect`;
+      } else {
+        return `${baseClass} disabled`;
+      }
+    }
 
     if (selectedPlayers.has(player.key)) {
-      if (player.key === targetPlayer?.key) {
-        baseClass += " correct";
-      } else {
-        baseClass += " incorrect";
-      }
-      baseClass += " disabled";
-    } else if (gameOver && !gameWon) {
-      baseClass += " disabled";
+      return `${baseClass} selected`;
     }
 
     return baseClass;
@@ -693,21 +949,20 @@ const CricGuess = () => {
     if (squadPlayers.error) {
       return (
         <div className="error-container">
-          <p className="error-message">
-            Error loading squad: {squadPlayers.error}
-          </p>
+          <div className="error-message">
+            Squad Error: {squadPlayers.error}
+          </div>
         </div>
       );
     }
 
     return (
       <div className="squads-container-enhanced">
-        {/* Team 1 */}
         <div className="team-squad-enhanced">
           <div className={`squad-header-enhanced ${getTeamColorClass(squadPlayers.team1Name)}`}>
             <div className="team-name-enhanced">{squadPlayers.team1Name}</div>
             <div className="player-count-enhanced">
-              ({squadPlayers.team1.length} players)
+              {squadPlayers.team1.length} players
             </div>
           </div>
           <div className="players-grid-enhanced">
@@ -728,12 +983,11 @@ const CricGuess = () => {
           </div>
         </div>
 
-        {/* Team 2 */}
         <div className="team-squad-enhanced">
           <div className={`squad-header-enhanced ${getTeamColorClass(squadPlayers.team2Name)}`}>
             <div className="team-name-enhanced">{squadPlayers.team2Name}</div>
             <div className="player-count-enhanced">
-              ({squadPlayers.team2.length} players)
+              {squadPlayers.team2.length} players
             </div>
           </div>
           <div className="players-grid-enhanced">
@@ -814,173 +1068,6 @@ const CricGuess = () => {
   };
 
   // ============================================================================
-  // SHARE FUNCTIONALITY
-  // ============================================================================
-  const generateShareText = () => {
-    const attemptCount = squadFeedback.length;
-    const result = gameWon ? '✅' : '❌';
-    const emojis = gameWon ? 
-      '🏆🎉🏏'.repeat(attemptCount) : 
-      '💀😞🏏'.repeat(attemptCount);
-
-    return `🏏 CricGuess Puzzle ${currentPuzzle?.id || '?'}\n${result} ${attemptCount}/${STABLE_PUZZLE_CONFIG.maxGuesses}\n${emojis}`;
-  };
-
-  const handleShare = async () => {
-    const shareText = generateShareText();
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'CricGuess',
-          text: shareText,
-        });
-      } catch (err) {
-        navigator.clipboard.writeText(shareText);
-      }
-    } else {
-      navigator.clipboard.writeText(shareText);
-      alert('Result copied to clipboard!');
-    }
-  };
-
-  // ============================================================================
-  // SUCCESS/FAILURE MODALS - Centered overlay system
-  // ============================================================================
-  const renderSuccessModal = () => (
-    showSuccessModal && (
-      <div className="game-overlay">
-        <div className="success-modal">
-          <div className="celebration-emoji">🏆</div>
-          <div className="overlay-title">Brilliant!</div>
-          <div className="overlay-subtitle">
-            You found {targetPlayer?.fullName} as the Man of the Match!
-          </div>
-
-          <div className="trivia-section">
-            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>🏏 Cricket Trivia:</div>
-            <div className="trivia-text">
-              {currentPuzzle?.trivia || "Another classic cricket moment to remember!"}
-            </div>
-          </div>
-
-          <div className="share-section">
-            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Share your success:</div>
-            <div className="share-result">{generateShareText()}</div>
-
-            <div className="modal-buttons">
-              <button className="btn-enhanced btn-secondary" onClick={handleShare}>
-                📤 Share
-              </button>
-              <button className="btn-enhanced btn-primary" onClick={nextPuzzle}>
-                ➡️ Next Puzzle
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  );
-
-  const renderGameOverModal = () => (
-    showGameOverModal && (
-      <div className="game-overlay">
-        <div className="failure-modal">
-          <div className="celebration-emoji">💀</div>
-          <div className="overlay-title">So Close!</div>
-          <div className="overlay-subtitle">
-            The Man of the Match was {targetPlayer?.fullName}
-          </div>
-
-          <div className="trivia-section">
-            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>🏏 Cricket Trivia:</div>
-            <div className="trivia-text">
-              {currentPuzzle?.trivia || "Every cricket legend has missed a few catches!"}
-            </div>
-          </div>
-
-          <div className="share-section">
-            <div style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Share your attempt:</div>
-            <div className="share-result">{generateShareText()}</div>
-
-            <div className="modal-buttons">
-              <button className="btn-enhanced btn-secondary" onClick={handleShare}>
-                📤 Share
-              </button>
-              <button className="btn-enhanced btn-primary" onClick={nextPuzzle}>
-                ➡️ Next Puzzle
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  );
-
-  // ============================================================================
-  // HOW TO PLAY MODAL - Centered overlay system
-  // ============================================================================
-  const renderHowToPlayModal = () => (
-    showHowToPlay && (
-      <div className="game-overlay">
-        <div className="how-to-play-modal">
-          <div className="modal-header">
-            <h2>🏏 How to Play CricGuess</h2>
-            <button
-              onClick={() => setShowHowToPlay(false)}
-              className="close-button"
-            >
-              ✕
-            </button>
-          </div>
-
-          <div className="instructions">
-            <div className="instruction-item">
-              <div className="instruction-icon">🎯</div>
-              <div>
-                <strong>Objective:</strong> Guess the "Man of the Match" from the cricket scorecard
-              </div>
-            </div>
-
-            <div className="instruction-item">
-              <div className="instruction-icon">🔍</div>
-              <div>
-                <strong>Clues:</strong> You get feedback on country, role, and career stats for each guess
-              </div>
-            </div>
-
-            <div className="instruction-item">
-              <div className="instruction-icon">⚡</div>
-              <div>
-                <strong>Attempts:</strong> You have only 3 guesses to find the correct player
-              </div>
-            </div>
-
-            <div className="instruction-item">
-              <div className="instruction-icon">🏆</div>
-              <div>
-                <strong>Feedback:</strong>
-                <br />✅ = Correct match
-                <br />❌ = Wrong match  
-                <br />🔼 = Target has more career matches
-                <br />🔽 = Target has fewer career matches
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setShowHowToPlay(false)}
-            className="btn-enhanced btn-primary"
-            style={{ width: '100%', marginTop: '1rem' }}
-          >
-            Start Playing! 🏏
-          </button>
-        </div>
-      </div>
-    )
-  );
-
-  // ============================================================================
   // MAIN RENDER
   // ============================================================================
   if (!currentPuzzle) {
@@ -989,7 +1076,7 @@ const CricGuess = () => {
         <div className="game-container">
           <div style={{ textAlign: 'center' }}>
             <h1 style={{ fontSize: '2rem', fontWeight: 700, color: '#2563eb', marginBottom: '1rem' }}>
-              🏏 CricGuess
+              🏏 Bowldem
             </h1>
             <div style={{ color: '#dc2626', marginBottom: '1rem' }}>
               {gameError || "No puzzles available."}
@@ -1007,6 +1094,7 @@ const CricGuess = () => {
       {renderHowToPlayModal()}
       {renderSuccessModal()}
       {renderGameOverModal()}
+      {renderShareConfirmation()}
 
       <div className="game-container">
         {/* Header Section */}
@@ -1018,7 +1106,7 @@ const CricGuess = () => {
             textAlign: 'center', 
             marginBottom: '0.5rem' 
           }}>
-            🏏 CricGuess
+            🏏 Bowldem
           </h1>
           <p style={{ 
             color: '#6b7280', 
