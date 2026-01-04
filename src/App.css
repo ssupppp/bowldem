@@ -1,15 +1,20 @@
 /*
- * CricGuess - ENHANCED LOOK & FEEL WITH TV BROADCAST STYLING
+ * CricGuess - ENHANCED CRICKET CSS - JSX COMPATIBLE
  * 
- * NEW FEATURES:
- * ============
- * 🎨 Team-specific colors for all major cricket teams
- * 📺 Professional TV broadcast scorecard design
- * 🎉 Success/Failure overlays with celebrations
- * 📱 Share functionality styling
- * 🏏 Authentic cricket trivia display
- * ✨ Enhanced visual feedback and animations
- * 🔧 FIXED: How to Play modal styling
+ * FEATURES IMPLEMENTED:
+ * =====================
+ * 🎯 Previous CSS base (TV broadcast, team colors, celebrations)
+ * 📌 STICKY FEEDBACK SYSTEM - stays visible during scrolling
+ * 📱 iOS SPACIOUS DESIGN - comfortable touch targets (56px+)
+ * 📏 SIDE-BY-SIDE TEAMS - both teams visible on desktop
+ * 🔧 JSX CLASS COMPATIBILITY - all expected classes included
+ * 🏏 Enhanced cricket branding and animations
+ * 
+ * FIXES APPLIED:
+ * ==============
+ * ✅ FIX #1: How to Play Modal - proper size constraints (not full page)
+ * ✅ FIX #2: Player Role Formatting - proper spacing and subheading style
+ * ✅ FIX #3: Sticky Feedback Grid - improved spacing and alignment
  */
 
 /* ============================================================================
@@ -49,54 +54,74 @@ body {
 }
 
 /* ============================================================================
-   TEAM COLORS - Authentic cricket team branding
+   ENHANCED HEADER STYLING - JSX Compatible
    ============================================================================ */
-.team-colors-mumbai { background: linear-gradient(135deg, #004ba0, #0066cc); }
-.team-colors-chennai { background: linear-gradient(135deg, #fceb3c, #f7dc00); color: #333; }
-.team-colors-rcb { background: linear-gradient(135deg, #c41e3a, #ff0000); }
-.team-colors-kkr { background: linear-gradient(135deg, #3a225d, #5a2d91); }
-.team-colors-delhi { background: linear-gradient(135deg, #282968, #3b4998); }
-.team-colors-punjab { background: linear-gradient(135deg, #c41e3a, #ff1744); }
-.team-colors-rajasthan { background: linear-gradient(135deg, #e91e63, #ff6ec7); }
-.team-colors-sunrisers { background: linear-gradient(135deg, #ff6f00, #ff8f00); }
-.team-colors-lucknow { background: linear-gradient(135deg, #1976d2, #2196f3); }
-.team-colors-gujarat { background: linear-gradient(135deg, #4a90e2, #74b9ff); }
-
-/* International team colors */
-.team-colors-india { background: linear-gradient(135deg, #ff6600, #138808); }
-.team-colors-pakistan { background: linear-gradient(135deg, #01411c, #00a86b); }
-.team-colors-srilanka { background: linear-gradient(135deg, #003893, #ffcc00); }
-.team-colors-australia { background: linear-gradient(135deg, #ffcc00, #008751); }
-.team-colors-england { background: linear-gradient(135deg, #012169, #ffffff); }
-.team-colors-newzealand { background: linear-gradient(135deg, #000000, #ffffff); }
-.team-colors-southafrica { background: linear-gradient(135deg, #007749, #ffcc00); }
-.team-colors-westindies { background: linear-gradient(135deg, #7b0001, #ffcc00); }
-.team-colors-bangladesh { background: linear-gradient(135deg, #006a4e, #f42a41); }
-.team-colors-zimbabwe { background: linear-gradient(135deg, #319c3a, #ffcc00); }
-.team-colors-default { background: linear-gradient(135deg, #6b7280, #9ca3af); }
-
-/* ============================================================================
-   TV BROADCAST SCORECARD - Professional cricket presentation
-   ============================================================================ */
-.scorecard-broadcast {
-  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-  color: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3);
-  position: relative;
-  overflow: hidden;
+.header-enhanced {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e2e8f0;
 }
 
-.scorecard-broadcast::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+.title-enhanced {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subtitle-enhanced {
+  color: #64748b;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================================
+   ENHANCED NAVIGATION STYLING - JSX Compatible
+   ============================================================================ */
+.navigation-enhanced {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.puzzle-info {
+  font-weight: 600;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.125rem;
+  line-height: 1.2;
+  color: #1f2937;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* ============================================================================
+   TV BROADCAST SCORECARD STYLING - JSX Compatible
+   ============================================================================ */
+.scorecard-broadcast {
+  background: linear-gradient(135deg, #1e3a8a, #3730a3);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 24px rgba(30, 58, 138, 0.3);
+  border: 3px solid #1e40af;
 }
 
 .broadcast-header {
@@ -104,14 +129,15 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .broadcast-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .live-indicator {
@@ -120,7 +146,7 @@ body {
   padding: 0.25rem 0.75rem;
   border-radius: 1rem;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   animation: pulse-live 2s infinite;
 }
 
@@ -131,20 +157,20 @@ body {
 
 .match-summary {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .match-title-broadcast {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 800;
   margin-bottom: 0.5rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #fbbf24;
 }
 
 .venue-info-broadcast {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   opacity: 0.9;
-  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 .teams-score-display {
@@ -152,40 +178,228 @@ body {
   grid-template-columns: 1fr auto 1fr;
   gap: 1rem;
   align-items: center;
+  margin-bottom: 1rem;
 }
 
 .team-display {
   text-align: center;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
-  backdrop-filter: blur(10px);
 }
 
 .team-name-broadcast {
   font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+  opacity: 0.9;
 }
 
 .team-score-broadcast {
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: #fbbf24;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .vs-separator {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #fbbf24;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.match-result {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.winner-announcement {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #fbbf24;
+}
+
+.motm-mystery {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f3f4f6;
 }
 
 /* ============================================================================
-   ENHANCED SQUAD DISPLAY with Team Colors
+   ✅ FIX #3: ENHANCED FEEDBACK SYSTEM - IMPROVED GRID SPACING
+   ============================================================================ */
+.feedback-container-enhanced {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border: 2px solid #0ea5e9;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feedback-sticky-active {
+  box-shadow: 0 8px 32px rgba(14, 165, 233, 0.2);
+  border-color: #0ea5e9;
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  transform: translateY(-2px);
+}
+
+.feedback-header-enhanced {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.feedback-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0369a1;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-subtitle {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.feedback-format-info {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+.feedback-placeholder {
+  text-align: center;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 2px dashed #cbd5e1;
+}
+
+.feedback-placeholder .feedback-title {
+  color: #475569;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-placeholder .feedback-subtitle {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* ✅ IMPROVED: Feedback display grid with better spacing */
+.feedback-display {
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.attempts-counter {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.feedback-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 0;
+}
+
+.feedback-grid-header {
+  display: contents;
+}
+
+.feedback-grid-header > span {
+  padding: 0.75rem 1rem;
+  background: #f1f5f9;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.feedback-grid-header > span:first-child {
+  text-align: left;
+}
+
+.feedback-row {
+  display: contents;
+}
+
+.feedback-row > span {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.feedback-row > span:first-child {
+  justify-content: flex-start;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.feedback-row.correct > span {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border-left: 4px solid #10b981;
+}
+
+.feedback-row.incorrect > span {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  border-left: 4px solid #ef4444;
+}
+
+.feedback-table {
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.feedback-cell {
+  text-align: center;
+  font-weight: 500;
+}
+
+.feedback-cell.name {
+  text-align: left;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.feedback-icon {
+  font-size: 1.2rem;
+}
+
+.legend-row {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.legend-symbols {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* ============================================================================
+   ENHANCED SQUAD LAYOUT - SIDE-BY-SIDE WITH SPACIOUS IOS DESIGN
    ============================================================================ */
 .squads-container-enhanced {
   display: grid;
@@ -200,37 +414,34 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   border: 2px solid #e2e8f0;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .team-squad-enhanced:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .squad-header-enhanced {
   padding: 1rem;
-  text-align: center;
-  font-weight: 700;
   color: white;
-  position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.squad-header-enhanced::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .team-name-enhanced {
-  font-size: 0.9rem;
-  margin-bottom: 0.25rem;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  font-size: clamp(0.7rem, 2vw, 0.9rem); /* ✅ Auto-reduce font for long names */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-height: 2.5rem; /* ✅ Consistent header height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.1;
 }
 
 .player-count-enhanced {
@@ -241,96 +452,132 @@ body {
 
 .players-grid-enhanced {
   padding: 1rem;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 0.5rem;
 }
 
+/* ============================================================================
+   ✅ FIX #2: PLAYER CARD FORMATTING - IMPROVED ROLE SPACING
+   ============================================================================ */
 .player-card-enhanced {
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 2px solid transparent;
   background: #f8fafc;
-  position: relative;
-  overflow: hidden;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  height: 64px; /* ✅ Fixed height for consistent sizing */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .player-card-enhanced:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background: #f1f5f9;
 }
 
 .player-card-enhanced.selected {
-  background: #fef2f2;
-  border-color: #f87171;
-  color: #dc2626;
-  transform: scale(1.02);
-}
-
-.player-card-enhanced.correct {
-  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-  border-color: #10b981;
-  color: #059669;
-  animation: celebrate-enhanced 0.8s ease-in-out;
-}
-
-.player-card-enhanced.incorrect {
-  background: linear-gradient(135deg, #fee2e2, #fecaca);
-  border-color: #ef4444;
-  color: #dc2626;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
 .player-card-enhanced.disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
-  filter: grayscale(0.3);
+  pointer-events: none;
 }
 
-@keyframes celebrate-enhanced {
-  0% { transform: scale(1); }
-  25% { transform: scale(1.05) rotate(1deg); }
-  50% { transform: scale(1.08) rotate(-1deg); }
-  75% { transform: scale(1.05) rotate(0.5deg); }
-  100% { transform: scale(1) rotate(0deg); }
-}
-
-.player-info-enhanced {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.player-details {
-  flex: 1;
-}
-
+/* ✅ IMPROVED: Player name styling with responsive font sizing */
 .player-name-enhanced {
-  font-size: 0.85rem;
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem); /* ✅ Auto-reduce font for long names */
   font-weight: 600;
   margin-bottom: 0.125rem;
-  line-height: 1.2;
+  line-height: 1.1; /* ✅ Tighter line height for better fit */
+  color: #1f2937;
+  text-align: center;
 }
 
+/* ✅ IMPROVED: Player role styling with responsive font sizing */
 .player-role-enhanced {
-  font-size: 0.7rem;
+  font-size: clamp(0.6rem, 1.2vw, 0.7rem); /* ✅ Auto-reduce font for consistency */
   font-weight: 500;
   opacity: 0.7;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-.player-stats-enhanced {
-  font-size: 0.7rem;
-  opacity: 0.8;
-  margin-top: 0.25rem;
   color: #6b7280;
+  margin-top: 0.125rem;
+  display: block;
+  text-align: center;
+  line-height: 1;
 }
 
 /* ============================================================================
-   SUCCESS/FAILURE OVERLAYS - Celebration animations
+   TEAM COLORS - Authentic cricket team branding
+   ============================================================================ */
+.team-colors-mumbai { background: linear-gradient(135deg, #004ba0, #0066cc); }
+.team-colors-chennai { background: linear-gradient(135deg, #fceb3c, #f7dc00); color: #333; }
+.team-colors-rcb { background: linear-gradient(135deg, #c41e3a, #ff0000); }
+.team-colors-kkr { background: linear-gradient(135deg, #3a225d, #5a2d91); }
+.team-colors-delhi { background: linear-gradient(135deg, #282968, #3b4998); }
+.team-colors-punjab { background: linear-gradient(135deg, #c41e3a, #ff1744); }
+.team-colors-rajasthan { background: linear-gradient(135deg, #e91e63, #ff6ec7); }
+.team-colors-sunrisers { background: linear-gradient(135deg, #ff6f00, #ff8f00); }
+.team-colors-srh { background: linear-gradient(135deg, #ff6f00, #ff8f00); }
+.team-colors-lucknow { background: linear-gradient(135deg, #1976d2, #2196f3); }
+.team-colors-gujarat { background: linear-gradient(135deg, #4a90e2, #74b9ff); }
+
+/* International team colors */
+.team-colors-india { background: linear-gradient(135deg, #ff6600, #138808); }
+.team-colors-pakistan { background: linear-gradient(135deg, #01411c, #00a86b); }
+.team-colors-sri-lanka { background: linear-gradient(135deg, #003893, #ffcc00); }
+.team-colors-australia { background: linear-gradient(135deg, #ffcc00, #008751); }
+.team-colors-england { background: linear-gradient(135deg, #012169, #ffffff); }
+.team-colors-new-zealand { background: linear-gradient(135deg, #000000, #ffffff); }
+.team-colors-south-africa { background: linear-gradient(135deg, #007749, #ffcc00); }
+.team-colors-west-indies { background: linear-gradient(135deg, #7b0001, #ffcc00); }
+.team-colors-bangladesh { background: linear-gradient(135deg, #006a4e, #f42a41); }
+.team-colors-zimbabwe { background: linear-gradient(135deg, #319c3a, #ffcc00); }
+.team-colors-default { background: linear-gradient(135deg, #6b7280, #9ca3af); }
+
+/* ============================================================================
+   GAME CONTROLS SECTION - JSX Compatible
+   ============================================================================ */
+.game-controls {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.attempt-info {
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.game-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ============================================================================
+   ✅ FIX #1: SUCCESS/FAILURE OVERLAYS - PROPER MODAL SIZING
    ============================================================================ */
 .game-overlay {
   position: fixed;
@@ -349,17 +596,6 @@ body {
 @keyframes overlay-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
-}
-
-@keyframes slideDown {
-  from { 
-    opacity: 0; 
-    transform: translateX(-50%) translateY(-20px);
-  }
-  to { 
-    opacity: 1; 
-    transform: translateX(-50%) translateY(0);
-  }
 }
 
 .success-modal, .failure-modal, .how-to-play-modal {
@@ -388,12 +624,16 @@ body {
   border: 3px solid #ef4444;
 }
 
+/* ✅ FIX #1: How to Play Modal - PROPER SIZE CONSTRAINTS */
 .how-to-play-modal {
   background: white;
   border: 3px solid #3b82f6;
   text-align: left;
-  max-width: 500px;
-  width: 90vw;
+  /* ✅ FIXED: Proper size constraints instead of full page */
+  max-width: 500px !important;
+  width: 90vw !important;
+  max-height: 80vh !important; /* ✅ ADDED: Prevent full height */
+  overflow-y: auto; /* ✅ ADDED: Scroll if content overflows */
 }
 
 .modal-header {
@@ -405,11 +645,41 @@ body {
   border-bottom: 2px solid #e2e8f0;
 }
 
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #64748b;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background: #f1f5f9;
+  color: #334155;
+}
+
 .instructions {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   margin-bottom: 1.5rem;
+}
+
+.instruction-section {
+  margin-bottom: 2rem;
+}
+
+.instruction-section h3 {
+  color: #1e293b;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .instruction-item {
@@ -420,6 +690,7 @@ body {
   background: #f8fafc;
   border-radius: 0.75rem;
   border-left: 4px solid #3b82f6;
+  margin-bottom: 1rem;
 }
 
 .instruction-icon {
@@ -428,7 +699,7 @@ body {
   margin-top: 0.125rem;
 }
 
-.instruction-item div {
+.instruction-text {
   line-height: 1.5;
   color: #374151;
 }
@@ -462,6 +733,13 @@ body {
   color: #6b7280;
 }
 
+.overlay-text {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
 .player-showcase {
   background: rgba(255, 255, 255, 0.8);
   padding: 1.5rem;
@@ -492,11 +770,25 @@ body {
   border: 2px solid #e5e7eb;
 }
 
+.cricket-trivia {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 1rem;
+  border-radius: 0.75rem;
+  margin: 1rem 0;
+  border: 2px solid #e5e7eb;
+}
+
+.trivia-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
 .trivia-text {
   font-size: 0.9rem;
   color: #4b5563;
   line-height: 1.5;
-  font-style: italic;
 }
 
 .share-section {
@@ -505,15 +797,23 @@ body {
   margin-top: 1rem;
 }
 
+.share-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
 .share-result {
-  background: #f3f4f6;
+  background: #f9fafb;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  margin: 0.5rem 0;
-  font-family: monospace;
+  font-family: 'Courier New', monospace;
   font-size: 0.8rem;
-  border: 1px solid #d1d5db;
+  color: #374151;
   white-space: pre-line;
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
 }
 
 .modal-buttons {
@@ -537,6 +837,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .btn-primary {
@@ -573,86 +875,27 @@ body {
 }
 
 /* ============================================================================
-   ENHANCED FEEDBACK DISPLAY - MOVED TO TOP
+   DEBUG INFO - Enhanced positioning
    ============================================================================ */
-.feedback-container-enhanced {
-  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-  border: 2px solid #0ea5e9;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.1);
-}
-
-.feedback-header-enhanced {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.feedback-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #0369a1;
-  margin-bottom: 0.5rem;
-}
-
-.feedback-subtitle {
-  font-size: 0.85rem;
-  color: #64748b;
-}
-
-.feedback-table {
-  background: white;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.feedback-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
-  align-items: center;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.feedback-row:last-child {
-  border-bottom: none;
-}
-
-.feedback-row.header {
-  background: #f8fafc;
-  font-weight: 600;
+.debug-info {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
   font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #64748b;
+  font-family: 'Courier New', monospace;
+  z-index: 999;
+  min-width: 200px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.feedback-row.correct {
-  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-  border-left: 4px solid #10b981;
-}
-
-.feedback-row.incorrect {
-  background: linear-gradient(135deg, #fee2e2, #fecaca);
-  border-left: 4px solid #ef4444;
-}
-
-.feedback-cell {
-  text-align: center;
-  font-weight: 500;
-}
-
-.feedback-cell.name {
-  text-align: left;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.feedback-icon {
-  font-size: 1.2rem;
+.debug-info p {
+  margin: 0.25rem 0;
+  line-height: 1.4;
 }
 
 /* ============================================================================
@@ -673,7 +916,7 @@ body {
 }
 
 /* ============================================================================
-   RESPONSIVE DESIGN - Enhanced mobile experience
+   RESPONSIVE DESIGN - Enhanced mobile experience with iOS optimizations
    ============================================================================ */
 @media (max-width: 768px) {
   .game-container {
@@ -683,11 +926,15 @@ body {
   }
 
   .squads-container-enhanced {
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 
   .squad-header-enhanced {
     padding: 0.75rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
   }
 
   .team-name-enhanced {
@@ -700,7 +947,8 @@ body {
   }
 
   .player-card-enhanced {
-    padding: 0.5rem;
+    padding: 1.25rem;
+    min-height: 60px;
   }
 
   .player-name-enhanced {
@@ -732,11 +980,76 @@ body {
   .instruction-icon {
     font-size: 1.25rem;
   }
-}
 
-@media (max-width: 480px) {
-  .squads-container-enhanced {
+  .header-enhanced {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .title-enhanced {
+    font-size: 2rem;
+  }
+
+  .subtitle-enhanced {
+    font-size: 0.9rem;
+  }
+
+  .navigation-enhanced {
+    flex-direction: column;
     gap: 0.75rem;
+    text-align: center;
+    padding: 0.75rem;
+  }
+
+  .nav-buttons {
+    justify-content: center;
+  }
+
+  .game-controls {
+    margin-top: 1rem;
+    padding: 0.75rem;
+  }
+
+  .attempt-info {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .game-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .debug-info {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin-top: 1rem;
+    width: 100%;
+    min-width: auto;
+  }
+
+  .feedback-placeholder {
+    padding: 1rem;
+  }
+
+  .feedback-placeholder .feedback-title {
+    font-size: 1rem;
+  }
+
+  .feedback-placeholder .feedback-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .feedback-grid {
+    grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr 0.8fr;
+    gap: 0;
+  }
+
+  .feedback-grid-header > span,
+  .feedback-row > span {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.7rem;
   }
 
   .teams-score-display {
@@ -757,11 +1070,45 @@ body {
   .team-display:last-child {
     order: 3;
   }
+}
 
-  .feedback-row {
-    grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr;
-    gap: 0.5rem;
+@media (max-width: 480px) {
+  .title-enhanced {
+    font-size: 1.75rem;
+  }
+
+  .navigation-enhanced {
     padding: 0.5rem;
+  }
+
+  .game-controls {
+    padding: 0.5rem;
+  }
+
+  .feedback-placeholder {
+    padding: 0.75rem;
+  }
+
+  .debug-info {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+  }
+
+  .player-card-enhanced {
+    padding: 1rem;
+    min-height: 56px;
+  }
+
+  .squad-header-enhanced {
+    padding: 1rem;
+  }
+
+  .team-name-enhanced {
+    font-size: 1.1rem;
+  }
+
+  .squads-container-enhanced {
+    gap: 0.75rem;
   }
 
   .success-modal, .failure-modal, .how-to-play-modal {
@@ -777,5 +1124,174 @@ body {
 
   .instructions {
     gap: 1rem;
+  }
+}
+
+/* ============================================================================
+   LANDSCAPE MOBILE OPTIMIZATION FOR SIDE-BY-SIDE TEAMS
+   ============================================================================ */
+@media (max-width: 768px) and (orientation: landscape) {
+  .header-enhanced {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .title-enhanced {
+    font-size: 1.8rem;
+  }
+
+  .navigation-enhanced {
+    flex-direction: row;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .game-controls {
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+  }
+
+  .feedback-placeholder {
+    padding: 0.75rem;
+  }
+
+  .squads-container-enhanced {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .players-grid-enhanced {
+    gap: 0.25rem;
+  }
+
+  .player-card-enhanced {
+    padding: 0.75rem;
+    min-height: 50px;
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY & INTERACTION STATES
+   ============================================================================ */
+.nav-buttons button:focus,
+.game-actions button:focus,
+.player-card-enhanced:focus,
+.btn-enhanced:focus {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.player-card-enhanced:focus {
+  border-color: #3b82f6;
+}
+
+/* Focus visible for keyboard navigation */
+.player-card-enhanced:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   ANIMATION ENHANCEMENTS
+   ============================================================================ */
+.feedback-sticky-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.game-controls {
+  transition: all 0.2s ease;
+}
+
+.navigation-enhanced {
+  transition: all 0.2s ease;
+}
+
+/* ============================================================================
+   REDUCED MOTION PREFERENCES
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .feedback-sticky-active,
+  .game-controls,
+  .navigation-enhanced,
+  .player-card-enhanced,
+  .team-squad-enhanced,
+  .btn-enhanced {
+    transition: none;
+  }
+
+  .player-card-enhanced:hover,
+  .team-squad-enhanced:hover,
+  .btn-primary:hover,
+  .btn-secondary:hover {
+    transform: none;
+  }
+
+  .celebration-emoji {
+    animation: none;
+  }
+
+  .live-indicator {
+    animation: none;
+  }
+
+  @keyframes celebrate-enhanced {
+    0%, 100% { transform: scale(1); }
+  }
+}
+
+/* ============================================================================
+   HIGH CONTRAST MODE SUPPORT
+   ============================================================================ */
+@media (prefers-contrast: high) {
+  .game-controls {
+    border-width: 2px;
+    border-color: #000;
+  }
+
+  .navigation-enhanced {
+    border-width: 2px;
+    border-color: #000;
+  }
+
+  .feedback-placeholder {
+    border-width: 3px;
+    border-color: #000;
+  }
+
+  .player-card-enhanced {
+    border-width: 2px;
+  }
+
+  .team-squad-enhanced {
+    border-width: 3px;
+  }
+
+  .feedback-container-enhanced {
+    border-width: 3px;
+    border-color: #000;
+  }
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+@media print {
+  .debug-info {
+    display: none;
+  }
+
+  .navigation-enhanced {
+    display: none;
+  }
+
+  .game-controls {
+    display: none;
+  }
+
+  .player-card-enhanced {
+    break-inside: avoid;
+  }
+
+  .modal, .overlay {
+    display: none;
   }
 }
