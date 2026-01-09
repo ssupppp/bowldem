@@ -333,7 +333,6 @@ function App() {
 
     return {
       player: selectedInfo.fullName,
-      role: selectedInfo.role === targetPlayerData.role ? "✅" : "❌",
       runs: selectedRuns === targetRuns ? "✅" : (selectedRuns < targetRuns ? "🔼" : "🔽"),
       wickets: selectedWickets === targetWickets ? "✅" : (selectedWickets < targetWickets ? "🔼" : "🔽"),
       matches: selectedMatches === targetMatches ? "✅" : (selectedMatches < targetMatches ? "🔼" : "🔽"),
@@ -405,8 +404,8 @@ function App() {
     const puzzleNumber = currentPuzzle?.id || currentPuzzleIndex + 1;
 
     // Generate grid pattern with line breaks (each guess on separate line)
-    const feedbackLines = squadFeedback.map(feedback => 
-      `${feedback.role}${feedback.runs}${feedback.wickets}${feedback.matches}`
+    const feedbackLines = squadFeedback.map(feedback =>
+      `${feedback.runs}${feedback.wickets}${feedback.matches}`
     );
 
     const gridPattern = feedbackLines.join('\n');
@@ -506,11 +505,11 @@ function App() {
         <div className="feedback-placeholder">
           <div className="feedback-title">🎯 Make your guess!</div>
           <div className="feedback-subtitle">
-            Select a player to get clues about role, career {currentFormat.toLowerCase()} stats
+            Select a player to get clues about their career {currentFormat.toLowerCase()} stats
           </div>
           <div className="feedback-legend">
             <div className="legend-row">
-              <strong>Role</strong> • <strong>{currentFormat} Runs</strong> • <strong>{currentFormat} Wickets</strong> • <strong>{currentFormat} Matches</strong>
+              <strong>{currentFormat} Runs</strong> • <strong>{currentFormat} Wickets</strong> • <strong>{currentFormat} Matches</strong>
             </div>
             <div className="legend-symbols">
               ✅ Match • 🔼 Higher • 🔽 Lower
@@ -532,7 +531,6 @@ function App() {
         <div className="feedback-grid">
           <div className="feedback-grid-header">
             <span>Player</span>
-            <span>Role</span>
             <span>{currentFormat} Runs</span>
             <span>{currentFormat} Wickets</span>
             <span>{currentFormat} Matches</span>
@@ -541,7 +539,6 @@ function App() {
           {squadFeedback.map((feedback, index) => (
             <div key={index} className="feedback-row">
               <span className="player-name">{feedback.player}</span>
-              <span className="feedback-cell">{feedback.role}</span>
               <span className="feedback-cell">{feedback.runs}</span>
               <span className="feedback-cell">{feedback.wickets}</span>
               <span className="feedback-cell">{feedback.matches}</span>
@@ -820,7 +817,7 @@ function App() {
             <div className="instruction-item">
               <span className="instruction-icon">🔍</span>
               <div className="instruction-text">
-                <strong>Role</strong> • <strong>Career Runs</strong> • <strong>Career Wickets</strong> • <strong>Career Matches</strong>
+                <strong>Career Runs</strong> • <strong>Career Wickets</strong> • <strong>Career Matches</strong>
                 <br/>
                 ✅ Exact Match • 🔼 Target Higher • 🔽 Target Lower
               </div>
@@ -845,7 +842,7 @@ function App() {
               <div className="instruction-text">
                 • <strong>Man of the Match</strong> usually has outstanding performance in the scorecard<br/>
                 • Look for players with significant runs or wickets in the match<br/>
-                • Use role feedback to eliminate entire categories of players<br/>
+                • Use stats feedback to narrow down the player<br/>
                 • Consider the match context and winning team
               </div>
             </div>
