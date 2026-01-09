@@ -1,52 +1,95 @@
 /*
- * CricGuess - SURGICAL FIXES ONLY
- * 
- * FIXES APPLIED:
- * ==============
- * ✅ Modal positioning fix - changed className="overlay" to "game-overlay" (3 places ONLY)
- * ✅ Share format fix - Bowldem branding with proper grid pattern
- * ✅ ALL existing UI/styling preserved exactly as it was
+ * Bowldem - Daily Cricket Puzzle Game
+ *
+ * Wordle-style daily puzzle: Find the Man of the Match
+ * One puzzle per day, stats tracking, debug mode for testing
  */
 
 import React, { useState, useMemo, useEffect } from "react";
-import playersData from "./data/updatedplayers.json";
-import matchPuzzlesData from "./data/match_puzzles.json";
+import playersData from "./data/players_t20wc.json";
+import matchPuzzlesData from "./data/match_puzzles_t20wc.json";
+import { useDailyPuzzle } from "./hooks/useDailyPuzzle.js";
+import { StatsModal } from "./components/StatsModal.jsx";
+import { DebugPanel } from "./components/DebugPanel.jsx";
+import { CountdownTimer } from "./components/CountdownTimer.jsx";
 import "./App.css";
 
 // ============================================================================
-// STABLE CONFIG - Performance optimized
+// STABLE CONFIG - Feature flags
 // ============================================================================
 const STABLE_FEATURES = {
   useSquadDiscovery: true,
   useManOfTheMatch: true,
-  showDebugInfo: true,
-  maxGuesses: 3,
+  showDebugInfo: false, // Disabled - using new debug panel instead
   enhancedMobileLayout: true,
   hidePlayerStats: true,
 };
 
-const STABLE_PUZZLE_CONFIG = {
-  maxGuesses: STABLE_FEATURES.maxGuesses,
-  puzzles: matchPuzzlesData.puzzles || [],
-  targetType: STABLE_FEATURES.useManOfTheMatch
-    ? "Man of the Match"
-    : "Target Player",
-};
+// Puzzle data from JSON
+const PUZZLES = matchPuzzlesData.puzzles || [];
 
 function App() {
   // ============================================================================
-  // STATE MANAGEMENT - Enhanced with layout tracking
+  // DAILY PUZZLE HOOK - Manages puzzle selection, state persistence, stats
   // ============================================================================
-  const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
-  const [gameWon, setGameWon] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
+  const {
+    puzzle: currentPuzzle,
+    puzzleNumber,
+    gameState,
+    guesses,
+    guessedPlayers,
+    guessesRemaining,
+    gameStatus,
+    alreadyCompleted,
+    stats,
+    recordGuess,
+    debugMode,
+    debugOffset,
+    effectiveDate,
+    changeDebugDate,
+    resetDebugDate,
+    resetAllData,
+    maxGuesses
+  } = useDailyPuzzle(PUZZLES);
+
+  // ============================================================================
+  // LOCAL UI STATE
+  // ============================================================================
   const [squadFeedback, setSquadFeedback] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState(new Set());
+  const [gameWon, setGameWon] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
 
   // Modal states
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [showStatsModal, setShowStatsModal] = useState(false);
+
+  // ============================================================================
+  // RESTORE STATE FROM DAILY PUZZLE HOOK
+  // ============================================================================
+  useEffect(() => {
+    // Restore game state when hook loads saved state
+    if (guesses.length > 0 && currentPuzzle) {
+      // Rebuild feedback from saved guesses
+      const targetKey = currentPuzzle.targetPlayer;
+      const rebuiltFeedback = guesses.map(playerKey => {
+        return generateEnhancedFeedback(playerKey, targetKey);
+      });
+      setSquadFeedback(rebuiltFeedback);
+      setSelectedPlayers(new Set(guesses));
+
+      // Restore win/lose state
+      if (gameStatus === 'won') {
+        setGameWon(true);
+        setShowSuccessModal(true);
+      } else if (gameStatus === 'lost') {
+        setGameOver(true);
+        setShowGameOverModal(true);
+      }
+    }
+  }, [gameStatus, guesses.length, currentPuzzle]);
 
   // NEW: Sticky feedback tracking for enhanced UX
   const [isSticky, setIsSticky] = useState(false);
@@ -70,16 +113,7 @@ function App() {
   // ============================================================================
   // PUZZLE DATA PROCESSING - Enhanced with error handling
   // ============================================================================
-  const currentPuzzle = useMemo(() => {
-    const puzzle = STABLE_PUZZLE_CONFIG.puzzles[currentPuzzleIndex];
-    if (!puzzle) {
-      console.warn("🔍 DEBUG: No puzzle found for index:", currentPuzzleIndex);
-      return null;
-    }
-
-    console.log("🔍 DEBUG: Loading puzzle:", puzzle.id, "Target:", puzzle.targetPlayer);
-    return puzzle;
-  }, [currentPuzzleIndex]);
+  // currentPuzzle now comes from useDailyPuzzle hook
 
   // ============================================================================
   // ENHANCED PLAYER KEY RESOLUTION - Multi-strategy approach
@@ -134,38 +168,11 @@ function App() {
   };
 
   // ============================================================================
-  // FORMAT DETECTION - Enhanced team matching
+  // FORMAT DETECTION - T20 World Cup matches
   // ============================================================================
   const getPuzzleFormat = (puzzle) => {
-    if (!puzzle?.matchData?.scorecard?.teams) return "IPL";
-
-    const teams = puzzle.matchData.scorecard.teams;
-
-    // International teams indicate ODI
-    const internationalTeams = [
-      "India", "Pakistan", "Sri Lanka", "Australia", "England", 
-      "New Zealand", "South Africa", "West Indies", "Bangladesh", 
-      "Zimbabwe", "Afghanistan", "Ireland", "Scotland", "Netherlands"
-    ];
-
-    // IPL franchise teams indicate IPL
-    const iplTeams = [
-      "Mumbai Indians", "Chennai Super Kings", "Royal Challengers Bangalore",
-      "Kolkata Knight Riders", "Delhi Daredevils", "Delhi Capitals", 
-      "Rajasthan Royals", "Kings XI Punjab", "Punjab Kings",
-      "Sunrisers Hyderabad", "Deccan Chargers", "Pune Warriors India",
-      "Rising Pune Supergiant", "Gujarat Lions", "Kochi Tuskers Kerala"
-    ];
-
-    const isInternationalMatch = teams.every(team => 
-      internationalTeams.some(intlTeam => 
-        team.toLowerCase().includes(intlTeam.toLowerCase())
-      )
-    );
-
-    const format = isInternationalMatch ? "ODI" : "IPL";
-    console.log("🔍 DEBUG: Format detection:", teams, "→", format);
-    return format;
+    // All matches are T20 World Cup (T20I)
+    return "T20I";
   };
 
   // ============================================================================
@@ -180,27 +187,6 @@ function App() {
     const performances = currentPuzzle.matchData.playerPerformances;
     const teams = {};
 
-    // Placeholder players for missing squad members
-    const placeholderInfo = {};
-
-    // Puzzle-specific placeholders
-    if (currentPuzzle?.id === 4) {
-      placeholderInfo['INZAMAMULHAQ'] = {
-        fullName: 'Inzamam-ul-Haq',
-        country: 'Pakistan',
-        role: 'Batsman',
-        iplMatches: 0, iplRuns: 0, iplWickets: 0,
-        odiMatches: 378, odiRuns: 11739, odiWickets: 3
-      };
-      placeholderInfo['YOUNISKHAN'] = {
-        fullName: 'Younis Khan',
-        country: 'Pakistan', 
-        role: 'Batsman',
-        iplMatches: 0, iplRuns: 0, iplWickets: 0,
-        odiMatches: 265, odiRuns: 7249, odiWickets: 4
-      };
-    }
-
     console.log("🔍 DEBUG: Processing", Object.keys(performances).length, "players");
 
     Object.entries(performances).forEach(([playerKey, playerData]) => {
@@ -209,30 +195,17 @@ function App() {
       const team = playerData.team;
       if (!teams[team]) teams[team] = [];
 
-      // Special handling for Puzzle 5 T Kohli vs Virat Kohli conflict
+      // Resolve player key to find in database
       let resolvedKey = resolvePlayerKey(playerKey);
       let player = resolvedKey ? playersData[resolvedKey] : null;
 
-      if (currentPuzzle.id === 5 && playerKey === 'KOHLI') {
-        console.log("🔍 DEBUG: Puzzle 5 KOHLI conflict - preventing Virat Kohli mapping");
-        resolvedKey = null;
-        player = null;
-      }
-
-      // Check for placeholder
-      if (!player && placeholderInfo[playerKey]) {
-        player = placeholderInfo[playerKey];
-        console.log("🔍 DEBUG: Using placeholder for", playerKey);
-      }
-
-      // Fallback to match data
+      // Fallback to match data if player not in database
       if (!player) {
         player = {
           fullName: playerData.full_name || "Unknown Player",
           country: "Unknown",
           role: "Player",
-          iplMatches: 0, iplRuns: 0, iplWickets: 0,
-          odiMatches: 0, odiRuns: 0, odiWickets: 0
+          t20iMatches: 0, t20iRuns: 0, t20iWickets: 0
         };
         console.log("🔍 DEBUG: Using match data fallback for", playerKey);
       }
@@ -277,7 +250,7 @@ function App() {
   }, [currentPuzzle, manualMappings]);
 
   // ============================================================================
-  // PLAYER INFO RESOLVER - Enhanced with format-specific data
+  // PLAYER INFO RESOLVER - T20I data
   // ============================================================================
   const getPlayerInfo = (playerKey) => {
     const resolvedKey = resolvePlayerKey(playerKey);
@@ -294,12 +267,9 @@ function App() {
         fullName: player.fullName,
         country: player.country,
         role: player.role,
-        iplMatches: player.iplMatches || 0,
-        iplRuns: player.iplRuns || 0,
-        iplWickets: player.iplWickets || 0,
-        odiMatches: player.odiMatches || 0,
-        odiRuns: player.odiRuns || 0,
-        odiWickets: player.odiWickets || 0
+        t20iMatches: player.t20iMatches || 0,
+        t20iRuns: player.t20iRuns || 0,
+        t20iWickets: player.t20iWickets || 0
       };
     }
 
@@ -307,29 +277,26 @@ function App() {
       fullName: "Unknown Player",
       country: "Unknown",
       role: "Player",
-      iplMatches: 0, iplRuns: 0, iplWickets: 0,
-      odiMatches: 0, odiRuns: 0, odiWickets: 0
+      t20iMatches: 0, t20iRuns: 0, t20iWickets: 0
     };
   };
 
   // ============================================================================
-  // ENHANCED FEEDBACK SYSTEM - Format-specific statistics
+  // ENHANCED FEEDBACK SYSTEM - T20I career statistics
   // ============================================================================
   const generateEnhancedFeedback = (selectedKey, targetKey) => {
     const selectedInfo = getPlayerInfo(selectedKey);
     const targetPlayerData = playersData[resolvePlayerKey(targetKey)] || {};
-    const currentFormat = getPuzzleFormat(currentPuzzle);
 
-    console.log("🔍 DEBUG: Generating feedback for", selectedKey, "vs", targetKey, "format:", currentFormat);
+    console.log("🔍 DEBUG: Generating feedback for", selectedKey, "vs", targetKey);
 
-    // Format-specific statistics
-    const formatPrefix = currentFormat === 'IPL' ? 'ipl' : 'odi';
-    const selectedRuns = selectedInfo[`${formatPrefix}Runs`] || 0;
-    const targetRuns = targetPlayerData[`${formatPrefix}Runs`] || 0;
-    const selectedWickets = selectedInfo[`${formatPrefix}Wickets`] || 0;
-    const targetWickets = targetPlayerData[`${formatPrefix}Wickets`] || 0;
-    const selectedMatches = selectedInfo[`${formatPrefix}Matches`] || 0;
-    const targetMatches = targetPlayerData[`${formatPrefix}Matches`] || 0;
+    // T20I career statistics
+    const selectedRuns = selectedInfo.t20iRuns || 0;
+    const targetRuns = targetPlayerData.t20iRuns || 0;
+    const selectedWickets = selectedInfo.t20iWickets || 0;
+    const targetWickets = targetPlayerData.t20iWickets || 0;
+    const selectedMatches = selectedInfo.t20iMatches || 0;
+    const targetMatches = targetPlayerData.t20iMatches || 0;
 
     return {
       player: selectedInfo.fullName,
@@ -341,10 +308,10 @@ function App() {
   };
 
   // ============================================================================
-  // GAME LOGIC - Enhanced win/lose detection
+  // GAME LOGIC - Enhanced win/lose detection with daily puzzle persistence
   // ============================================================================
   const handlePlayerSelection = (playerKey) => {
-    if (gameWon || gameOver || selectedPlayers.has(playerKey)) return;
+    if (gameWon || gameOver || selectedPlayers.has(playerKey) || alreadyCompleted) return;
 
     console.log("🔍 DEBUG: Player selected:", playerKey);
 
@@ -355,25 +322,29 @@ function App() {
     console.log("🔍 DEBUG: Target resolution:", targetKey, "→", resolvedTargetKey);
     console.log("🔍 DEBUG: Selected resolution:", playerKey, "→", resolvedSelectedKey);
 
+    // Win condition: direct key match OR resolved key match
+    const isWin = (
+      playerKey === targetKey ||
+      resolvedSelectedKey === resolvedTargetKey ||
+      resolvedSelectedKey === targetKey ||
+      playerKey === resolvedTargetKey
+    );
+
+    // Record guess in daily puzzle system (persists to localStorage)
+    const { newState, isGameOver } = recordGuess(playerKey, isWin);
+
+    // Update local UI state
     const feedback = generateEnhancedFeedback(playerKey, targetKey);
     const newFeedback = [...squadFeedback, feedback];
 
     setSquadFeedback(newFeedback);
     setSelectedPlayers(prev => new Set([...prev, playerKey]));
 
-    // Win condition: direct key match OR resolved key match
-    const isWin = (
-      playerKey === targetKey || 
-      resolvedSelectedKey === resolvedTargetKey ||
-      resolvedSelectedKey === targetKey ||
-      playerKey === resolvedTargetKey
-    );
-
     if (isWin) {
       console.log("🎉 DEBUG: WIN! Player found");
       setGameWon(true);
       setTimeout(() => setShowSuccessModal(true), 500);
-    } else if (newFeedback.length >= STABLE_PUZZLE_CONFIG.maxGuesses) {
+    } else if (newFeedback.length >= maxGuesses) {
       console.log("💔 DEBUG: Game over - max guesses reached");
       setGameOver(true);
       setTimeout(() => setShowGameOverModal(true), 500);
@@ -381,19 +352,11 @@ function App() {
   };
 
   // ============================================================================
-  // NAVIGATION - Enhanced puzzle management
+  // MODAL CLOSE HANDLERS - Daily puzzle has no "next puzzle" button
   // ============================================================================
-  const handleNextPuzzle = () => {
-    if (currentPuzzleIndex < STABLE_PUZZLE_CONFIG.puzzles.length - 1) {
-      setCurrentPuzzleIndex(prev => prev + 1);
-      setGameWon(false);
-      setGameOver(false);
-      setSquadFeedback([]);
-      setSelectedPlayers(new Set());
-      setShowSuccessModal(false);
-      setShowGameOverModal(false);
-      console.log("🔍 DEBUG: Moving to next puzzle");
-    }
+  const handleCloseModal = () => {
+    setShowSuccessModal(false);
+    setShowGameOverModal(false);
   };
 
   // ============================================================================
@@ -401,7 +364,6 @@ function App() {
   // ============================================================================
   const generateShareText = () => {
     const currentFormat = getPuzzleFormat(currentPuzzle);
-    const puzzleNumber = currentPuzzle?.id || currentPuzzleIndex + 1;
 
     // Generate grid pattern with line breaks (each guess on separate line)
     const feedbackLines = squadFeedback.map(feedback =>
@@ -410,11 +372,11 @@ function App() {
 
     const gridPattern = feedbackLines.join('\n');
 
-    const resultText = gameWon 
-      ? '🎯 Found the Man of the Match!' 
-      : '💔 Better luck next time!';
+    const resultText = gameWon
+      ? `🎯 ${squadFeedback.length}/${maxGuesses}`
+      : `💔 X/${maxGuesses}`;
 
-    return `🏏 Bowldem #${puzzleNumber} ${currentFormat} Match\n${gridPattern}\n${resultText}\n\nPlay at: bowldem.com`;
+    return `🏏 Bowldem #${puzzleNumber}\n${gridPattern}\n${resultText}\n\nPlay at: bowldem.com`;
   };
 
   const handleShare = () => {
@@ -422,7 +384,7 @@ function App() {
 
     if (navigator.share) {
       navigator.share({
-        title: `Bowldem #${currentPuzzle?.id || currentPuzzleIndex + 1}`,
+        title: `Bowldem #${puzzleNumber}`,
         text: shareText
       });
     } else {
@@ -524,7 +486,7 @@ function App() {
         <div className="feedback-header">
           <div className="feedback-title">🎯 Your Guesses</div>
           <div className="attempts-counter">
-            {squadFeedback.length}/{STABLE_PUZZLE_CONFIG.maxGuesses}
+            {squadFeedback.length}/{maxGuesses}
           </div>
         </div>
 
@@ -688,20 +650,23 @@ function App() {
           <div className="share-result">{generateShareText()}</div>
         </div>
 
+        <CountdownTimer />
+
         <div className="modal-buttons">
           <button className="btn-enhanced btn-success" onClick={handleShare}>
             📤 Share Result
           </button>
           <button
-            className="btn-enhanced btn-primary"
+            className="btn-enhanced btn-secondary"
             onClick={() => {
               setShowSuccessModal(false);
-              handleNextPuzzle();
+              setShowStatsModal(true);
             }}
           >
-            {currentPuzzleIndex < STABLE_PUZZLE_CONFIG.puzzles.length - 1 
-              ? "Next Puzzle 🎯" 
-              : "🏆 Game Complete!"}
+            📊 View Stats
+          </button>
+          <button className="btn-enhanced btn-primary" onClick={handleCloseModal}>
+            Close
           </button>
         </div>
       </div>
@@ -754,20 +719,23 @@ function App() {
           <div className="share-result">{generateShareText()}</div>
         </div>
 
+        <CountdownTimer />
+
         <div className="modal-buttons">
           <button className="btn-enhanced btn-success" onClick={handleShare}>
             📤 Share Result
           </button>
           <button
-            className="btn-enhanced btn-primary"
+            className="btn-enhanced btn-secondary"
             onClick={() => {
               setShowGameOverModal(false);
-              handleNextPuzzle();
+              setShowStatsModal(true);
             }}
           >
-            {currentPuzzleIndex < STABLE_PUZZLE_CONFIG.puzzles.length - 1 
-              ? "Next Puzzle 🎯" 
-              : "🏆 Game Complete!"}
+            📊 View Stats
+          </button>
+          <button className="btn-enhanced btn-primary" onClick={handleCloseModal}>
+            Close
           </button>
         </div>
       </div>
@@ -882,22 +850,29 @@ function App() {
         <div className="game-container">
           {/* Header Section */}
           <div className="header-enhanced">
-            <h1 className="title-enhanced">🏏 Bowldem</h1>
-            <p className="subtitle-enhanced">Find the Man of the Match</p>
+            <h1 className="title-enhanced">🏏 Bowldem #{puzzleNumber}</h1>
+            <p className="subtitle-enhanced">{effectiveDate}</p>
           </div>
 
           {/* Navigation - Enhanced with better spacing */}
           <div className="navigation-enhanced">
             <div className="puzzle-info">
-              Puzzle {currentPuzzle?.id || 1} of {STABLE_PUZZLE_CONFIG.puzzles.length}
+              {guessesRemaining > 0 && !alreadyCompleted
+                ? `${guessesRemaining} guesses remaining`
+                : alreadyCompleted
+                  ? (gameStatus === 'won' ? '🎯 Solved!' : '💔 Better luck tomorrow!')
+                  : 'Game Over'}
             </div>
             <div className="nav-buttons">
-              <button 
-                className="btn-enhanced btn-secondary" 
-                onClick={() => {
-                  console.log("🔍 DEBUG: How to Play clicked, setting showHowToPlay to true");
-                  setShowHowToPlay(true);
-                }}
+              <button
+                className="btn-enhanced btn-secondary"
+                onClick={() => setShowStatsModal(true)}
+              >
+                📊 Stats
+              </button>
+              <button
+                className="btn-enhanced btn-secondary"
+                onClick={() => setShowHowToPlay(true)}
               >
                 ❓ How to Play
               </button>
@@ -919,21 +894,26 @@ function App() {
 
           {/* Game Controls - Enhanced with better spacing */}
           <div className="game-controls">
-            {!gameOver && !gameWon && (
+            {!gameOver && !gameWon && !alreadyCompleted && (
               <div className="attempt-info">
-                Attempts: {squadFeedback.length}/{STABLE_PUZZLE_CONFIG.maxGuesses}
+                Attempts: {squadFeedback.length}/{maxGuesses}
               </div>
             )}
 
-            {(gameOver || gameWon) && (
+            {(gameOver || gameWon || alreadyCompleted) && (
               <div className="game-actions">
+                <CountdownTimer />
                 <button
-                  className="btn-enhanced btn-primary"
-                  onClick={handleNextPuzzle}
+                  className="btn-enhanced btn-success"
+                  onClick={handleShare}
                 >
-                  {currentPuzzleIndex < STABLE_PUZZLE_CONFIG.puzzles.length - 1 
-                    ? "Next Puzzle 🎯" 
-                    : "🏆 Game Complete!"}
+                  📤 Share Result
+                </button>
+                <button
+                  className="btn-enhanced btn-secondary"
+                  onClick={() => setShowStatsModal(true)}
+                >
+                  📊 View Stats
                 </button>
               </div>
             )}
@@ -979,6 +959,30 @@ function App() {
         <div className="game-overlay">
           <GameOverModal />
         </div>
+      )}
+
+      {/* Stats Modal */}
+      {showStatsModal && (
+        <div className="game-overlay" onClick={() => setShowStatsModal(false)}>
+          <div onClick={e => e.stopPropagation()}>
+            <StatsModal stats={stats} onClose={() => setShowStatsModal(false)} />
+          </div>
+        </div>
+      )}
+
+      {/* Debug Panel - Only visible when ?debug=true */}
+      {debugMode && (
+        <DebugPanel
+          effectiveDate={effectiveDate}
+          puzzleNumber={puzzleNumber}
+          debugOffset={debugOffset}
+          gameStatus={gameStatus}
+          guesses={guesses}
+          onPrevDay={() => changeDebugDate(-1)}
+          onNextDay={() => changeDebugDate(1)}
+          onResetDate={resetDebugDate}
+          onClearData={resetAllData}
+        />
       )}
     </div>
   );
