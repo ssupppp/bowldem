@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bowldem UX Mockups</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #121213;
+      color: #fff;
+      padding: 20px;
+    }
+    h1 { text-align: center; margin-bottom: 30px; color: #538d4e; }
+    h2 { margin: 30px 0 15px; color: #b59f3b; border-bottom: 1px solid #3a3a3c; padding-bottom: 10px; }
+    h3 { margin: 20px 0 10px; color: #818384; }
+
+    .mockup-container {
+      max-width: 400px;
+      margin: 0 auto 50px;
+      border: 2px solid #3a3a3c;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    /* Scorecard Header */
+    .scorecard {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid #3a3a3c;
+    }
+    .scorecard .match-title { font-size: 12px; color: #818384; margin-bottom: 8px; }
+    .scorecard .teams {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .scorecard .team {
+      text-align: center;
+    }
+    .scorecard .team-name { font-weight: bold; font-size: 14px; }
+    .scorecard .team-score { font-size: 20px; color: #538d4e; }
+    .scorecard .vs { color: #818384; font-size: 12px; }
+
+    /* Feedback Rows - Wordle Style */
+    .feedback-section {
+      background: #1a1a1b;
+      padding: 15px;
+      border-bottom: 1px solid #3a3a3c;
+    }
+    .feedback-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #2d2d2d;
+      border-radius: 8px;
+    }
+    .feedback-row.empty {
+      background: #1a1a1b;
+      border: 2px dashed #3a3a3c;
+    }
+    .player-name-fb {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .feedback-cells {
+      display: flex;
+      gap: 4px;
+    }
+    .feedback-cell {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .cell-exact { background: #538d4e; }
+    .cell-higher { background: #b59f3b; }
+    .cell-lower { background: #3a3a3c; }
+    .cell-header {
+      font-size: 9px;
+      color: #818384;
+      text-align: center;
+    }
+
+    /* Player Grid */
+    .player-grid {
+      padding: 15px;
+      background: #121213;
+    }
+    .team-section {
+      margin-bottom: 15px;
+    }
+    .team-header {
+      font-size: 12px;
+      color: #818384;
+      margin-bottom: 8px;
+      padding-left: 5px;
+    }
+    .players {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .player-card {
+      background: #3a3a3c;
+      padding: 10px 6px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .player-card:hover { background: #4a4a4c; }
+    .player-card.selected {
+      background: #538d4e;
+      opacity: 0.6;
+    }
+    .player-card.selected-wrong {
+      background: #3a3a3c;
+      opacity: 0.4;
+    }
+
+    /* Share Card Mockups */
+    .share-cards {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .share-card {
+      background: #1a1a1b;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      min-width: 200px;
+    }
+    .share-title {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+    .share-subtitle {
+      font-size: 12px;
+      color: #818384;
+      margin-bottom: 15px;
+    }
+    .share-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .share-row {
+      display: flex;
+      gap: 4px;
+    }
+    .share-cell {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+    }
+    .share-result {
+      font-size: 14px;
+      color: #538d4e;
+    }
+    .share-url {
+      font-size: 11px;
+      color: #818384;
+      margin-top: 10px;
+    }
+
+    /* Option Labels */
+    .option-label {
+      background: #538d4e;
+      color: white;
+      padding: 5px 15px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* Notes */
+    .notes {
+      background: #1a1a1b;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .notes li { margin-left: 20px; margin-bottom: 5px; }
+
+    .section-divider {
+      height: 3px;
+      background: linear-gradient(90deg, #538d4e, #b59f3b, #538d4e);
+      margin: 50px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏏 Bowldem UX Mockups</h1>
+
+  <!-- OPTION A: Fixed Split Layout -->
+  <h2>Option A: Fixed Split Layout (Recommended)</h2>
+  <p style="color: #818384; margin-bottom: 15px; text-align: center;">Feedback always visible, no scrolling needed</p>
+
+  <div class="mockup-container">
+    <div class="option-label">FIXED TOP SECTION</div>
+
+    <!-- Compact Scorecard -->
+    <div class="scorecard">
+      <div class="match-title">T20 World Cup 2022 • MCG</div>
+      <div class="teams">
+        <div class="team">
+          <div class="team-name">🇮🇳 IND</div>
+          <div class="team-score">160/6</div>
+        </div>
+        <div class="vs">vs</div>
+        <div class="team">
+          <div class="team-name">🇵🇰 PAK</div>
+          <div class="team-score">159/8</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Rows -->
+    <div class="feedback-section">
+      <div style="display: flex; justify-content: flex-end; gap: 4px; margin-bottom: 8px; padding-right: 10px;">
+        <div class="cell-header" style="width: 36px;">RUNS</div>
+        <div class="cell-header" style="width: 36px;">WKTS</div>
+        <div class="cell-header" style="width: 36px;">MTCH</div>
+      </div>
+
+      <div class="feedback-row">
+        <div class="player-name-fb">Rohit Sharma</div>
+        <div class="feedback-cells">
+          <div class="feedback-cell cell-higher">⬆️</div>
+          <div class="feedback-cell cell-lower">⬇️</div>
+          <div class="feedback-cell cell-exact">✅</div>
+        </div>
+      </div>
+
+      <div class="feedback-row">
+        <div class="player-name-fb">Hardik Pandya</div>
+        <div class="feedback-cells">
+          <div class="feedback-cell cell-lower">⬇️</div>
+          <div class="feedback-cell cell-higher">⬆️</div>
+          <div class="feedback-cell cell-lower">⬇️</div>
+        </div>
+      </div>
+
+      <div class="feedback-row empty">
+        <div class="player-name-fb" style="color: #818384;">Guess 3 of 3</div>
+        <div class="feedback-cells">
+          <div class="feedback-cell" style="background: #3a3a3c;">?</div>
+          <div class="feedback-cell" style="background: #3a3a3c;">?</div>
+          <div class="feedback-cell" style="background: #3a3a3c;">?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="option-label" style="background: #b59f3b;">SCROLLABLE GRID</div>
+
+    <!-- Player Grid -->
+    <div class="player-grid">
+      <div class="team-section">
+        <div class="team-header">🇮🇳 INDIA</div>
+        <div class="players">
+          <div class="player-card selected-wrong">Rohit</div>
+          <div class="player-card">KL Rahul</div>
+          <div class="player-card">Virat</div>
+          <div class="player-card">SKY</div>
+          <div class="player-card selected-wrong">Hardik</div>
+          <div class="player-card">Axar</div>
+          <div class="player-card">DK</div>
+          <div class="player-card">Ashwin</div>
+          <div class="player-card">Shami</div>
+          <div class="player-card">Bhuvi</div>
+          <div class="player-card">Arshdeep</div>
+        </div>
+      </div>
+
+      <div class="team-section">
+        <div class="team-header">🇵🇰 PAKISTAN</div>
+        <div class="players">
+          <div class="player-card">Rizwan</div>
+          <div class="player-card">Babar</div>
+          <div class="player-card">Shan</div>
+          <div class="player-card">Iftikhar</div>
+          <div class="player-card">Shadab</div>
+          <div class="player-card">Haider</div>
+          <div class="player-card">Nawaz</div>
+          <div class="player-card">Asif Ali</div>
+          <div class="player-card">Shaheen</div>
+          <div class="player-card">Rauf</div>
+          <div class="player-card">Naseem</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <strong>Key UX improvements:</strong>
+    <ul>
+      <li>Feedback section is FIXED - never scrolls away</li>
+      <li>Only the player grid scrolls if needed</li>
+      <li>Feedback builds like Wordle rows (top to bottom)</li>
+      <li>Guessed players are visually marked in grid</li>
+      <li>Column headers (RUNS/WKTS/MTCH) always visible</li>
+    </ul>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- SHARE CARD DESIGNS -->
+  <h2>Share Card Designs</h2>
+  <p style="color: #818384; margin-bottom: 20px; text-align: center;">The shareable result that goes viral</p>
+
+  <div class="share-cards">
+    <!-- Design 1: Wordle-style grid -->
+    <div class="share-card">
+      <div class="share-title">🏏 Bowldem #42</div>
+      <div class="share-subtitle">IND vs PAK • T20 WC</div>
+      <div class="share-grid">
+        <div class="share-row">
+          <div class="share-cell cell-higher"></div>
+          <div class="share-cell cell-lower"></div>
+          <div class="share-cell cell-exact"></div>
+        </div>
+        <div class="share-row">
+          <div class="share-cell cell-lower"></div>
+          <div class="share-cell cell-higher"></div>
+          <div class="share-cell cell-lower"></div>
+        </div>
+        <div class="share-row">
+          <div class="share-cell cell-exact"></div>
+          <div class="share-cell cell-exact"></div>
+          <div class="share-cell cell-exact"></div>
+        </div>
+      </div>
+      <div class="share-result">🎯 3/3</div>
+      <div class="share-url">bowldem.com</div>
+    </div>
+
+    <!-- Design 2: Compact with emojis -->
+    <div class="share-card">
+      <div class="share-title">🏏 Bowldem #42</div>
+      <div class="share-subtitle">2/3 guesses</div>
+      <pre style="font-size: 16px; margin: 15px 0; line-height: 1.8;">
+⬆️⬇️✅
+🎯🎯🎯</pre>
+      <div class="share-result">Found the MOTM! 🏆</div>
+      <div class="share-url">bowldem.com</div>
+    </div>
+
+    <!-- Design 3: Cricket themed -->
+    <div class="share-card">
+      <div class="share-title">🏏 Bowldem #42</div>
+      <div class="share-subtitle">🇮🇳 vs 🇵🇰 • MCG</div>
+      <div style="font-size: 24px; margin: 15px 0;">
+        🟨🟨🟩<br>
+        🟩🟩🟩
+      </div>
+      <div class="share-result">🏆 2/3</div>
+      <div class="share-url">Play at bowldem.com</div>
+    </div>
+  </div>
+
+  <div class="notes" style="margin-top: 30px;">
+    <strong>Share format considerations:</strong>
+    <ul>
+      <li>3 columns = Runs, Wickets, Matches (the 3 stats we compare)</li>
+      <li>🟩 Green = Exact match</li>
+      <li>🟨 Yellow = Close (target is higher)</li>
+      <li>⬛ Gray = Far (target is lower)</li>
+      <li>Each row = one guess</li>
+      <li>Spoiler-free (doesn't reveal the player)</li>
+    </ul>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- MOBILE VIEW SIMULATION -->
+  <h2>Mobile View (375px width)</h2>
+  <p style="color: #818384; margin-bottom: 20px; text-align: center;">How it looks on a phone</p>
+
+  <div class="mockup-container" style="max-width: 375px;">
+    <!-- Compact Scorecard -->
+    <div class="scorecard" style="padding: 10px;">
+      <div class="match-title" style="font-size: 10px;">T20 WC 2022 • MCG</div>
+      <div class="teams">
+        <div class="team">
+          <div class="team-name" style="font-size: 12px;">🇮🇳 IND</div>
+          <div class="team-score" style="font-size: 16px;">160/6</div>
+        </div>
+        <div class="vs" style="font-size: 10px;">vs</div>
+        <div class="team">
+          <div class="team-name" style="font-size: 12px;">🇵🇰 PAK</div>
+          <div class="team-score" style="font-size: 16px;">159/8</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compact Feedback -->
+    <div class="feedback-section" style="padding: 10px;">
+      <div class="feedback-row" style="padding: 8px;">
+        <div class="player-name-fb" style="font-size: 12px;">Rohit Sharma</div>
+        <div class="feedback-cells">
+          <div class="feedback-cell cell-higher" style="width: 30px; height: 30px; font-size: 14px;">⬆️</div>
+          <div class="feedback-cell cell-lower" style="width: 30px; height: 30px; font-size: 14px;">⬇️</div>
+          <div class="feedback-cell cell-exact" style="width: 30px; height: 30px; font-size: 14px;">✅</div>
+        </div>
+      </div>
+      <div class="feedback-row empty" style="padding: 8px;">
+        <div class="player-name-fb" style="font-size: 12px; color: #818384;">2 guesses left</div>
+        <div class="feedback-cells">
+          <div class="feedback-cell" style="width: 30px; height: 30px; background: #3a3a3c; font-size: 12px;">?</div>
+          <div class="feedback-cell" style="width: 30px; height: 30px; background: #3a3a3c; font-size: 12px;">?</div>
+          <div class="feedback-cell" style="width: 30px; height: 30px; background: #3a3a3c; font-size: 12px;">?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compact Grid -->
+    <div class="player-grid" style="padding: 10px;">
+      <div class="team-section" style="margin-bottom: 10px;">
+        <div class="team-header" style="font-size: 10px;">🇮🇳 INDIA</div>
+        <div class="players" style="grid-template-columns: repeat(4, 1fr); gap: 4px;">
+          <div class="player-card selected-wrong" style="padding: 8px 4px; font-size: 9px;">Rohit</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">KL</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Virat</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">SKY</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Hardik</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Axar</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">DK</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Ashwin</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Shami</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Bhuvi</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Arsh</div>
+        </div>
+      </div>
+
+      <div class="team-section">
+        <div class="team-header" style="font-size: 10px;">🇵🇰 PAKISTAN</div>
+        <div class="players" style="grid-template-columns: repeat(4, 1fr); gap: 4px;">
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Rizwan</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Babar</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Shan</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Iftikhar</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Shadab</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Haider</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Nawaz</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Asif</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Shaheen</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Rauf</div>
+          <div class="player-card" style="padding: 8px 4px; font-size: 9px;">Naseem</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <strong>Mobile optimizations:</strong>
+    <ul>
+      <li>4-column grid (fits 11 players in 3 rows)</li>
+      <li>Shorter player names</li>
+      <li>Smaller but still tappable cards (44px min tap target)</li>
+      <li>Fixed header + feedback, only grid scrolls</li>
+      <li>No horizontal scroll needed</li>
+    </ul>
+  </div>
+
+</body>
+</html>
