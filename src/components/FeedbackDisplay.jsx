@@ -1,8 +1,16 @@
 import React from 'react';
 
 /**
- * FeedbackDisplay - Shows Y/N feedback for each guess
- * Displays 4 attributes: Played in Game, Same Team, Same Role, Is MVP
+ * FeedbackDisplay - Shows Y/N feedback grid for each guess
+ *
+ * Displays 4 attributes per guess:
+ * - Played: Y if guessed player was in the match squad
+ * - Team: Y if guessed player is from the same country as MVP
+ * - Role: Y if guessed player has the same role (Batsman/Bowler/All-rounder/WK)
+ * - MVP: Trophy icon if correct, N otherwise
+ *
+ * Shows empty state with legend before any guesses are made.
+ * Highlights the winning row with special styling when MVP is found.
  */
 export function FeedbackDisplay({
   feedbackList = [],

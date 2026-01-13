@@ -2,11 +2,23 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 
 /**
  * PlayerAutocomplete - Text input with autocomplete for player selection
+ *
+ * Core component for player input in the knowledge-based guessing game.
+ * Replaces the old squad-selection UI with a searchable text field.
+ *
  * Features:
- * - Minimum 3 characters to trigger search
- * - Searches by player name and country
- * - Keyboard navigation (arrows, enter, escape)
- * - Excludes already guessed players
+ * - Minimum 3 characters required to trigger search (prevents overwhelming results)
+ * - Searches by player fullName and country (case-insensitive)
+ * - Keyboard navigation: ArrowUp/Down to navigate, Enter to select, Escape to close
+ * - Auto-excludes already guessed players from suggestions
+ * - Maximum 10 suggestions shown for performance
+ * - Mobile-friendly with 16px font to prevent iOS zoom
+ *
+ * Props:
+ * - players: Array of player objects from all_players.json
+ * - onSelectPlayer: Callback with player.id when selection is made
+ * - disabled: Disables input when game is over
+ * - usedPlayers: Set of already guessed player IDs to exclude
  */
 export function PlayerAutocomplete({
   players,

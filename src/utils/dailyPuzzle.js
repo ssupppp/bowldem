@@ -17,6 +17,7 @@ export const STORAGE_KEYS = {
   DEBUG_OFFSET: 'bowldem_debug_offset'
 };
 
+// Maximum attempts per puzzle (increased from 3 to 4 for knowledge-based format)
 export const MAX_GUESSES = 4;
 
 // ============================================================================

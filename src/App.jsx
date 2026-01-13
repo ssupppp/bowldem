@@ -1,8 +1,23 @@
 /*
  * Bowldem - Daily Cricket Puzzle Game (v2.0)
+ * ==========================================
  *
- * Wordle-style daily puzzle: Find the Man of the Match
- * New feedback system: Y/N for Played, Team, Role, MVP
+ * A Wordle-style daily puzzle game where players guess the Man of the Match
+ * from historic cricket matches based on venue and scorecard clues.
+ *
+ * Game Flow:
+ * 1. Player sees venue + match scores (team names hidden)
+ * 2. Player types a cricketer's name (autocomplete after 3 chars)
+ * 3. System provides Y/N feedback on 4 attributes:
+ *    - Played: Did this player play in this match?
+ *    - Team: Is this player on the same team as the MVP?
+ *    - Role: Does this player have the same role (Batsman/Bowler/etc)?
+ *    - MVP: Is this the Man of the Match? (Win condition)
+ * 4. Player has 4 guesses to find the MVP
+ *
+ * Data Structure:
+ * - all_players.json: Comprehensive player database (id, fullName, country, role)
+ * - match_puzzles_t20wc.json: Puzzle data with scorecard, playersInMatch, target
  */
 
 import React, { useState, useMemo, useEffect } from "react";
@@ -16,7 +31,7 @@ import { DebugPanel } from "./components/DebugPanel.jsx";
 import { CountdownTimer } from "./components/CountdownTimer.jsx";
 import "./App.css";
 
-// Puzzle data from JSON
+// Load puzzle data - each puzzle represents one historic match
 const PUZZLES = matchPuzzlesData.puzzles || [];
 
 function App() {
@@ -50,6 +65,7 @@ function App() {
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showStatsModal, setShowStatsModal] = useState(false);
 
+  // Create a lookup map for O(1) player access by ID
   const playersLookup = useMemo(() => {
     const map = {};
     allPlayersData.players.forEach(player => {
@@ -58,10 +74,19 @@ function App() {
     return map;
   }, []);
 
+  // Helper to find player by ID from the lookup map
   const findPlayer = (playerId) => {
     return playersLookup[playerId] || null;
   };
 
+  /**
+   * Generate Y/N feedback for a guessed player
+   * Compares guessed player against the target MVP across 4 attributes:
+   * - playedInGame: Was this player in the match squad?
+   * - sameTeam: Does player's country match MVP's team?
+   * - sameRole: Does player's role match MVP's role?
+   * - isMVP: Is this the correct answer?
+   */
   const generateNewFeedback = (guessedPlayerKey) => {
     const guessedPlayer = findPlayer(guessedPlayerKey);
     if (!guessedPlayer || !currentPuzzle) return null;
