@@ -5,25 +5,37 @@
       "targetPlayer": "VKOHLI",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Pakistan",
-            "India"
-          ],
           "venue": "Melbourne Cricket Ground",
-          "date": "2022-10-23",
-          "winner": "India",
-          "player_of_match": "V Kohli",
-          "team_scores": {
-            "Pakistan": {
-              "runs": 159,
-              "wickets": 8
-            },
-            "India": {
-              "runs": 160,
-              "wickets": 6
-            }
-          }
+          "team1Score": "159/8 (20 overs)",
+          "team2Score": "160/6 (20 overs)",
+          "result": "Team 2 won by 4 wickets"
         },
+        "playersInMatch": [
+          "MOHAMMADRIZWAN",
+          "BABARAZAM",
+          "SHANMASOOD",
+          "IFTIKHARAHMED",
+          "SHADABKHAN",
+          "HAIDERALI",
+          "MOHAMMADNAWAZ",
+          "ASIFALI",
+          "SHAHEENSHAHAFRIDI",
+          "HARISRAUF",
+          "NASEEMSHAH",
+          "KLRAHUL",
+          "RGSHARMA",
+          "VKOHLI",
+          "SAYADAV",
+          "ARPATEL",
+          "HHPANDYA",
+          "KDKARTHIK",
+          "RASHWIN",
+          "MOHAMMEDSHAMI",
+          "BKUMAR",
+          "ARSHDEEPSINGH"
+        ],
+        "targetPlayerTeam": "India",
+        "targetPlayerRole": "Batsman",
         "playerPerformances": {
           "MOHAMMADRIZWAN": {
             "full_name": "Mohammad Rizwan",
@@ -187,25 +199,37 @@
       "targetPlayer": "SMCURRAN",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "Pakistan",
-            "England"
-          ],
           "venue": "Melbourne Cricket Ground",
-          "date": "2022-11-13",
-          "winner": "England",
-          "player_of_match": "SM Curran",
-          "team_scores": {
-            "Pakistan": {
-              "runs": 137,
-              "wickets": 8
-            },
-            "England": {
-              "runs": 138,
-              "wickets": 5
-            }
-          }
+          "team1Score": "137/8 (20 overs)",
+          "team2Score": "138/5 (19 overs)",
+          "result": "Team 2 won by 5 wickets"
         },
+        "playersInMatch": [
+          "MOHAMMADRIZWAN",
+          "BABARAZAM",
+          "MOHAMMADHARIS",
+          "SHANMASOOD",
+          "IFTIKHARAHMED",
+          "SHADABKHAN",
+          "MOHAMMADNAWAZ",
+          "MOHAMMADWASIM",
+          "SHAHEENSHAHAFRIDI",
+          "HARISRAUF",
+          "NASEEMSHAH",
+          "JCBUTTLER",
+          "ADHALES",
+          "PDSALT",
+          "BASTOKES",
+          "HCBROOK",
+          "MMALI",
+          "LSLIVINGSTONE",
+          "SMCURRAN",
+          "CRWOAKES",
+          "CJJORDAN",
+          "AURASHID"
+        ],
+        "targetPlayerTeam": "England",
+        "targetPlayerRole": "All-rounder",
         "playerPerformances": {
           "MOHAMMADRIZWAN": {
             "full_name": "Mohammad Rizwan",
@@ -369,25 +393,37 @@
       "targetPlayer": "VKOHLI",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "India",
-            "South Africa"
-          ],
           "venue": "Kensington Oval, Bridgetown, Barbados",
-          "date": "2024-06-29",
-          "winner": "India",
-          "player_of_match": "V Kohli",
-          "team_scores": {
-            "India": {
-              "runs": 176,
-              "wickets": 7
-            },
-            "South Africa": {
-              "runs": 169,
-              "wickets": 8
-            }
-          }
+          "team1Score": "176/7 (20 overs)",
+          "team2Score": "169/8 (20 overs)",
+          "result": "Team 1 won by 7 runs"
         },
+        "playersInMatch": [
+          "RGSHARMA",
+          "VKOHLI",
+          "RRPANT",
+          "SAYADAV",
+          "ARPATEL",
+          "SDUBE",
+          "HHPANDYA",
+          "RAJADEJA",
+          "KULDEEPYADAV",
+          "ARSHDEEPSINGH",
+          "JJBUMRAH",
+          "RRHENDRICKS",
+          "QDEKOCK",
+          "AKMARKRAM",
+          "TSTUBBS",
+          "HKLAASEN",
+          "DAMILLER",
+          "MJANSEN",
+          "KAMAHARAJ",
+          "KRABADA",
+          "ANORTJE",
+          "TSHAMSI"
+        ],
+        "targetPlayerTeam": "India",
+        "targetPlayerRole": "Batsman",
         "playerPerformances": {
           "RGSHARMA": {
             "full_name": "RG Sharma",
@@ -551,25 +587,37 @@
       "targetPlayer": "MNSAMUELS",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "England",
-            "West Indies"
-          ],
           "venue": "Eden Gardens",
-          "date": "2016-04-03",
-          "winner": "West Indies",
-          "player_of_match": "MN Samuels",
-          "team_scores": {
-            "England": {
-              "runs": 155,
-              "wickets": 9
-            },
-            "West Indies": {
-              "runs": 161,
-              "wickets": 6
-            }
-          }
+          "team1Score": "155/9 (20 overs)",
+          "team2Score": "161/6 (19.4 overs)",
+          "result": "Team 2 won by 4 wickets"
         },
+        "playersInMatch": [
+          "JJROY",
+          "ADHALES",
+          "JEROOT",
+          "EJGMORGAN",
+          "JCBUTTLER",
+          "BASTOKES",
+          "MMALI",
+          "CJJORDAN",
+          "DJWILLEY",
+          "LEPLUNKETT",
+          "AURASHID",
+          "JCHARLES",
+          "CHGAYLE",
+          "MNSAMUELS",
+          "LMPSIMMONS",
+          "DJBRAVO",
+          "ADRUSSELL",
+          "DJGSAMMY",
+          "CRBRATHWAITE",
+          "DRAMDIN",
+          "SBADREE",
+          "SJBENN"
+        ],
+        "targetPlayerTeam": "West Indies",
+        "targetPlayerRole": "All-rounder",
         "playerPerformances": {
           "JJROY": {
             "full_name": "JJ Roy",
@@ -733,25 +781,37 @@
       "targetPlayer": "SHAHEENSHAHAFRIDI",
       "matchData": {
         "scorecard": {
-          "teams": [
-            "India",
-            "Pakistan"
-          ],
           "venue": "Dubai International Cricket Stadium",
-          "date": "2021-10-24",
-          "winner": "Pakistan",
-          "player_of_match": "Shaheen Shah Afridi",
-          "team_scores": {
-            "India": {
-              "runs": 151,
-              "wickets": 7
-            },
-            "Pakistan": {
-              "runs": 152,
-              "wickets": 0
-            }
-          }
+          "team1Score": "151/7 (20 overs)",
+          "team2Score": "152/0 (17.5 overs)",
+          "result": "Team 2 won by 10 wickets"
         },
+        "playersInMatch": [
+          "KLRAHUL",
+          "RGSHARMA",
+          "VKOHLI",
+          "SAYADAV",
+          "RRPANT",
+          "RAJADEJA",
+          "HHPANDYA",
+          "BKUMAR",
+          "MOHAMMEDSHAMI",
+          "JJBUMRAH",
+          "CVVARUN",
+          "MOHAMMADRIZWAN",
+          "BABARAZAM",
+          "FAKHARZAMAN",
+          "MOHAMMADHAFEEZ",
+          "SHOAIBMALIK",
+          "ASIFALI",
+          "SHADABKHAN",
+          "IMADWASIM",
+          "HASANALI",
+          "HARISRAUF",
+          "SHAHEENSHAHAFRIDI"
+        ],
+        "targetPlayerTeam": "Pakistan",
+        "targetPlayerRole": "Bowler",
         "playerPerformances": {
           "KLRAHUL": {
             "full_name": "KL Rahul",

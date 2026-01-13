@@ -1,0 +1,447 @@
+{
+  "players": [
+    {
+      "id": "VKOHLI",
+      "fullName": "Virat Kohli",
+      "country": "India",
+      "role": "Batsman"
+    },
+    {
+      "id": "RGSHARMA",
+      "fullName": "Rohit Sharma",
+      "country": "India",
+      "role": "Batsman"
+    },
+    {
+      "id": "KLRAHUL",
+      "fullName": "KL Rahul",
+      "country": "India",
+      "role": "WK-Batsman"
+    },
+    {
+      "id": "SAYADAV",
+      "fullName": "Suryakumar Yadav",
+      "country": "India",
+      "role": "Batsman"
+    },
+    {
+      "id": "HHPANDYA",
+      "fullName": "Hardik Pandya",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
+      "id": "RAJADEJA",
+      "fullName": "Ravindra Jadeja",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
+      "id": "JJBUMRAH",
+      "fullName": "Jasprit Bumrah",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "RASHWIN",
+      "fullName": "Ravichandran Ashwin",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
+      "id": "MOHAMMEDSHAMI",
+      "fullName": "Mohammed Shami",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "BKUMAR",
+      "fullName": "Bhuvneshwar Kumar",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "ARSHDEEPSINGH",
+      "fullName": "Arshdeep Singh",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "RRPANT",
+      "fullName": "Rishabh Pant",
+      "country": "India",
+      "role": "WK-Batsman"
+    },
+    {
+      "id": "KDKARTHIK",
+      "fullName": "Dinesh Karthik",
+      "country": "India",
+      "role": "WK-Batsman"
+    },
+    {
+      "id": "ARPATEL",
+      "fullName": "Axar Patel",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
+      "id": "SDUBE",
+      "fullName": "Shivam Dube",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
+      "id": "KULDEEPYADAV",
+      "fullName": "Kuldeep Yadav",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "CVVARUN",
+      "fullName": "Varun Chakravarthy",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "BABARAZAM",
+      "fullName": "Babar Azam",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "MOHAMMADRIZWAN",
+      "fullName": "Mohammad Rizwan",
+      "country": "Pakistan",
+      "role": "WK-Batsman"
+    },
+    {
+      "id": "SHAHEENSHAHAFRIDI",
+      "fullName": "Shaheen Shah Afridi",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
+      "id": "HARISRAUF",
+      "fullName": "Haris Rauf",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
+      "id": "SHADABKHAN",
+      "fullName": "Shadab Khan",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "MOHAMMADNAWAZ",
+      "fullName": "Mohammad Nawaz",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "FAKHARZAMAN",
+      "fullName": "Fakhar Zaman",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "IFTIKHARAHMED",
+      "fullName": "Iftikhar Ahmed",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "SHANMASOOD",
+      "fullName": "Shan Masood",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "HAIDERALI",
+      "fullName": "Haider Ali",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "ASIFALI",
+      "fullName": "Asif Ali",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "NASEEMSHAH",
+      "fullName": "Naseem Shah",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
+      "id": "MOHAMMADHARIS",
+      "fullName": "Mohammad Haris",
+      "country": "Pakistan",
+      "role": "WK-Batsman"
+    },
+    {
+      "id": "MOHAMMADWASIM",
+      "fullName": "Mohammad Wasim Jr",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "MOHAMMADHAFEEZ",
+      "fullName": "Mohammad Hafeez",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "SHOAIBMALIK",
+      "fullName": "Shoaib Malik",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "IMADWASIM",
+      "fullName": "Imad Wasim",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "HASANALI",
+      "fullName": "Hasan Ali",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
+      "id": "JCBUTTLER",
+      "fullName": "Jos Buttler",
+      "country": "England",
+      "role": "WK-Batsman"
+    },
+    {
+      "id": "BASTOKES",
+      "fullName": "Ben Stokes",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "SMCURRAN",
+      "fullName": "Sam Curran",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "AURASHID",
+      "fullName": "Adil Rashid",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
+      "id": "CJJORDAN",
+      "fullName": "Chris Jordan",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
+      "id": "CRWOAKES",
+      "fullName": "Chris Woakes",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "MMALI",
+      "fullName": "Moeen Ali",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "LSLIVINGSTONE",
+      "fullName": "Liam Livingstone",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "ADHALES",
+      "fullName": "Alex Hales",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "PDSALT",
+      "fullName": "Phil Salt",
+      "country": "England",
+      "role": "WK-Batsman"
+    },
+    {
+      "id": "HCBROOK",
+      "fullName": "Harry Brook",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "EJGMORGAN",
+      "fullName": "Eoin Morgan",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "JJROY",
+      "fullName": "Jason Roy",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "JEROOT",
+      "fullName": "Joe Root",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "DJWILLEY",
+      "fullName": "David Willey",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "LEPLUNKETT",
+      "fullName": "Liam Plunkett",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
+      "id": "QDEKOCK",
+      "fullName": "Quinton de Kock",
+      "country": "South Africa",
+      "role": "WK-Batsman"
+    },
+    {
+      "id": "AKMARKRAM",
+      "fullName": "Aiden Markram",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "DAMILLER",
+      "fullName": "David Miller",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "HKLAASEN",
+      "fullName": "Heinrich Klaasen",
+      "country": "South Africa",
+      "role": "WK-Batsman"
+    },
+    {
+      "id": "KRABADA",
+      "fullName": "Kagiso Rabada",
+      "country": "South Africa",
+      "role": "Bowler"
+    },
+    {
+      "id": "ANORTJE",
+      "fullName": "Anrich Nortje",
+      "country": "South Africa",
+      "role": "Bowler"
+    },
+    {
+      "id": "TSHAMSI",
+      "fullName": "Tabraiz Shamsi",
+      "country": "South Africa",
+      "role": "Bowler"
+    },
+    {
+      "id": "KAMAHARAJ",
+      "fullName": "Keshav Maharaj",
+      "country": "South Africa",
+      "role": "Bowler"
+    },
+    {
+      "id": "MJANSEN",
+      "fullName": "Marco Jansen",
+      "country": "South Africa",
+      "role": "All-rounder"
+    },
+    {
+      "id": "RRHENDRICKS",
+      "fullName": "Reeza Hendricks",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "TSTUBBS",
+      "fullName": "Tristan Stubbs",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "CHGAYLE",
+      "fullName": "Chris Gayle",
+      "country": "West Indies",
+      "role": "Batsman"
+    },
+    {
+      "id": "MNSAMUELS",
+      "fullName": "Marlon Samuels",
+      "country": "West Indies",
+      "role": "All-rounder"
+    },
+    {
+      "id": "ADRUSSELL",
+      "fullName": "Andre Russell",
+      "country": "West Indies",
+      "role": "All-rounder"
+    },
+    {
+      "id": "DJBRAVO",
+      "fullName": "Dwayne Bravo",
+      "country": "West Indies",
+      "role": "All-rounder"
+    },
+    {
+      "id": "CRBRATHWAITE",
+      "fullName": "Carlos Brathwaite",
+      "country": "West Indies",
+      "role": "All-rounder"
+    },
+    {
+      "id": "DJGSAMMY",
+      "fullName": "Darren Sammy",
+      "country": "West Indies",
+      "role": "All-rounder"
+    },
+    {
+      "id": "JCHARLES",
+      "fullName": "Johnson Charles",
+      "country": "West Indies",
+      "role": "WK-Batsman"
+    },
+    {
+      "id": "LMPSIMMONS",
+      "fullName": "Lendl Simmons",
+      "country": "West Indies",
+      "role": "Batsman"
+    },
+    {
+      "id": "SBADREE",
+      "fullName": "Samuel Badree",
+      "country": "West Indies",
+      "role": "Bowler"
+    },
+    {
+      "id": "SJBENN",
+      "fullName": "Sulieman Benn",
+      "country": "West Indies",
+      "role": "Bowler"
+    },
+    {
+      "id": "DRAMDIN",
+      "fullName": "Denesh Ramdin",
+      "country": "West Indies",
+      "role": "WK-Batsman"
+    }
+  ],
+  "metadata": {
+    "version": "2.0",
+    "lastUpdated": "2026-01-13",
+    "totalPlayers": 73
+  }
+}

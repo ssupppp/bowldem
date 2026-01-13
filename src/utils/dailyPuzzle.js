@@ -17,7 +17,7 @@ export const STORAGE_KEYS = {
   DEBUG_OFFSET: 'bowldem_debug_offset'
 };
 
-export const MAX_GUESSES = 3;
+export const MAX_GUESSES = 4;
 
 // ============================================================================
 // DATE UTILITIES
@@ -221,7 +221,7 @@ function getDefaultStats() {
     gamesWon: 0,
     currentStreak: 0,
     maxStreak: 0,
-    guessDistribution: [0, 0, 0], // Index = guesses-1 (for 1, 2, 3 guesses)
+    guessDistribution: [0, 0, 0, 0], // Index = guesses-1 (for 1, 2, 3, 4 guesses)
     lastWinDate: null
   };
 }
