@@ -1,262 +1,52 @@
 {
   "players": [
     {
-      "id": "VKOHLI",
-      "fullName": "Virat Kohli",
-      "country": "India",
-      "role": "Batsman"
+      "id": "AARONJONES",
+      "fullName": "Aaron Jones",
+      "country": "United States of America",
+      "role": "Unknown"
     },
     {
-      "id": "RGSHARMA",
-      "fullName": "Rohit Sharma",
-      "country": "India",
-      "role": "Batsman"
+      "id": "AASIFSHEIKH",
+      "fullName": "Aasif Sheikh",
+      "country": "Nepal",
+      "role": "Unknown"
     },
     {
-      "id": "KLRAHUL",
-      "fullName": "KL Rahul",
-      "country": "India",
-      "role": "WK-Batsman"
+      "id": "ABALBIRNIE",
+      "fullName": "A Balbirnie",
+      "country": "Ireland",
+      "role": "Unknown"
     },
     {
-      "id": "SAYADAV",
-      "fullName": "Suryakumar Yadav",
-      "country": "India",
-      "role": "Batsman"
-    },
-    {
-      "id": "HHPANDYA",
-      "fullName": "Hardik Pandya",
-      "country": "India",
-      "role": "All-rounder"
-    },
-    {
-      "id": "RAJADEJA",
-      "fullName": "Ravindra Jadeja",
-      "country": "India",
-      "role": "All-rounder"
-    },
-    {
-      "id": "JJBUMRAH",
-      "fullName": "Jasprit Bumrah",
-      "country": "India",
-      "role": "Bowler"
-    },
-    {
-      "id": "RASHWIN",
-      "fullName": "Ravichandran Ashwin",
-      "country": "India",
-      "role": "All-rounder"
-    },
-    {
-      "id": "MOHAMMEDSHAMI",
-      "fullName": "Mohammed Shami",
-      "country": "India",
-      "role": "Bowler"
-    },
-    {
-      "id": "BKUMAR",
-      "fullName": "Bhuvneshwar Kumar",
-      "country": "India",
-      "role": "Bowler"
-    },
-    {
-      "id": "ARSHDEEPSINGH",
-      "fullName": "Arshdeep Singh",
-      "country": "India",
-      "role": "Bowler"
-    },
-    {
-      "id": "RRPANT",
-      "fullName": "Rishabh Pant",
-      "country": "India",
-      "role": "WK-Batsman"
-    },
-    {
-      "id": "KDKARTHIK",
-      "fullName": "Dinesh Karthik",
-      "country": "India",
-      "role": "WK-Batsman"
-    },
-    {
-      "id": "ARPATEL",
-      "fullName": "Axar Patel",
-      "country": "India",
-      "role": "All-rounder"
-    },
-    {
-      "id": "SDUBE",
-      "fullName": "Shivam Dube",
-      "country": "India",
-      "role": "All-rounder"
-    },
-    {
-      "id": "KULDEEPYADAV",
-      "fullName": "Kuldeep Yadav",
-      "country": "India",
-      "role": "Bowler"
-    },
-    {
-      "id": "CVVARUN",
-      "fullName": "Varun Chakravarthy",
-      "country": "India",
-      "role": "Bowler"
-    },
-    {
-      "id": "BABARAZAM",
-      "fullName": "Babar Azam",
+      "id": "ABBASAFRIDI",
+      "fullName": "Abbas Afridi",
       "country": "Pakistan",
-      "role": "Batsman"
+      "role": "Unknown"
     },
     {
-      "id": "MOHAMMADRIZWAN",
-      "fullName": "Mohammad Rizwan",
-      "country": "Pakistan",
-      "role": "WK-Batsman"
+      "id": "ABDEVILLIERS",
+      "fullName": "AB de Villiers",
+      "country": "South Africa",
+      "role": "Unknown"
     },
     {
-      "id": "SHAHEENSHAHAFRIDI",
-      "fullName": "Shaheen Shah Afridi",
-      "country": "Pakistan",
-      "role": "Bowler"
+      "id": "ABOHARA",
+      "fullName": "A Bohara",
+      "country": "Nepal",
+      "role": "Unknown"
     },
     {
-      "id": "HARISRAUF",
-      "fullName": "Haris Rauf",
-      "country": "Pakistan",
-      "role": "Bowler"
+      "id": "ACAGAR",
+      "fullName": "AC Agar",
+      "country": "Australia",
+      "role": "Unknown"
     },
     {
-      "id": "SHADABKHAN",
-      "fullName": "Shadab Khan",
-      "country": "Pakistan",
-      "role": "All-rounder"
-    },
-    {
-      "id": "MOHAMMADNAWAZ",
-      "fullName": "Mohammad Nawaz",
-      "country": "Pakistan",
-      "role": "All-rounder"
-    },
-    {
-      "id": "FAKHARZAMAN",
-      "fullName": "Fakhar Zaman",
-      "country": "Pakistan",
-      "role": "Batsman"
-    },
-    {
-      "id": "IFTIKHARAHMED",
-      "fullName": "Iftikhar Ahmed",
-      "country": "Pakistan",
-      "role": "All-rounder"
-    },
-    {
-      "id": "SHANMASOOD",
-      "fullName": "Shan Masood",
-      "country": "Pakistan",
-      "role": "Batsman"
-    },
-    {
-      "id": "HAIDERALI",
-      "fullName": "Haider Ali",
-      "country": "Pakistan",
-      "role": "Batsman"
-    },
-    {
-      "id": "ASIFALI",
-      "fullName": "Asif Ali",
-      "country": "Pakistan",
-      "role": "Batsman"
-    },
-    {
-      "id": "NASEEMSHAH",
-      "fullName": "Naseem Shah",
-      "country": "Pakistan",
-      "role": "Bowler"
-    },
-    {
-      "id": "MOHAMMADHARIS",
-      "fullName": "Mohammad Haris",
-      "country": "Pakistan",
-      "role": "WK-Batsman"
-    },
-    {
-      "id": "MOHAMMADWASIM",
-      "fullName": "Mohammad Wasim Jr",
-      "country": "Pakistan",
-      "role": "All-rounder"
-    },
-    {
-      "id": "MOHAMMADHAFEEZ",
-      "fullName": "Mohammad Hafeez",
-      "country": "Pakistan",
-      "role": "All-rounder"
-    },
-    {
-      "id": "SHOAIBMALIK",
-      "fullName": "Shoaib Malik",
-      "country": "Pakistan",
-      "role": "All-rounder"
-    },
-    {
-      "id": "IMADWASIM",
-      "fullName": "Imad Wasim",
-      "country": "Pakistan",
-      "role": "All-rounder"
-    },
-    {
-      "id": "HASANALI",
-      "fullName": "Hasan Ali",
-      "country": "Pakistan",
-      "role": "Bowler"
-    },
-    {
-      "id": "JCBUTTLER",
-      "fullName": "Jos Buttler",
-      "country": "England",
-      "role": "WK-Batsman"
-    },
-    {
-      "id": "BASTOKES",
-      "fullName": "Ben Stokes",
-      "country": "England",
-      "role": "All-rounder"
-    },
-    {
-      "id": "SMCURRAN",
-      "fullName": "Sam Curran",
-      "country": "England",
-      "role": "All-rounder"
-    },
-    {
-      "id": "AURASHID",
-      "fullName": "Adil Rashid",
-      "country": "England",
-      "role": "Bowler"
-    },
-    {
-      "id": "CJJORDAN",
-      "fullName": "Chris Jordan",
-      "country": "England",
-      "role": "Bowler"
-    },
-    {
-      "id": "CRWOAKES",
-      "fullName": "Chris Woakes",
-      "country": "England",
-      "role": "All-rounder"
-    },
-    {
-      "id": "MMALI",
-      "fullName": "Moeen Ali",
-      "country": "England",
-      "role": "All-rounder"
-    },
-    {
-      "id": "LSLIVINGSTONE",
-      "fullName": "Liam Livingstone",
-      "country": "England",
-      "role": "All-rounder"
+      "id": "ACEVANS",
+      "fullName": "AC Evans",
+      "country": "Scotland",
+      "role": "Unknown"
     },
     {
       "id": "ADHALES",
@@ -265,124 +55,10 @@
       "role": "Batsman"
     },
     {
-      "id": "PDSALT",
-      "fullName": "Phil Salt",
-      "country": "England",
-      "role": "WK-Batsman"
-    },
-    {
-      "id": "HCBROOK",
-      "fullName": "Harry Brook",
-      "country": "England",
-      "role": "Batsman"
-    },
-    {
-      "id": "EJGMORGAN",
-      "fullName": "Eoin Morgan",
-      "country": "England",
-      "role": "Batsman"
-    },
-    {
-      "id": "JJROY",
-      "fullName": "Jason Roy",
-      "country": "England",
-      "role": "Batsman"
-    },
-    {
-      "id": "JEROOT",
-      "fullName": "Joe Root",
-      "country": "England",
-      "role": "Batsman"
-    },
-    {
-      "id": "DJWILLEY",
-      "fullName": "David Willey",
-      "country": "England",
-      "role": "All-rounder"
-    },
-    {
-      "id": "LEPLUNKETT",
-      "fullName": "Liam Plunkett",
-      "country": "England",
-      "role": "Bowler"
-    },
-    {
-      "id": "QDEKOCK",
-      "fullName": "Quinton de Kock",
-      "country": "South Africa",
-      "role": "WK-Batsman"
-    },
-    {
-      "id": "AKMARKRAM",
-      "fullName": "Aiden Markram",
-      "country": "South Africa",
-      "role": "Batsman"
-    },
-    {
-      "id": "DAMILLER",
-      "fullName": "David Miller",
-      "country": "South Africa",
-      "role": "Batsman"
-    },
-    {
-      "id": "HKLAASEN",
-      "fullName": "Heinrich Klaasen",
-      "country": "South Africa",
-      "role": "WK-Batsman"
-    },
-    {
-      "id": "KRABADA",
-      "fullName": "Kagiso Rabada",
-      "country": "South Africa",
-      "role": "Bowler"
-    },
-    {
-      "id": "ANORTJE",
-      "fullName": "Anrich Nortje",
-      "country": "South Africa",
-      "role": "Bowler"
-    },
-    {
-      "id": "TSHAMSI",
-      "fullName": "Tabraiz Shamsi",
-      "country": "South Africa",
-      "role": "Bowler"
-    },
-    {
-      "id": "KAMAHARAJ",
-      "fullName": "Keshav Maharaj",
-      "country": "South Africa",
-      "role": "Bowler"
-    },
-    {
-      "id": "MJANSEN",
-      "fullName": "Marco Jansen",
-      "country": "South Africa",
-      "role": "All-rounder"
-    },
-    {
-      "id": "RRHENDRICKS",
-      "fullName": "Reeza Hendricks",
-      "country": "South Africa",
-      "role": "Batsman"
-    },
-    {
-      "id": "TSTUBBS",
-      "fullName": "Tristan Stubbs",
-      "country": "South Africa",
-      "role": "Batsman"
-    },
-    {
-      "id": "CHGAYLE",
-      "fullName": "Chris Gayle",
-      "country": "West Indies",
-      "role": "Batsman"
-    },
-    {
-      "id": "MNSAMUELS",
-      "fullName": "Marlon Samuels",
-      "country": "West Indies",
-      "role": "All-rounder"
+      "id": "ADMATHEWS",
+      "fullName": "AD Mathews",
+      "country": "Sri Lanka",
+      "role": "Unknown"
     },
     {
       "id": "ADRUSSELL",
@@ -391,14 +67,410 @@
       "role": "All-rounder"
     },
     {
-      "id": "DJBRAVO",
-      "fullName": "Dwayne Bravo",
+      "id": "ADSFLETCHER",
+      "fullName": "ADS Fletcher",
       "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "AFIFHOSSAIN",
+      "fullName": "Afif Hossain",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "AFMILNE",
+      "fullName": "AF Milne",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "AGSGOUS",
+      "fullName": "AGS Gous",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "AHMEDSHEHZAD",
+      "fullName": "Ahmed Shehzad",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "AJFINCH",
+      "fullName": "AJ Finch",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "AJHOSEIN",
+      "fullName": "AJ Hosein",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "AKMARKRAM",
+      "fullName": "Aiden Markram",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "AKSAH",
+      "fullName": "AK Sah",
+      "country": "Nepal",
+      "role": "Unknown"
+    },
+    {
+      "id": "ALAMINHOSSAIN",
+      "fullName": "Al-Amin Hossain",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "ALIKHAN",
+      "fullName": "Ali Khan",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "AMISHRA",
+      "fullName": "A Mishra",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "AMPHANGISO",
+      "fullName": "AM Phangiso",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "AMRAHANE",
+      "fullName": "AM Rahane",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "ANAMULHAQUE",
+      "fullName": "Anamul Haque",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "ANEHRA",
+      "fullName": "A Nehra",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "ANORTJE",
+      "fullName": "Anrich Nortje",
+      "country": "South Africa",
+      "role": "Bowler"
+    },
+    {
+      "id": "AQIBILYAS",
+      "fullName": "Aqib Ilyas",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "ARPATEL",
+      "fullName": "Axar Patel",
+      "country": "India",
       "role": "All-rounder"
+    },
+    {
+      "id": "ARSHDEEPSINGH",
+      "fullName": "Arshdeep Singh",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "ASIFALI",
+      "fullName": "Asif Ali",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "ASJOSEPH",
+      "fullName": "AS Joseph",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "ATNIDAMANURU",
+      "fullName": "AT Nidamanuru",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "AURASHID",
+      "fullName": "Adil Rashid",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
+      "id": "AYANKHAN",
+      "fullName": "Ayan Khan",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "AZAMPA",
+      "fullName": "A Zampa",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "BABARAZAM",
+      "fullName": "Babar Azam",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "BAKING",
+      "fullName": "BA King",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "BASTOKES",
+      "fullName": "Ben Stokes",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "BAWMENDIS",
+      "fullName": "BAW Mendis",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "BDGLOVER",
+      "fullName": "BD Glover",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "BEHENDRICKS",
+      "fullName": "BE Hendricks",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "BFWDELEEDE",
+      "fullName": "BFW de Leede",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "BILALKHAN",
+      "fullName": "Bilal Khan",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "BJHADDIN",
+      "fullName": "BJ Haddin",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "BJHODGE",
+      "fullName": "BJ Hodge",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "BJMCCARTHY",
+      "fullName": "BJ McCarthy",
+      "country": "Ireland",
+      "role": "Unknown"
+    },
+    {
+      "id": "BKGMENDIS",
+      "fullName": "BKG Mendis",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "BKUMAR",
+      "fullName": "Bhuvneshwar Kumar",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "BMSCHOLTZ",
+      "fullName": "BM Scholtz",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "BMUZARABANI",
+      "fullName": "B Muzarabani",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "BSHIKONGO",
+      "fullName": "B Shikongo",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "BTJWHEAL",
+      "fullName": "BTJ Wheal",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "BWHITE",
+      "fullName": "B White",
+      "country": "Ireland",
+      "role": "Unknown"
+    },
+    {
+      "id": "CAKRAJITHA",
+      "fullName": "CAK Rajitha",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "CBRLSKUMARA",
+      "fullName": "CBRLS Kumara",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "CCAMPHER",
+      "fullName": "C Campher",
+      "country": "Ireland",
+      "role": "Unknown"
+    },
+    {
+      "id": "CGWILLIAMS",
+      "fullName": "CG Williams",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "CHGAYLE",
+      "fullName": "Chris Gayle",
+      "country": "West Indies",
+      "role": "Batsman"
+    },
+    {
+      "id": "CHMORRIS",
+      "fullName": "CH Morris",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "CJANDERSON",
+      "fullName": "CJ Anderson",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "CJJORDAN",
+      "fullName": "Chris Jordan",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
+      "id": "CKARUNARATNE",
+      "fullName": "C Karunaratne",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "CKKAPUGEDERA",
+      "fullName": "CK Kapugedera",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "CLWHITE",
+      "fullName": "CL White",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "CMUNRO",
+      "fullName": "C Munro",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "CNACKERMANN",
+      "fullName": "CN Ackermann",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "CNGREAVES",
+      "fullName": "CN Greaves",
+      "country": "Scotland",
+      "role": "Unknown"
     },
     {
       "id": "CRBRATHWAITE",
       "fullName": "Carlos Brathwaite",
+      "country": "West Indies",
+      "role": "All-rounder"
+    },
+    {
+      "id": "CRERVINE",
+      "fullName": "CR Ervine",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "CRWOAKES",
+      "fullName": "Chris Woakes",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "CSMACLEOD",
+      "fullName": "CS MacLeod",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "CVVARUN",
+      "fullName": "Varun Chakravarthy",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "DAMILLER",
+      "fullName": "David Miller",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "DAWARNER",
+      "fullName": "DA Warner",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "DEBOLLINGER",
+      "fullName": "DE Bollinger",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "DEBUDGE",
+      "fullName": "DE Budge",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "DJBRAVO",
+      "fullName": "Dwayne Bravo",
       "country": "West Indies",
       "role": "All-rounder"
     },
@@ -409,15 +481,1239 @@
       "role": "All-rounder"
     },
     {
+      "id": "DJMALAN",
+      "fullName": "DJ Malan",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "DJMITCHELL",
+      "fullName": "DJ Mitchell",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "DJWILLEY",
+      "fullName": "David Willey",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "DMDESILVA",
+      "fullName": "DM de Silva",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "DPCONWAY",
+      "fullName": "DP Conway",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "DPMDJAYAWARDENE",
+      "fullName": "DPMD Jayawardene",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "DPRETORIUS",
+      "fullName": "D Pretorius",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "DRAMDIN",
+      "fullName": "Denesh Ramdin",
+      "country": "West Indies",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "DRSMITH",
+      "fullName": "DR Smith",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "DSAIREE",
+      "fullName": "DS Airee",
+      "country": "Nepal",
+      "role": "Unknown"
+    },
+    {
+      "id": "DWIESE",
+      "fullName": "D Wiese",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "DWSTEYN",
+      "fullName": "DW Steyn",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "EBADATHOSSAIN",
+      "fullName": "Ebadat Hossain",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "EJGMORGAN",
+      "fullName": "Eoin Morgan",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "ELEWIS",
+      "fullName": "E Lewis",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "FAKHARZAMAN",
+      "fullName": "Fakhar Zaman",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "FAYYAZBUTT",
+      "fullName": "Fayyaz Butt",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "FDUPLESSIS",
+      "fullName": "F du Plessis",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "FHALLEN",
+      "fullName": "FH Allen",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "FJKLAASSEN",
+      "fullName": "FJ Klaassen",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "GDELLIOTT",
+      "fullName": "GD Elliott",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "GDPHILLIPS",
+      "fullName": "GD Phillips",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "GHDOCKRELL",
+      "fullName": "GH Dockrell",
+      "country": "Ireland",
+      "role": "Unknown"
+    },
+    {
+      "id": "GJBAILEY",
+      "fullName": "GJ Bailey",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "GJDELANY",
+      "fullName": "GJ Delany",
+      "country": "Ireland",
+      "role": "Unknown"
+    },
+    {
+      "id": "GJMAXWELL",
+      "fullName": "GJ Maxwell",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "GMOTIE",
+      "fullName": "G Motie",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "GULSANJHA",
+      "fullName": "Gulsan Jha",
+      "country": "Nepal",
+      "role": "Unknown"
+    },
+    {
+      "id": "HAIDERALI",
+      "fullName": "Haider Ali",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "HAMZATAHIR",
+      "fullName": "Hamza Tahir",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "HARISRAUF",
+      "fullName": "Haris Rauf",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
+      "id": "HARMEETSINGH",
+      "fullName": "Harmeet Singh",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "HASANALI",
+      "fullName": "Hasan Ali",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
+      "id": "HASANMAHMUD",
+      "fullName": "Hasan Mahmud",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "HCBROOK",
+      "fullName": "Harry Brook",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "HDRLTHIRIMANNE",
+      "fullName": "HDRL Thirimanne",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "HEVANDERDUSSEN",
+      "fullName": "HE van der Dussen",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "HGMUNSEY",
+      "fullName": "HG Munsey",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "HHPANDYA",
+      "fullName": "Hardik Pandya",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
+      "id": "HKLAASEN",
+      "fullName": "Heinrich Klaasen",
+      "country": "South Africa",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "HMAMLA",
+      "fullName": "HM Amla",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "HMRKBHERATH",
+      "fullName": "HMRKB Herath",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "HRWALSH",
+      "fullName": "HR Walsh",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "HTTECTOR",
+      "fullName": "HT Tector",
+      "country": "Ireland",
+      "role": "Unknown"
+    },
+    {
+      "id": "IFTIKHARAHMED",
+      "fullName": "Iftikhar Ahmed",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "IMADWASIM",
+      "fullName": "Imad Wasim",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "IMRANTAHIR",
+      "fullName": "Imran Tahir",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "ISSODHI",
+      "fullName": "IS Sodhi",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "JAKERALI",
+      "fullName": "Jaker Ali",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "JAMORKEL",
+      "fullName": "JA Morkel",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "JASDEEPSINGH",
+      "fullName": "Jasdeep Singh",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "JCARCHER",
+      "fullName": "JC Archer",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "JCBUTTLER",
+      "fullName": "Jos Buttler",
+      "country": "England",
+      "role": "Wicketkeeper"
+    },
+    {
       "id": "JCHARLES",
       "fullName": "Johnson Charles",
       "country": "West Indies",
-      "role": "WK-Batsman"
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "JCTREDWELL",
+      "fullName": "JC Tredwell",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "JDFVANDERSAY",
+      "fullName": "JDF Vandersay",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "JDSNEESHAM",
+      "fullName": "JDS Neesham",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "JEROOT",
+      "fullName": "Joe Root",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "JETAYLOR",
+      "fullName": "JE Taylor",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "JJBUMRAH",
+      "fullName": "Jasprit Bumrah",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "JJROY",
+      "fullName": "Jason Roy",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "JJSMIT",
+      "fullName": "JJ Smit",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "JLITTLE",
+      "fullName": "J Little",
+      "country": "Ireland",
+      "role": "Unknown"
+    },
+    {
+      "id": "JMBAIRSTOW",
+      "fullName": "JM Bairstow",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "JMMUIRHEAD",
+      "fullName": "JM Muirhead",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "JNFRYLINCK",
+      "fullName": "JN Frylinck",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "JNLOFTIEEATON",
+      "fullName": "JN Loftie-Eaton",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "JPDUMINY",
+      "fullName": "JP Duminy",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "JPFAULKNER",
+      "fullName": "JP Faulkner",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "JPKOTZE",
+      "fullName": "JP Kotze",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "JRHAZLEWOOD",
+      "fullName": "JR Hazlewood",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "JTBRASSELL",
+      "fullName": "JT Brassell",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "JWDERNBACH",
+      "fullName": "JW Dernbach",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "KALEEMULLAH",
+      "fullName": "Kaleemullah",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "KAMAHARAJ",
+      "fullName": "Keshav Maharaj",
+      "country": "South Africa",
+      "role": "Bowler"
+    },
+    {
+      "id": "KAMRANAKMAL",
+      "fullName": "Kamran Akmal",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "KAPOLLARD",
+      "fullName": "KA Pollard",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "KARANKC",
+      "fullName": "Karan KC",
+      "country": "Nepal",
+      "role": "Unknown"
+    },
+    {
+      "id": "KBHURTEL",
+      "fullName": "K Bhurtel",
+      "country": "Nepal",
+      "role": "Unknown"
+    },
+    {
+      "id": "KCSANGAKKARA",
+      "fullName": "KC Sangakkara",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "KDKARTHIK",
+      "fullName": "Dinesh Karthik",
+      "country": "India",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "KHALIDKAIL",
+      "fullName": "Khalid Kail",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "KHPRAJAPATI",
+      "fullName": "KH Prajapati",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "KICASALANKA",
+      "fullName": "KIC Asalanka",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "KJABBOTT",
+      "fullName": "KJ Abbott",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "KJCOETZER",
+      "fullName": "KJ Coetzer",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "KLRAHUL",
+      "fullName": "KL Rahul",
+      "country": "India",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "KMDNKULASEKARA",
+      "fullName": "KMDN Kulasekara",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "KRABADA",
+      "fullName": "Kagiso Rabada",
+      "country": "South Africa",
+      "role": "Bowler"
+    },
+    {
+      "id": "KRMAYERS",
+      "fullName": "KR Mayers",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "KSANTOKIE",
+      "fullName": "K Santokie",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "KSWILLIAMSON",
+      "fullName": "KS Williamson",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "KULDEEPYADAV",
+      "fullName": "Kuldeep Yadav",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "KUSHALMALLA",
+      "fullName": "Kushal Malla",
+      "country": "Nepal",
+      "role": "Unknown"
+    },
+    {
+      "id": "LDCHANDIMAL",
+      "fullName": "LD Chandimal",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "LEPLUNKETT",
+      "fullName": "Liam Plunkett",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
+      "id": "LHFERGUSON",
+      "fullName": "LH Ferguson",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "LITONDAS",
+      "fullName": "Liton Das",
+      "country": "Bangladesh",
+      "role": "Unknown"
     },
     {
       "id": "LMPSIMMONS",
       "fullName": "Lendl Simmons",
       "country": "West Indies",
+      "role": "Batsman"
+    },
+    {
+      "id": "LNGIDI",
+      "fullName": "L Ngidi",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "LRONCHI",
+      "fullName": "L Ronchi",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "LRPLTAYLOR",
+      "fullName": "LRPL Taylor",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "LSLIVINGSTONE",
+      "fullName": "Liam Livingstone",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "LTUCKER",
+      "fullName": "L Tucker",
+      "country": "Ireland",
+      "role": "Unknown"
+    },
+    {
+      "id": "LVVANBEEK",
+      "fullName": "LV van Beek",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "MAHEDIHASAN",
+      "fullName": "Mahedi Hasan",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "MAHMUDULLAH",
+      "fullName": "Mahmudullah",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "MALEASK",
+      "fullName": "MA Leask",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "MASHRAFEMORTAZA",
+      "fullName": "Mashrafe Mortaza",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "MASTARC",
+      "fullName": "MA Starc",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "MAWOOD",
+      "fullName": "MA Wood",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "MDKJPERERA",
+      "fullName": "MDKJ Perera",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "MDSHANAKA",
+      "fullName": "MD Shanaka",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "MEHRANKHAN",
+      "fullName": "Mehran Khan",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "MGERASMUS",
+      "fullName": "MG Erasmus",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "MHCROSS",
+      "fullName": "MH Cross",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "MILINDKUMAR",
+      "fullName": "Milind Kumar",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "MJANSEN",
+      "fullName": "Marco Jansen",
+      "country": "South Africa",
+      "role": "All-rounder"
+    },
+    {
+      "id": "MJGUPTILL",
+      "fullName": "MJ Guptill",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "MJLUMB",
+      "fullName": "MJ Lumb",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "MJMCCLENAGHAN",
+      "fullName": "MJ McClenaghan",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "MJSANTNER",
+      "fullName": "MJ Santner",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "MKPANDEY",
+      "fullName": "MK Pandey",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "MLEVITT",
+      "fullName": "M Levitt",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "MMALI",
+      "fullName": "Moeen Ali",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "MMSHARMA",
+      "fullName": "MM Sharma",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "MNSAMUELS",
+      "fullName": "Marlon Samuels",
+      "country": "West Indies",
+      "role": "All-rounder"
+    },
+    {
+      "id": "MOHAMMADAMIR",
+      "fullName": "Mohammad Amir",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "MOHAMMADHAFEEZ",
+      "fullName": "Mohammad Hafeez",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "MOHAMMADHARIS",
+      "fullName": "Mohammad Haris",
+      "country": "Pakistan",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "MOHAMMADIRFAN",
+      "fullName": "Mohammad Irfan",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "MOHAMMADMITHUN",
+      "fullName": "Mohammad Mithun",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "MOHAMMADNAIM",
+      "fullName": "Mohammad Naim",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "MOHAMMADNAWAZ",
+      "fullName": "Mohammad Nawaz",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "MOHAMMADRIZWAN",
+      "fullName": "Mohammad Rizwan",
+      "country": "Pakistan",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "MOHAMMADSAMI",
+      "fullName": "Mohammad Sami",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "MOHAMMADWASIM",
+      "fullName": "Mohammad Wasim Jr",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "MOHAMMEDSHAMI",
+      "fullName": "Mohammed Shami",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "MOHAMMEDSIRAJ",
+      "fullName": "Mohammed Siraj",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "MOSADDEKHOSSAIN",
+      "fullName": "Mosaddek Hossain",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "MPATHIRANA",
+      "fullName": "M Pathirana",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "MPODOWD",
+      "fullName": "MP O'Dowd",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "MPSTOINIS",
+      "fullName": "MP Stoinis",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "MRADAIR",
+      "fullName": "MR Adair",
+      "country": "Ireland",
+      "role": "Unknown"
+    },
+    {
+      "id": "MRJWATT",
+      "fullName": "MRJ Watt",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "MRMARSH",
+      "fullName": "MR Marsh",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "MSDHONI",
+      "fullName": "MS Dhoni",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "MSWADE",
+      "fullName": "MS Wade",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "MTHEEKSHANA",
+      "fullName": "M Theekshana",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "MUSHFIQURRAHIM",
+      "fullName": "Mushfiqur Rahim",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "MUSTAFIZURRAHMAN",
+      "fullName": "Mustafizur Rahman",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "MVANLINGEN",
+      "fullName": "M van Lingen",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "NASEEMSHAH",
+      "fullName": "Naseem Shah",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
+      "id": "NASIRHOSSAIN",
+      "fullName": "Nasir Hossain",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "NASUMAHMED",
+      "fullName": "Nasum Ahmed",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "NAZMULHOSSAINSHANTO",
+      "fullName": "Nazmul Hossain Shanto",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "NDAVIN",
+      "fullName": "N Davin",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "NLTCPERERA",
+      "fullName": "NLTC Perera",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "NMCOULTERNILE",
+      "fullName": "NM Coulter-Nile",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "NPKENJIGE",
+      "fullName": "NP Kenjige",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "NPOORAN",
+      "fullName": "N Pooran",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "NRKUMAR",
+      "fullName": "NR Kumar",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "NTHUSHARA",
+      "fullName": "N Thushara",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "NURULHASAN",
+      "fullName": "Nurul Hasan",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "OCMCCOY",
+      "fullName": "OC McCoy",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "OEGBAARTMAN",
+      "fullName": "OEG Baartman",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "PAVANMEEKEREN",
+      "fullName": "PA van Meekeren",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "PBBRAJAPAKSA",
+      "fullName": "PBB Rajapaksa",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "PDSALT",
+      "fullName": "Phil Salt",
+      "country": "England",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "PHKDMENDIS",
+      "fullName": "PHKD Mendis",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "PJCUMMINS",
+      "fullName": "PJ Cummins",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "PMNEVILL",
+      "fullName": "PM Nevill",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "PNISSANKA",
+      "fullName": "P Nissanka",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "PRSTIRLING",
+      "fullName": "PR Stirling",
+      "country": "Ireland",
+      "role": "Unknown"
+    },
+    {
+      "id": "PSATHAVALE",
+      "fullName": "PS Athavale",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "PVDCHAMEERA",
+      "fullName": "PVD Chameera",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "PWHDESILVA",
+      "fullName": "PWH de Silva",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "QDEKOCK",
+      "fullName": "Quinton de Kock",
+      "country": "South Africa",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "RAJADEJA",
+      "fullName": "Ravindra Jadeja",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
+      "id": "RASHWIN",
+      "fullName": "Ravichandran Ashwin",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
+      "id": "RDBERRINGTON",
+      "fullName": "RD Berrington",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "RDCHAHAR",
+      "fullName": "RD Chahar",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "REVANDERMERWE",
+      "fullName": "RE van der Merwe",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "RGSHARMA",
+      "fullName": "Rohit Sharma",
+      "country": "India",
+      "role": "Batsman"
+    },
+    {
+      "id": "RISHADHOSSAIN",
+      "fullName": "Rishad Hossain",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "RJWTOPLEY",
+      "fullName": "RJW Topley",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "RKPAUDEL",
+      "fullName": "RK Paudel",
+      "country": "Nepal",
+      "role": "Unknown"
+    },
+    {
+      "id": "RLCHASE",
+      "fullName": "RL Chase",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "RNGARAVA",
+      "fullName": "R Ngarava",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "RPBURL",
+      "fullName": "RP Burl",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "RPOWELL",
+      "fullName": "R Powell",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "RRAMPAUL",
+      "fullName": "R Rampaul",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "RRHENDRICKS",
+      "fullName": "Reeza Hendricks",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "RRPANT",
+      "fullName": "Rishabh Pant",
+      "country": "India",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "RRROSSOUW",
+      "fullName": "RR Rossouw",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "RSBOPARA",
+      "fullName": "RS Bopara",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "RSHEPHERD",
+      "fullName": "R Shepherd",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "RTRUMPELMANN",
+      "fullName": "R Trumpelmann",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "RWCHAKABVA",
+      "fullName": "RW Chakabva",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "SABBIRRAHMAN",
+      "fullName": "Sabbir Rahman",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "SAEDWARDS",
+      "fullName": "SA Edwards",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "SAEEDAJMAL",
+      "fullName": "Saeed Ajmal",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "SAENGELBRECHT",
+      "fullName": "SA Engelbrecht",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "SAIMAYUB",
+      "fullName": "Saim Ayub",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "SARFRAZAHMED",
+      "fullName": "Sarfraz Ahmed",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "SAYADAV",
+      "fullName": "Suryakumar Yadav",
+      "country": "India",
       "role": "Batsman"
     },
     {
@@ -427,21 +1723,502 @@
       "role": "Bowler"
     },
     {
+      "id": "SCJBROAD",
+      "fullName": "SCJ Broad",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "SCVANSCHALKWYK",
+      "fullName": "SC van Schalkwyk",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "SCWILLIAMS",
+      "fullName": "SC Williams",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "SDHAWAN",
+      "fullName": "S Dhawan",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "SDHOPE",
+      "fullName": "SD Hope",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "SDUBE",
+      "fullName": "Shivam Dube",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
+      "id": "SERUTHERFORD",
+      "fullName": "SE Rutherford",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "SHADABKHAN",
+      "fullName": "Shadab Khan",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "SHAHEENSHAHAFRIDI",
+      "fullName": "Shaheen Shah Afridi",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
+      "id": "SHAHIDAFRIDI",
+      "fullName": "Shahid Afridi",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "SHAKIBALHASAN",
+      "fullName": "Shakib Al Hasan",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "SHAMIMHOSSAIN",
+      "fullName": "Shamim Hossain",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "SHAMSURRAHMAN",
+      "fullName": "Shamsur Rahman",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "SHANMASOOD",
+      "fullName": "Shan Masood",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "SHARIZAHMAD",
+      "fullName": "Shariz Ahmad",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "SHARJEELKHAN",
+      "fullName": "Sharjeel Khan",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "SHAYANJAHANGIR",
+      "fullName": "Shayan Jahangir",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "SHOAIBKHAN",
+      "fullName": "Shoaib Khan",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "SHOAIBMALIK",
+      "fullName": "Shoaib Malik",
+      "country": "Pakistan",
+      "role": "All-rounder"
+    },
+    {
+      "id": "SHORIFULISLAM",
+      "fullName": "Shoriful Islam",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "SHUVAGATAHOM",
+      "fullName": "Shuvagata Hom",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "SIKANDARRAZA",
+      "fullName": "Sikandar Raza",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "SJBAARD",
+      "fullName": "SJ Baard",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
       "id": "SJBENN",
       "fullName": "Sulieman Benn",
       "country": "West Indies",
       "role": "Bowler"
     },
     {
-      "id": "DRAMDIN",
-      "fullName": "Denesh Ramdin",
+      "id": "SJMYBURGH",
+      "fullName": "SJ Myburgh",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "SKRAINA",
+      "fullName": "SK Raina",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "SLAMICHHANE",
+      "fullName": "S Lamichhane",
+      "country": "Nepal",
+      "role": "Unknown"
+    },
+    {
+      "id": "SLMALINGA",
+      "fullName": "SL Malinga",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "SMCURRAN",
+      "fullName": "Sam Curran",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "SMSHARIF",
+      "fullName": "SM Sharif",
+      "country": "Scotland",
+      "role": "Unknown"
+    },
+    {
+      "id": "SMSMSENANAYAKE",
+      "fullName": "SMSM Senanayake",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "SNNETRAVALKAR",
+      "fullName": "SN Netravalkar",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "SOHAGGAZI",
+      "fullName": "Sohag Gazi",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "SOHAIBMAQSOOD",
+      "fullName": "Sohaib Maqsood",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "SOHAILTANVIR",
+      "fullName": "Sohail Tanvir",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "SOHETMYER",
+      "fullName": "SO Hetmyer",
       "country": "West Indies",
-      "role": "WK-Batsman"
+      "role": "Unknown"
+    },
+    {
+      "id": "SOMPALKAMI",
+      "fullName": "Sompal Kami",
+      "country": "Nepal",
+      "role": "Unknown"
+    },
+    {
+      "id": "SOUMYASARKAR",
+      "fullName": "Soumya Sarkar",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "SPDSMITH",
+      "fullName": "SPD Smith",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "SPNARINE",
+      "fullName": "SP Narine",
+      "country": "West Indies",
+      "role": "Unknown"
+    },
+    {
+      "id": "SRTAYLOR",
+      "fullName": "SR Taylor",
+      "country": "United States of America",
+      "role": "Unknown"
+    },
+    {
+      "id": "SRWATSON",
+      "fullName": "SR Watson",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "SSAMARAWICKRAMA",
+      "fullName": "S Samarawickrama",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "TABOULT",
+      "fullName": "TA Boult",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "TAMIMIQBAL",
+      "fullName": "Tamim Iqbal",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "TAMSIRIWARDANA",
+      "fullName": "TAM Siriwardana",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "TANZIDHASAN",
+      "fullName": "Tanzid Hasan",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "TANZIMHASANSAKIB",
+      "fullName": "Tanzim Hasan Sakib",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "TASKINAHMED",
+      "fullName": "Taskin Ahmed",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "TBAVUMA",
+      "fullName": "T Bavuma",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "TGSOUTHEE",
+      "fullName": "TG Southee",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "THDAVID",
+      "fullName": "TH David",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "TJGPRINGLE",
+      "fullName": "TJG Pringle",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "TLCHATARA",
+      "fullName": "TL Chatara",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "TLSEIFERT",
+      "fullName": "TL Seifert",
+      "country": "New Zealand",
+      "role": "Unknown"
+    },
+    {
+      "id": "TLWCOOPER",
+      "fullName": "TLW Cooper",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "TMDILSHAN",
+      "fullName": "TM Dilshan",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "TMHEAD",
+      "fullName": "TM Head",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "TMUNYONGA",
+      "fullName": "T Munyonga",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "TOWHIDHRIDOY",
+      "fullName": "Towhid Hridoy",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "TSHAMSI",
+      "fullName": "Tabraiz Shamsi",
+      "country": "South Africa",
+      "role": "Bowler"
+    },
+    {
+      "id": "TSMILLS",
+      "fullName": "TS Mills",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "TSTUBBS",
+      "fullName": "Tristan Stubbs",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "TTBRESNAN",
+      "fullName": "TT Bresnan",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "UMARAKMAL",
+      "fullName": "Umar Akmal",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "UMARGUL",
+      "fullName": "Umar Gul",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "USMANKHAN",
+      "fullName": "Usman Khan",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "UTKHAWAJA",
+      "fullName": "UT Khawaja",
+      "country": "Australia",
+      "role": "Unknown"
+    },
+    {
+      "id": "VIKRAMJITSINGH",
+      "fullName": "Vikramjit Singh",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "VJKINGMA",
+      "fullName": "VJ Kingma",
+      "country": "Netherlands",
+      "role": "Unknown"
+    },
+    {
+      "id": "VKOHLI",
+      "fullName": "Virat Kohli",
+      "country": "India",
+      "role": "Batsman"
+    },
+    {
+      "id": "WAHABRIAZ",
+      "fullName": "Wahab Riaz",
+      "country": "Pakistan",
+      "role": "Unknown"
+    },
+    {
+      "id": "WDPARNELL",
+      "fullName": "WD Parnell",
+      "country": "South Africa",
+      "role": "Unknown"
+    },
+    {
+      "id": "WGJACKS",
+      "fullName": "WG Jacks",
+      "country": "England",
+      "role": "Unknown"
+    },
+    {
+      "id": "WIAFERNANDO",
+      "fullName": "WIA Fernando",
+      "country": "Sri Lanka",
+      "role": "Unknown"
+    },
+    {
+      "id": "WMADHEVERE",
+      "fullName": "W Madhevere",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "WPMASAKADZA",
+      "fullName": "WP Masakadza",
+      "country": "Zimbabwe",
+      "role": "Unknown"
+    },
+    {
+      "id": "YASIRALICHOWDHURY",
+      "fullName": "Yasir Ali Chowdhury",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "YUVRAJSINGH",
+      "fullName": "Yuvraj Singh",
+      "country": "India",
+      "role": "Unknown"
+    },
+    {
+      "id": "ZEESHANMAQSOOD",
+      "fullName": "Zeeshan Maqsood",
+      "country": "Oman",
+      "role": "Unknown"
+    },
+    {
+      "id": "ZEGREEN",
+      "fullName": "ZE Green",
+      "country": "Namibia",
+      "role": "Unknown"
+    },
+    {
+      "id": "ZIAURRAHMAN",
+      "fullName": "Ziaur Rahman",
+      "country": "Bangladesh",
+      "role": "Unknown"
+    },
+    {
+      "id": "ZULFIQARBABAR",
+      "fullName": "Zulfiqar Babar",
+      "country": "Pakistan",
+      "role": "Unknown"
     }
-  ],
-  "metadata": {
-    "version": "2.0",
-    "lastUpdated": "2026-01-13",
-    "totalPlayers": 73
-  }
+  ]
 }
