@@ -582,6 +582,32 @@
     {"id": "DEVADK", "fullName": "Devdutt Padikkal", "country": "India", "role": "Batsman"},
     {"id": "SARFARAZKHAN", "fullName": "Sarfaraz Khan", "country": "India", "role": "Batsman"},
     {"id": "ABHIMANYUE", "fullName": "Abhimanyu Easwaran", "country": "India", "role": "Batsman"},
-    {"id": "HARISHK", "fullName": "Harshit Rana", "country": "India", "role": "Bowler"}
+    {"id": "HARISHK", "fullName": "Harshit Rana", "country": "India", "role": "Bowler"},
+
+    {"id": "RASHIDKHAN", "fullName": "Rashid Khan", "country": "Afghanistan", "role": "All-rounder"},
+    {"id": "MOHAMMADNABI", "fullName": "Mohammad Nabi", "country": "Afghanistan", "role": "All-rounder"},
+    {"id": "RAHMANULLAHGURBAZ", "fullName": "Rahmanullah Gurbaz", "country": "Afghanistan", "role": "Wicketkeeper"},
+    {"id": "IBRAHIMZADRAN", "fullName": "Ibrahim Zadran", "country": "Afghanistan", "role": "Batsman"},
+    {"id": "HAZRATULLAHZAZAI", "fullName": "Hazratullah Zazai", "country": "Afghanistan", "role": "Batsman"},
+    {"id": "NAJIBULLAHZADRAN", "fullName": "Najibullah Zadran", "country": "Afghanistan", "role": "Batsman"},
+    {"id": "AZMATULLAHOMARZAI", "fullName": "Azmatullah Omarzai", "country": "Afghanistan", "role": "All-rounder"},
+    {"id": "GULBADINNAIB", "fullName": "Gulbadin Naib", "country": "Afghanistan", "role": "All-rounder"},
+    {"id": "MUJEEBURRAMAN", "fullName": "Mujeeb Ur Rahman", "country": "Afghanistan", "role": "Bowler"},
+    {"id": "NAVEENULHAQ", "fullName": "Naveen-ul-Haq", "country": "Afghanistan", "role": "Bowler"},
+    {"id": "FAZALHAQFAROOQI", "fullName": "Fazalhaq Farooqi", "country": "Afghanistan", "role": "Bowler"},
+    {"id": "KARIMJANAT", "fullName": "Karim Janat", "country": "Afghanistan", "role": "All-rounder"},
+    {"id": "NOORAHMAD", "fullName": "Noor Ahmad", "country": "Afghanistan", "role": "Bowler"},
+    {"id": "FAREEDAHMAD", "fullName": "Fareed Ahmad", "country": "Afghanistan", "role": "Bowler"},
+    {"id": "SEDIQATAL", "fullName": "Sediq Atal", "country": "Afghanistan", "role": "Batsman"},
+    {"id": "NANGYALKHAROTI", "fullName": "Nangyal Kharoti", "country": "Afghanistan", "role": "Bowler"},
+    {"id": "MOHAMMADISHAQ", "fullName": "Mohammad Ishaq", "country": "Afghanistan", "role": "Batsman"},
+    {"id": "SALEEMSAFI", "fullName": "Saleem Safi", "country": "Afghanistan", "role": "Bowler"},
+    {"id": "ASGHARAFGHAN", "fullName": "Asghar Afghan", "country": "Afghanistan", "role": "Batsman"},
+    {"id": "HASHMATULLAHSHAHIDI", "fullName": "Hashmatullah Shahidi", "country": "Afghanistan", "role": "Batsman"},
+    {"id": "SAMIULLAHSHINWARI", "fullName": "Samiullah Shinwari", "country": "Afghanistan", "role": "All-rounder"},
+    {"id": "HAMIDHASSAN", "fullName": "Hamid Hassan", "country": "Afghanistan", "role": "Bowler"},
+    {"id": "DAWLATZADRAN", "fullName": "Dawlat Zadran", "country": "Afghanistan", "role": "Bowler"},
+    {"id": "SHAPOORZADRAN", "fullName": "Shapoor Zadran", "country": "Afghanistan", "role": "Bowler"},
+    {"id": "AFSARZAZAI", "fullName": "Afsar Zazai", "country": "Afghanistan", "role": "Wicketkeeper"}
   ]
 }
