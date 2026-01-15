@@ -3,6 +3,34 @@
 ## Goal
 Build a comprehensive cricket player database for autocomplete functionality. Target: **2000+ players** for excellent autocomplete coverage.
 
+---
+
+## NEXT SESSION: Start Here
+
+### Immediate Task: Add Afghanistan Players
+Afghanistan is completely missing from the database. Add these players first:
+
+**Current T20I Squad (2024):**
+- Rashid Khan (Bowler) - Captain
+- Mohammad Nabi (All-rounder)
+- Rahmanullah Gurbaz (Wicketkeeper)
+- Ibrahim Zadran (Batsman)
+- Hazratullah Zazai (Batsman)
+- Najibullah Zadran (Batsman)
+- Azmatullah Omarzai (All-rounder)
+- Gulbadin Naib (All-rounder)
+- Mujeeb Ur Rahman (Bowler)
+- Naveen-ul-Haq (Bowler)
+- Fazalhaq Farooqi (Bowler)
+- Karim Janat (All-rounder)
+- Noor Ahmad (Bowler)
+- Fareed Ahmad (Bowler)
+- Sediqullah Atal (Batsman)
+
+Then continue with: Canada → UAE → Uganda → PNG
+
+---
+
 ## Current Status
 - **569 players** (as of Jan 2025)
 - 17 countries represented

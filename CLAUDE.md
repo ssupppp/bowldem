@@ -7,6 +7,36 @@
 
 Always work on the `feature/feedback-system-update` branch. Do NOT switch to main or other branches.
 
+---
+
+## TODO - Current Tasks
+
+### In Progress
+- [ ] **Expand player database** - Adding T20 World Cup nation players
+
+### Next Up (Phase 1.1 - Missing Nations)
+- [ ] Add Afghanistan players (~25) - Rashid Khan, Nabi, Zadran brothers, etc.
+- [ ] Add Canada players (~20)
+- [ ] Add UAE players (~18)
+- [ ] Add Uganda players (~18)
+- [ ] Add Papua New Guinea players (~18)
+
+### Backlog
+- [ ] Phase 1.2: Expand associate nation squads (NED, SCO, NAM, etc.)
+- [ ] Phase 1.3: Fill gaps in full member rosters
+- [ ] Phase 2: Add domestic T20 league players (IPL, BBL, PSL, etc.)
+- [ ] Phase 3: Add retired legends
+- [ ] UI/UX improvements to feedback display
+- [ ] Mobile responsiveness
+- [ ] Add more puzzle content (ODI, IPL matches)
+
+### Completed
+- [x] Add roles to all 370 existing players
+- [x] Add ~200 more professional cricketers (now 569 total)
+- [x] Create PLAYER_DATABASE_PLAN.md
+
+---
+
 ## Project Overview
 Bowldem is a **Wordle-style daily cricket puzzle game** where players guess the Man of the Match from historic cricket matches based on venue and scorecard clues.
 
