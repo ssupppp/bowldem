@@ -1,0 +1,586 @@
+{
+  "VKOHLI": {
+    "fullName": "Virat Kohli",
+    "country": "India",
+    "role": "Batsman",
+    "t20iMatches": 125,
+    "t20iRuns": 4188,
+    "t20iWickets": 4
+  },
+  "RGSHARMA": {
+    "fullName": "Rohit Sharma",
+    "country": "India",
+    "role": "Batsman",
+    "t20iMatches": 159,
+    "t20iRuns": 4231,
+    "t20iWickets": 0
+  },
+  "KLRAHUL": {
+    "fullName": "KL Rahul",
+    "country": "India",
+    "role": "WK-Batsman",
+    "t20iMatches": 72,
+    "t20iRuns": 2265,
+    "t20iWickets": 0
+  },
+  "SAYADAV": {
+    "fullName": "Suryakumar Yadav",
+    "country": "India",
+    "role": "Batsman",
+    "t20iMatches": 70,
+    "t20iRuns": 2500,
+    "t20iWickets": 0
+  },
+  "HHPANDYA": {
+    "fullName": "Hardik Pandya",
+    "country": "India",
+    "role": "All-rounder",
+    "t20iMatches": 108,
+    "t20iRuns": 1476,
+    "t20iWickets": 84
+  },
+  "RAJADEJA": {
+    "fullName": "Ravindra Jadeja",
+    "country": "India",
+    "role": "All-rounder",
+    "t20iMatches": 74,
+    "t20iRuns": 515,
+    "t20iWickets": 51
+  },
+  "JJBUMRAH": {
+    "fullName": "Jasprit Bumrah",
+    "country": "India",
+    "role": "Bowler",
+    "t20iMatches": 70,
+    "t20iRuns": 6,
+    "t20iWickets": 89
+  },
+  "RASHWIN": {
+    "fullName": "Ravichandran Ashwin",
+    "country": "India",
+    "role": "All-rounder",
+    "t20iMatches": 65,
+    "t20iRuns": 184,
+    "t20iWickets": 72
+  },
+  "MOHAMMEDSHAMI": {
+    "fullName": "Mohammed Shami",
+    "country": "India",
+    "role": "Bowler",
+    "t20iMatches": 24,
+    "t20iRuns": 2,
+    "t20iWickets": 26
+  },
+  "BKUMAR": {
+    "fullName": "Bhuvneshwar Kumar",
+    "country": "India",
+    "role": "Bowler",
+    "t20iMatches": 87,
+    "t20iRuns": 28,
+    "t20iWickets": 90
+  },
+  "ARSHDEEPSINGH": {
+    "fullName": "Arshdeep Singh",
+    "country": "India",
+    "role": "Bowler",
+    "t20iMatches": 58,
+    "t20iRuns": 8,
+    "t20iWickets": 97
+  },
+  "RRPANT": {
+    "fullName": "Rishabh Pant",
+    "country": "India",
+    "role": "WK-Batsman",
+    "t20iMatches": 72,
+    "t20iRuns": 1056,
+    "t20iWickets": 0
+  },
+  "KDKARTHIK": {
+    "fullName": "Dinesh Karthik",
+    "country": "India",
+    "role": "WK-Batsman",
+    "t20iMatches": 60,
+    "t20iRuns": 686,
+    "t20iWickets": 0
+  },
+  "ARPATEL": {
+    "fullName": "Axar Patel",
+    "country": "India",
+    "role": "All-rounder",
+    "t20iMatches": 56,
+    "t20iRuns": 340,
+    "t20iWickets": 58
+  },
+  "SDUBE": {
+    "fullName": "Shivam Dube",
+    "country": "India",
+    "role": "All-rounder",
+    "t20iMatches": 32,
+    "t20iRuns": 408,
+    "t20iWickets": 1
+  },
+  "KULDEEPYADAV": {
+    "fullName": "Kuldeep Yadav",
+    "country": "India",
+    "role": "Bowler",
+    "t20iMatches": 35,
+    "t20iRuns": 17,
+    "t20iWickets": 35
+  },
+  "CVVARUN": {
+    "fullName": "Varun Chakravarthy",
+    "country": "India",
+    "role": "Bowler",
+    "t20iMatches": 18,
+    "t20iRuns": 0,
+    "t20iWickets": 19
+  },
+  "BABARAZAM": {
+    "fullName": "Babar Azam",
+    "country": "Pakistan",
+    "role": "Batsman",
+    "t20iMatches": 122,
+    "t20iRuns": 4145,
+    "t20iWickets": 0
+  },
+  "MOHAMMADRIZWAN": {
+    "fullName": "Mohammad Rizwan",
+    "country": "Pakistan",
+    "role": "WK-Batsman",
+    "t20iMatches": 104,
+    "t20iRuns": 3406,
+    "t20iWickets": 0
+  },
+  "SHAHEENSHAHAFRIDI": {
+    "fullName": "Shaheen Shah Afridi",
+    "country": "Pakistan",
+    "role": "Bowler",
+    "t20iMatches": 62,
+    "t20iRuns": 27,
+    "t20iWickets": 78
+  },
+  "HARISRAUF": {
+    "fullName": "Haris Rauf",
+    "country": "Pakistan",
+    "role": "Bowler",
+    "t20iMatches": 72,
+    "t20iRuns": 24,
+    "t20iWickets": 86
+  },
+  "SHADABKHAN": {
+    "fullName": "Shadab Khan",
+    "country": "Pakistan",
+    "role": "All-rounder",
+    "t20iMatches": 95,
+    "t20iRuns": 503,
+    "t20iWickets": 94
+  },
+  "MOHAMMADNAWAZ": {
+    "fullName": "Mohammad Nawaz",
+    "country": "Pakistan",
+    "role": "All-rounder",
+    "t20iMatches": 55,
+    "t20iRuns": 381,
+    "t20iWickets": 45
+  },
+  "FAKHARZAMAN": {
+    "fullName": "Fakhar Zaman",
+    "country": "Pakistan",
+    "role": "Batsman",
+    "t20iMatches": 84,
+    "t20iRuns": 2147,
+    "t20iWickets": 0
+  },
+  "IFTIKHARAHMED": {
+    "fullName": "Iftikhar Ahmed",
+    "country": "Pakistan",
+    "role": "All-rounder",
+    "t20iMatches": 68,
+    "t20iRuns": 989,
+    "t20iWickets": 8
+  },
+  "SHANMASOOD": {
+    "fullName": "Shan Masood",
+    "country": "Pakistan",
+    "role": "Batsman",
+    "t20iMatches": 28,
+    "t20iRuns": 379,
+    "t20iWickets": 0
+  },
+  "HAIDERALI": {
+    "fullName": "Haider Ali",
+    "country": "Pakistan",
+    "role": "Batsman",
+    "t20iMatches": 32,
+    "t20iRuns": 399,
+    "t20iWickets": 0
+  },
+  "ASIFALI": {
+    "fullName": "Asif Ali",
+    "country": "Pakistan",
+    "role": "Batsman",
+    "t20iMatches": 50,
+    "t20iRuns": 597,
+    "t20iWickets": 0
+  },
+  "NASEEMSHAH": {
+    "fullName": "Naseem Shah",
+    "country": "Pakistan",
+    "role": "Bowler",
+    "t20iMatches": 28,
+    "t20iRuns": 15,
+    "t20iWickets": 31
+  },
+  "MOHAMMADHARIS": {
+    "fullName": "Mohammad Haris",
+    "country": "Pakistan",
+    "role": "WK-Batsman",
+    "t20iMatches": 14,
+    "t20iRuns": 232,
+    "t20iWickets": 0
+  },
+  "MOHAMMADWASIM": {
+    "fullName": "Mohammad Wasim Jr",
+    "country": "Pakistan",
+    "role": "All-rounder",
+    "t20iMatches": 25,
+    "t20iRuns": 102,
+    "t20iWickets": 27
+  },
+  "MOHAMMADHAFEEZ": {
+    "fullName": "Mohammad Hafeez",
+    "country": "Pakistan",
+    "role": "All-rounder",
+    "t20iMatches": 119,
+    "t20iRuns": 2514,
+    "t20iWickets": 61
+  },
+  "SHOAIBMALIK": {
+    "fullName": "Shoaib Malik",
+    "country": "Pakistan",
+    "role": "All-rounder",
+    "t20iMatches": 124,
+    "t20iRuns": 2435,
+    "t20iWickets": 28
+  },
+  "IMADWASIM": {
+    "fullName": "Imad Wasim",
+    "country": "Pakistan",
+    "role": "All-rounder",
+    "t20iMatches": 65,
+    "t20iRuns": 544,
+    "t20iWickets": 60
+  },
+  "HASANALI": {
+    "fullName": "Hasan Ali",
+    "country": "Pakistan",
+    "role": "Bowler",
+    "t20iMatches": 53,
+    "t20iRuns": 67,
+    "t20iWickets": 60
+  },
+  "JCBUTTLER": {
+    "fullName": "Jos Buttler",
+    "country": "England",
+    "role": "WK-Batsman",
+    "t20iMatches": 115,
+    "t20iRuns": 2801,
+    "t20iWickets": 0
+  },
+  "BASTOKES": {
+    "fullName": "Ben Stokes",
+    "country": "England",
+    "role": "All-rounder",
+    "t20iMatches": 51,
+    "t20iRuns": 716,
+    "t20iWickets": 25
+  },
+  "SMCURRAN": {
+    "fullName": "Sam Curran",
+    "country": "England",
+    "role": "All-rounder",
+    "t20iMatches": 42,
+    "t20iRuns": 186,
+    "t20iWickets": 48
+  },
+  "AURASHID": {
+    "fullName": "Adil Rashid",
+    "country": "England",
+    "role": "Bowler",
+    "t20iMatches": 114,
+    "t20iRuns": 58,
+    "t20iWickets": 109
+  },
+  "CJJORDAN": {
+    "fullName": "Chris Jordan",
+    "country": "England",
+    "role": "Bowler",
+    "t20iMatches": 92,
+    "t20iRuns": 113,
+    "t20iWickets": 102
+  },
+  "CRWOAKES": {
+    "fullName": "Chris Woakes",
+    "country": "England",
+    "role": "All-rounder",
+    "t20iMatches": 20,
+    "t20iRuns": 55,
+    "t20iWickets": 17
+  },
+  "MMALI": {
+    "fullName": "Moeen Ali",
+    "country": "England",
+    "role": "All-rounder",
+    "t20iMatches": 75,
+    "t20iRuns": 756,
+    "t20iWickets": 34
+  },
+  "LSLIVINGSTONE": {
+    "fullName": "Liam Livingstone",
+    "country": "England",
+    "role": "All-rounder",
+    "t20iMatches": 48,
+    "t20iRuns": 698,
+    "t20iWickets": 24
+  },
+  "ADHALES": {
+    "fullName": "Alex Hales",
+    "country": "England",
+    "role": "Batsman",
+    "t20iMatches": 79,
+    "t20iRuns": 2074,
+    "t20iWickets": 0
+  },
+  "PDSALT": {
+    "fullName": "Phil Salt",
+    "country": "England",
+    "role": "WK-Batsman",
+    "t20iMatches": 38,
+    "t20iRuns": 907,
+    "t20iWickets": 0
+  },
+  "HCBROOK": {
+    "fullName": "Harry Brook",
+    "country": "England",
+    "role": "Batsman",
+    "t20iMatches": 31,
+    "t20iRuns": 613,
+    "t20iWickets": 0
+  },
+  "EJGMORGAN": {
+    "fullName": "Eoin Morgan",
+    "country": "England",
+    "role": "Batsman",
+    "t20iMatches": 115,
+    "t20iRuns": 2458,
+    "t20iWickets": 0
+  },
+  "JJROY": {
+    "fullName": "Jason Roy",
+    "country": "England",
+    "role": "Batsman",
+    "t20iMatches": 70,
+    "t20iRuns": 1620,
+    "t20iWickets": 0
+  },
+  "JEROOT": {
+    "fullName": "Joe Root",
+    "country": "England",
+    "role": "Batsman",
+    "t20iMatches": 32,
+    "t20iRuns": 893,
+    "t20iWickets": 3
+  },
+  "DJWILLEY": {
+    "fullName": "David Willey",
+    "country": "England",
+    "role": "All-rounder",
+    "t20iMatches": 46,
+    "t20iRuns": 211,
+    "t20iWickets": 43
+  },
+  "LEPLUNKETT": {
+    "fullName": "Liam Plunkett",
+    "country": "England",
+    "role": "Bowler",
+    "t20iMatches": 22,
+    "t20iRuns": 28,
+    "t20iWickets": 22
+  },
+  "QDEKOCK": {
+    "fullName": "Quinton de Kock",
+    "country": "South Africa",
+    "role": "WK-Batsman",
+    "t20iMatches": 92,
+    "t20iRuns": 2543,
+    "t20iWickets": 0
+  },
+  "AKMARKRAM": {
+    "fullName": "Aiden Markram",
+    "country": "South Africa",
+    "role": "Batsman",
+    "t20iMatches": 51,
+    "t20iRuns": 1195,
+    "t20iWickets": 7
+  },
+  "DAMILLER": {
+    "fullName": "David Miller",
+    "country": "South Africa",
+    "role": "Batsman",
+    "t20iMatches": 119,
+    "t20iRuns": 2350,
+    "t20iWickets": 0
+  },
+  "HKLAASEN": {
+    "fullName": "Heinrich Klaasen",
+    "country": "South Africa",
+    "role": "WK-Batsman",
+    "t20iMatches": 45,
+    "t20iRuns": 929,
+    "t20iWickets": 0
+  },
+  "KRABADA": {
+    "fullName": "Kagiso Rabada",
+    "country": "South Africa",
+    "role": "Bowler",
+    "t20iMatches": 56,
+    "t20iRuns": 24,
+    "t20iWickets": 61
+  },
+  "ANORTJE": {
+    "fullName": "Anrich Nortje",
+    "country": "South Africa",
+    "role": "Bowler",
+    "t20iMatches": 35,
+    "t20iRuns": 5,
+    "t20iWickets": 37
+  },
+  "TSHAMSI": {
+    "fullName": "Tabraiz Shamsi",
+    "country": "South Africa",
+    "role": "Bowler",
+    "t20iMatches": 64,
+    "t20iRuns": 4,
+    "t20iWickets": 69
+  },
+  "KAMAHARAJ": {
+    "fullName": "Keshav Maharaj",
+    "country": "South Africa",
+    "role": "Bowler",
+    "t20iMatches": 25,
+    "t20iRuns": 8,
+    "t20iWickets": 20
+  },
+  "MJANSEN": {
+    "fullName": "Marco Jansen",
+    "country": "South Africa",
+    "role": "All-rounder",
+    "t20iMatches": 18,
+    "t20iRuns": 87,
+    "t20iWickets": 18
+  },
+  "RRHENDRICKS": {
+    "fullName": "Reeza Hendricks",
+    "country": "South Africa",
+    "role": "Batsman",
+    "t20iMatches": 57,
+    "t20iRuns": 1328,
+    "t20iWickets": 0
+  },
+  "TSTUBBS": {
+    "fullName": "Tristan Stubbs",
+    "country": "South Africa",
+    "role": "Batsman",
+    "t20iMatches": 30,
+    "t20iRuns": 489,
+    "t20iWickets": 0
+  },
+  "CHGAYLE": {
+    "fullName": "Chris Gayle",
+    "country": "West Indies",
+    "role": "Batsman",
+    "t20iMatches": 79,
+    "t20iRuns": 1899,
+    "t20iWickets": 19
+  },
+  "MNSAMUELS": {
+    "fullName": "Marlon Samuels",
+    "country": "West Indies",
+    "role": "All-rounder",
+    "t20iMatches": 67,
+    "t20iRuns": 1611,
+    "t20iWickets": 12
+  },
+  "ADRUSSELL": {
+    "fullName": "Andre Russell",
+    "country": "West Indies",
+    "role": "All-rounder",
+    "t20iMatches": 71,
+    "t20iRuns": 849,
+    "t20iWickets": 35
+  },
+  "DJBRAVO": {
+    "fullName": "Dwayne Bravo",
+    "country": "West Indies",
+    "role": "All-rounder",
+    "t20iMatches": 91,
+    "t20iRuns": 1142,
+    "t20iWickets": 78
+  },
+  "CRBRATHWAITE": {
+    "fullName": "Carlos Brathwaite",
+    "country": "West Indies",
+    "role": "All-rounder",
+    "t20iMatches": 34,
+    "t20iRuns": 313,
+    "t20iWickets": 26
+  },
+  "DJGSAMMY": {
+    "fullName": "Darren Sammy",
+    "country": "West Indies",
+    "role": "All-rounder",
+    "t20iMatches": 68,
+    "t20iRuns": 512,
+    "t20iWickets": 39
+  },
+  "JCHARLES": {
+    "fullName": "Johnson Charles",
+    "country": "West Indies",
+    "role": "WK-Batsman",
+    "t20iMatches": 44,
+    "t20iRuns": 820,
+    "t20iWickets": 0
+  },
+  "LMPSIMMONS": {
+    "fullName": "Lendl Simmons",
+    "country": "West Indies",
+    "role": "Batsman",
+    "t20iMatches": 68,
+    "t20iRuns": 1527,
+    "t20iWickets": 0
+  },
+  "SBADREE": {
+    "fullName": "Samuel Badree",
+    "country": "West Indies",
+    "role": "Bowler",
+    "t20iMatches": 52,
+    "t20iRuns": 32,
+    "t20iWickets": 54
+  },
+  "SJBENN": {
+    "fullName": "Sulieman Benn",
+    "country": "West Indies",
+    "role": "Bowler",
+    "t20iMatches": 21,
+    "t20iRuns": 22,
+    "t20iWickets": 17
+  },
+  "DRAMDIN": {
+    "fullName": "Denesh Ramdin",
+    "country": "West Indies",
+    "role": "WK-Batsman",
+    "t20iMatches": 71,
+    "t20iRuns": 629,
+    "t20iWickets": 0
+  }
+}
