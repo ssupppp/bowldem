@@ -87,13 +87,41 @@ npm run build        # Production build
 ```
 
 ## Current State (as of Jan 2025)
+- **569 players** in database (all with proper roles)
 - 60 T20 World Cup puzzles loaded
 - Y/N feedback system working
-- Daily puzzle rotation working
+- Daily puzzle rotation working (EPOCH: 2026-01-15)
 - Stats tracking (localStorage)
 - Share functionality working
 
 ## Priority Tasks
-1. UI/UX improvements to feedback display
-2. Mobile responsiveness
-3. Add more puzzle content (ODI, IPL matches)
+1. **Expand player database** - See `PLAYER_DATABASE_PLAN.md`
+2. UI/UX improvements to feedback display
+3. Mobile responsiveness
+4. Add more puzzle content (ODI, IPL matches)
+
+## Player Database Expansion
+See `PLAYER_DATABASE_PLAN.md` for the full plan. Summary:
+
+### Phase 1: T20 World Cup Nations (Current)
+- Add missing nations: Afghanistan, Canada, UAE, Uganda, PNG
+- Expand associate nation squads
+- Fill gaps in full member rosters
+- Target: +300 players
+
+### Phase 2: Domestic T20 Leagues
+- IPL uncapped players, BBL, PSL, CPL, etc.
+- Target: +150 players
+
+### Phase 3: Retired Legends
+- Historical players from 1980s-2010s
+- Target: +200 players
+
+### Quick Commands
+```bash
+# Count by country
+cat src/data/all_players.json | grep -o '"country": "[^"]*"' | sort | uniq -c | sort -rn
+
+# Total count
+grep -c '"id"' src/data/all_players.json
+```
