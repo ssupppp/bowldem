@@ -9,6 +9,24 @@ Always work on the `feature/feedback-system-update` branch. Do NOT switch to mai
 
 ---
 
+## DEPRECATED - Do Not Use
+
+### Old Branches (on GitHub)
+These branches are outdated and should be ignored:
+- `feature/role-runs-wickets-matches-feedback` - OLD, superseded by current branch
+- `claude/update-mvp-todos-mWtrA` - OLD, auto-generated branch
+- `main` - Not actively used, current work is on feature branch
+
+### Old Local Folders
+These folders contain outdated versions of the project:
+- `C:\Users\Vikas\Documents\Projects\CricGuessV2` - OLD (rename to `_OLD_CricGuessV2`)
+  - Contains `cricguess-mvp` - older MVP with T20I data
+  - Contains `bowldemv2` - older version with Express backend + SQLite (abandoned)
+
+**Only use `C:\Users\Vikas\Documents\Projects\bowldem-work`**
+
+---
+
 ## TODO - Current Tasks
 
 ### In Progress
