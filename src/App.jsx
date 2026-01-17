@@ -98,6 +98,8 @@ function App() {
 
     return {
       playerName: guessedPlayer.fullName,
+      country: guessedPlayer.country,
+      role: guessedPlayer.role,
       playedInGame: playersInMatch.includes(guessedPlayerKey),
       sameTeam: guessedPlayer.country === targetPlayerTeam,
       sameRole: guessedPlayer.role === targetPlayerRole,
