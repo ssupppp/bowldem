@@ -1,0 +1,526 @@
+/* =============================================================================
+   FEEDBACK GRID - Wordle-inspired layout
+   Using !important to override App.css conflicts
+   ============================================================================= */
+
+.feedback-grid {
+  margin-top: 1.5rem !important;
+  background: white !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden !important;
+  display: block !important;
+}
+
+/* =============================================================================
+   HEADER ROW
+   ============================================================================= */
+
+.feedback-grid .grid-header {
+  display: grid !important;
+  grid-template-columns: 2rem 1fr 10rem 2rem !important;
+  align-items: center !important;
+  padding: 0.625rem 0.75rem !important;
+  background: #f8fafc !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+  gap: 0.5rem !important;
+}
+
+.feedback-grid .header-num {
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  color: #94a3b8 !important;
+  text-align: center !important;
+}
+
+.feedback-grid .header-player {
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.feedback-grid .header-boxes {
+  display: grid !important;
+  grid-template-columns: repeat(4, 2.25rem) !important;
+  gap: 0.375rem !important;
+  justify-content: end !important;
+}
+
+.feedback-grid .header-boxes span {
+  text-align: center !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+}
+
+.feedback-grid .help-btn {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  border: none !important;
+  background: #e2e8f0 !important;
+  border-radius: 50% !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  color: #64748b !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.15s ease !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.feedback-grid .help-btn:hover {
+  background: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+/* =============================================================================
+   ROWS CONTAINER
+   ============================================================================= */
+
+.feedback-grid .grid-rows {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* =============================================================================
+   GUESS ROW - Same structure as header
+   ============================================================================= */
+
+.feedback-grid .guess-row {
+  display: grid !important;
+  grid-template-columns: 2rem 1fr 10rem 2rem !important;
+  align-items: center !important;
+  padding: 0.625rem 0.75rem !important;
+  gap: 0.5rem !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  min-height: 3.5rem !important;
+  background: white !important;
+}
+
+.feedback-grid .guess-row:last-child {
+  border-bottom: none !important;
+}
+
+/* Row number */
+.feedback-grid .row-number {
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  color: #cbd5e1 !important;
+  text-align: center !important;
+}
+
+/* Player name */
+.feedback-grid .row-player {
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Boxes container */
+.feedback-grid .row-boxes {
+  display: grid !important;
+  grid-template-columns: repeat(4, 2.25rem) !important;
+  gap: 0.375rem !important;
+  justify-content: end !important;
+}
+
+/* Individual box */
+.feedback-grid .guess-box {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0.375rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  color: white !important;
+  transition: transform 0.15s ease !important;
+}
+
+/* =============================================================================
+   FILLED ROW STATES
+   ============================================================================= */
+
+.feedback-grid .guess-row.filled {
+  background: white !important;
+}
+
+.feedback-grid .guess-row.filled .row-number {
+  color: #94a3b8 !important;
+}
+
+.feedback-grid .guess-row.filled.winner {
+  background: linear-gradient(90deg, #fefce8 0%, #fef9c3 100%) !important;
+}
+
+.feedback-grid .guess-row.filled.winner .row-number {
+  color: #ca8a04 !important;
+}
+
+/* Box states */
+.feedback-grid .guess-box.hidden {
+  background: #cbd5e1 !important;
+}
+
+.feedback-grid .guess-box.revealed {
+  animation: flipReveal 0.3s ease-out;
+}
+
+.feedback-grid .guess-box.correct {
+  background: #16a34a !important;
+}
+
+.feedback-grid .guess-box.incorrect {
+  background: #64748b !important;
+}
+
+.feedback-grid .guess-box.mvp {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+  animation: flipReveal 0.3s ease-out, mvpPulse 0.5s ease-out 0.3s;
+}
+
+/* =============================================================================
+   EMPTY ROW
+   ============================================================================= */
+
+.feedback-grid .guess-row.empty {
+  background: #fafafa !important;
+}
+
+.feedback-grid .guess-row.empty .row-number {
+  color: #e2e8f0 !important;
+}
+
+.feedback-grid .guess-row.empty.next {
+  background: #f8fafc !important;
+}
+
+.feedback-grid .guess-row.empty.next .row-number {
+  color: #94a3b8 !important;
+}
+
+.feedback-grid .empty-player {
+  color: transparent !important;
+}
+
+.feedback-grid .next-hint {
+  color: #94a3b8 !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  font-style: italic !important;
+}
+
+.feedback-grid .empty-box {
+  background: #f1f5f9 !important;
+  border: 2px dashed #cbd5e1 !important;
+}
+
+.feedback-grid .guess-row.empty.next .empty-box {
+  border-color: #94a3b8 !important;
+}
+
+/* =============================================================================
+   CHECKING ROW
+   ============================================================================= */
+
+.feedback-grid .guess-row.checking {
+  background: linear-gradient(90deg, #1e3a8a 0%, #3730a3 100%) !important;
+}
+
+.feedback-grid .guess-row.checking .row-number {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.feedback-grid .checking-player {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  color: white !important;
+}
+
+.feedback-grid .checking-icon {
+  font-size: 1rem !important;
+}
+
+.feedback-grid .checking-text {
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  color: #fbbf24 !important;
+}
+
+.feedback-grid .checking-box {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #fbbf24 !important;
+  animation: checkPulse 0.8s ease-in-out infinite;
+}
+
+/* =============================================================================
+   ANIMATIONS
+   ============================================================================= */
+
+@keyframes flipReveal {
+  0% {
+    transform: rotateX(90deg) scale(0.8);
+    opacity: 0;
+  }
+  60% {
+    transform: rotateX(-10deg) scale(1.05);
+  }
+  100% {
+    transform: rotateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes mvpPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
+  }
+  50% {
+    box-shadow: 0 0 16px 4px rgba(251, 191, 36, 0.6);
+  }
+}
+
+@keyframes checkPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* =============================================================================
+   LEGEND POPUP
+   ============================================================================= */
+
+.legend-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1000 !important;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.legend-modal {
+  background: white !important;
+  border-radius: 1rem !important;
+  padding: 1.25rem !important;
+  max-width: 300px !important;
+  width: 90% !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25) !important;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.legend-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 1rem !important;
+  padding-bottom: 0.75rem !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+}
+
+.legend-close {
+  width: 1.75rem !important;
+  height: 1.75rem !important;
+  border: none !important;
+  background: #f1f5f9 !important;
+  border-radius: 50% !important;
+  font-size: 0.8rem !important;
+  color: #64748b !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+}
+
+.legend-close:hover {
+  background: #e2e8f0 !important;
+}
+
+.legend-content {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.875rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.legend-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+.legend-box-demo {
+  width: 2rem !important;
+  height: 2rem !important;
+  background: #64748b !important;
+  color: white !important;
+  border-radius: 0.375rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  flex-shrink: 0 !important;
+}
+
+.legend-box-demo.mvp-demo {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+}
+
+.legend-info {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.125rem !important;
+}
+
+.legend-info strong {
+  font-size: 0.875rem !important;
+  color: #1e293b !important;
+}
+
+.legend-info span {
+  font-size: 0.75rem !important;
+  color: #64748b !important;
+}
+
+.legend-colors {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 2rem !important;
+  padding-top: 0.75rem !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+.color-demo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-size: 0.8rem !important;
+  color: #475569 !important;
+}
+
+.demo-box {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  border-radius: 0.25rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  color: white !important;
+}
+
+.correct-demo {
+  background: #16a34a !important;
+}
+
+.incorrect-demo {
+  background: #64748b !important;
+}
+
+/* =============================================================================
+   RESPONSIVE
+   ============================================================================= */
+
+@media (max-width: 400px) {
+  .feedback-grid .grid-header,
+  .feedback-grid .guess-row {
+    grid-template-columns: 1.5rem 1fr 8.5rem 1.75rem !important;
+    padding: 0.5rem !important;
+    gap: 0.375rem !important;
+  }
+
+  .feedback-grid .header-boxes,
+  .feedback-grid .row-boxes {
+    grid-template-columns: repeat(4, 2rem) !important;
+    gap: 0.25rem !important;
+  }
+
+  .feedback-grid .guess-box {
+    width: 2rem !important;
+    height: 2rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  .feedback-grid .row-player {
+    font-size: 0.8rem !important;
+  }
+
+  .feedback-grid .help-btn {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    font-size: 0.65rem !important;
+  }
+}
+
+@media (min-width: 500px) {
+  .feedback-grid .grid-header,
+  .feedback-grid .guess-row {
+    grid-template-columns: 2.5rem 1fr 11rem 2.5rem !important;
+    padding: 0.75rem 1rem !important;
+  }
+
+  .feedback-grid .header-boxes,
+  .feedback-grid .row-boxes {
+    grid-template-columns: repeat(4, 2.5rem) !important;
+    gap: 0.5rem !important;
+  }
+
+  .feedback-grid .guess-box {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    font-size: 1rem !important;
+  }
+
+  .feedback-grid .row-player {
+    font-size: 0.95rem !important;
+  }
+}
+
+/* =============================================================================
+   ACCESSIBILITY
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .feedback-grid .guess-box.revealed,
+  .feedback-grid .guess-box.mvp,
+  .feedback-grid .checking-box {
+    animation: none !important;
+  }
+}

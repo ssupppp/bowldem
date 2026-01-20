@@ -24,12 +24,17 @@ import React, { useState, useMemo, useEffect } from "react";
 import allPlayersData from "./data/all_players.json";
 import matchPuzzlesData from "./data/match_puzzles_t20wc.json";
 import { useDailyPuzzle } from "./hooks/useDailyPuzzle.js";
+import { checkAutoReset } from "./utils/dailyPuzzle.js";
 import { PlayerAutocomplete } from "./components/PlayerAutocomplete.jsx";
 import { FeedbackDisplay } from "./components/FeedbackDisplay.jsx";
+import { ThirdUmpireFeedback } from "./components/ThirdUmpireFeedback.jsx";
 import { StatsModal } from "./components/StatsModal.jsx";
 import { DebugPanel } from "./components/DebugPanel.jsx";
 import { CountdownTimer } from "./components/CountdownTimer.jsx";
 import "./App.css";
+
+// Auto-reset if ?reset=true is in URL
+checkAutoReset();
 
 // Load puzzle data - each puzzle represents one historic match
 const PUZZLES = matchPuzzlesData.puzzles || [];
@@ -64,6 +69,9 @@ function App() {
   const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showStatsModal, setShowStatsModal] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
+  const [pendingFeedback, setPendingFeedback] = useState(null);
+  const [newFeedbackIndex, setNewFeedbackIndex] = useState(-1);
 
   // Create a lookup map for O(1) player access by ID
   const playersLookup = useMemo(() => {
@@ -127,7 +135,7 @@ function App() {
   }, [gameStatus, guesses.length, currentPuzzle]);
 
   const handlePlayerGuess = (playerKey) => {
-    if (gameWon || gameOver || usedPlayers.has(playerKey) || alreadyCompleted) return;
+    if (gameWon || gameOver || usedPlayers.has(playerKey) || alreadyCompleted || isChecking) return;
 
     const feedback = generateNewFeedback(playerKey);
     if (!feedback) {
@@ -135,20 +143,34 @@ function App() {
       return;
     }
 
-    const isWin = feedback.isMVP;
-    const { newState, isGameOver } = recordGuess(playerKey, isWin);
-
-    const newFeedbackList = [...feedbackList, feedback];
-    setFeedbackList(newFeedbackList);
+    // Start 3rd Umpire checking state
+    setIsChecking(true);
+    setPendingFeedback(feedback);
     setUsedPlayers(prev => new Set([...prev, playerKey]));
 
-    if (isWin) {
-      setGameWon(true);
-      setTimeout(() => setShowSuccessModal(true), 500);
-    } else if (newFeedbackList.length >= maxGuesses) {
-      setGameOver(true);
-      setTimeout(() => setShowGameOverModal(true), 500);
-    }
+    // Checking delay (~700ms), then reveal with sequential animation
+    setTimeout(() => {
+      const isWin = feedback.isMVP;
+      const { newState, isGameOver } = recordGuess(playerKey, isWin);
+
+      const newFeedbackList = [...feedbackList, feedback];
+      setNewFeedbackIndex(newFeedbackList.length - 1);
+      setFeedbackList(newFeedbackList);
+      setIsChecking(false);
+      setPendingFeedback(null);
+
+      // Reset newFeedbackIndex after animation completes (~600ms)
+      setTimeout(() => setNewFeedbackIndex(-1), 600);
+
+      // Show modal after sequential reveal animation (~700ms)
+      if (isWin) {
+        setGameWon(true);
+        setTimeout(() => setShowSuccessModal(true), 700);
+      } else if (newFeedbackList.length >= maxGuesses) {
+        setGameOver(true);
+        setTimeout(() => setShowGameOverModal(true), 700);
+      }
+    }, 700);
   };
 
   const handleCloseModal = () => {
@@ -158,19 +180,19 @@ function App() {
 
   const generateShareText = () => {
     const feedbackLines = feedbackList.map(feedback => {
-      const played = feedback.playedInGame ? 'Y' : 'N';
-      const team = feedback.sameTeam ? 'Y' : 'N';
-      const role = feedback.sameRole ? 'Y' : 'N';
-      const mvp = feedback.isMVP ? 'W' : 'N';
+      const played = feedback.playedInGame ? '🟢' : '🔴';
+      const team = feedback.sameTeam ? '🟢' : '🔴';
+      const role = feedback.sameRole ? '🟢' : '🔴';
+      const mvp = feedback.isMVP ? '🏆' : '🔴';
       return played + team + role + mvp;
     });
 
     const gridPattern = feedbackLines.join('\n');
     const resultText = gameWon
-      ? 'Found in ' + feedbackList.length + '/' + maxGuesses
-      : 'X/' + maxGuesses;
+      ? '✅ Found in ' + feedbackList.length + '/' + maxGuesses
+      : '❌ ' + feedbackList.length + '/' + maxGuesses;
 
-    return 'Bowldem #' + puzzleNumber + '\n' + gridPattern + '\n' + resultText + '\n\nPlay at: bowldem.com';
+    return '🏏 Bowldem #' + puzzleNumber + '\n\n' + gridPattern + '\n\n' + resultText + '\n\nbowldem.com';
   };
 
   const handleShare = () => {
@@ -221,9 +243,6 @@ function App() {
         {result && (
           <div className="match-result">{result}</div>
         )}
-        <div className="motm-hint">
-          Find the Man of the Match
-        </div>
       </div>
     );
   };
@@ -402,50 +421,65 @@ function App() {
     <div>
       <div className="page-background">
         <div className="game-container">
-          <div className="header-enhanced">
-            <h1 className="title-enhanced">Bowldem #{puzzleNumber}</h1>
-            <p className="subtitle-enhanced">{effectiveDate}</p>
-          </div>
-
-          <div className="navigation-enhanced">
-            <div className="puzzle-info">
-              {guessesRemaining > 0 && !alreadyCompleted
-                ? guessesRemaining + ' guesses remaining'
-                : alreadyCompleted
-                  ? (gameStatus === 'won' ? 'Solved!' : 'Better luck tomorrow!')
-                  : 'Game Over'}
+          {/* Minimal Header */}
+          <div className="header-minimal">
+            <div className="header-left">
+              <span className="brand-icon">🏏</span>
+              <h1 className="brand-title">Bowldem</h1>
             </div>
-            <div className="nav-buttons">
+            <div className="header-right">
               <button
-                className="btn-enhanced btn-secondary"
-                onClick={() => setShowStatsModal(true)}
-              >
-                Stats
-              </button>
-              <button
-                className="btn-enhanced btn-secondary"
+                className="icon-btn"
                 onClick={() => setShowHowToPlay(true)}
+                title="How to Play"
               >
-                How to Play
+                ?
+              </button>
+              <button
+                className="icon-btn"
+                onClick={() => setShowStatsModal(true)}
+                title="Stats"
+              >
+                📊
               </button>
             </div>
           </div>
 
+          {/* Clue Card - At Top */}
           {renderSimplifiedScorecard()}
 
+          {/* Hero Section - Input */}
           {!gameWon && !gameOver && !alreadyCompleted && (
-            <PlayerAutocomplete
-              players={allPlayersData.players}
-              onSelectPlayer={handlePlayerGuess}
-              disabled={gameWon || gameOver}
-              usedPlayers={usedPlayers}
-            />
+            <div className="hero-section">
+              <div className="hero-prompt">
+                <span className="hero-text">Who's the Man of the Match?</span>
+              </div>
+              <PlayerAutocomplete
+                players={allPlayersData.players}
+                onSelectPlayer={handlePlayerGuess}
+                disabled={gameWon || gameOver}
+                usedPlayers={usedPlayers}
+              />
+            </div>
           )}
 
-          <FeedbackDisplay
+          {/* Completed State */}
+          {alreadyCompleted && (
+            <div className="completed-banner">
+              <span className="completed-icon">{gameStatus === 'won' ? '🏆' : '😔'}</span>
+              <span className="completed-text">
+                {gameStatus === 'won' ? 'Solved!' : 'Better luck tomorrow'}
+              </span>
+            </div>
+          )}
+
+          {/* Feedback */}
+          <ThirdUmpireFeedback
             feedbackList={feedbackList}
             guessesRemaining={guessesRemaining}
             maxGuesses={maxGuesses}
+            isChecking={isChecking}
+            newFeedbackIndex={newFeedbackIndex}
           />
 
           <div className="game-controls">

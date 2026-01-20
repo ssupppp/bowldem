@@ -2214,3 +2214,283 @@ body {
     font-size: 1.1rem;
   }
 }
+
+/* ============================================================================
+   NEW MINIMAL DESIGN - v2.1
+   ============================================================================ */
+
+/* Minimal Header */
+.header-minimal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-icon {
+  font-size: 1.5rem;
+}
+
+.brand-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1e3a8a, #3730a3);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.header-right {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.icon-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.icon-btn:hover {
+  background: #e2e8f0;
+  transform: scale(1.05);
+}
+
+/* Hero Section */
+.hero-section {
+  margin-bottom: 1.5rem;
+}
+
+.hero-prompt {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.puzzle-number {
+  display: inline-block;
+  background: linear-gradient(135deg, #1e3a8a, #3730a3);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-text {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 0.5rem;
+}
+
+/* Guesses Indicator */
+.guesses-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.guess-dot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background: #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.guess-dot.used {
+  background: #94a3b8;
+}
+
+.guess-text {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
+/* Completed Banner */
+.completed-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 2px solid #86efac;
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.completed-icon {
+  font-size: 1.5rem;
+}
+
+.completed-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #166534;
+}
+
+/* Compact Clue Card */
+.scorecard-simplified {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: white;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.scorecard-simplified .scorecard-header {
+  margin-bottom: 0.75rem;
+}
+
+.scorecard-simplified .puzzle-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+}
+
+.scorecard-simplified .venue-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.scorecard-simplified .venue-icon {
+  font-size: 1.1rem;
+}
+
+.scorecard-simplified .venue-name {
+  color: #fbbf24;
+}
+
+.scorecard-simplified .match-scores {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+}
+
+.scorecard-simplified .team-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.scorecard-simplified .team-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.scorecard-simplified .score-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.scorecard-simplified .vs-divider {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+}
+
+.scorecard-simplified .match-result {
+  font-size: 0.8rem;
+  color: #86efac;
+  font-weight: 600;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.scorecard-simplified .motm-hint {
+  display: none;
+}
+
+/* Update autocomplete for hero style */
+.autocomplete-container {
+  margin-bottom: 0;
+}
+
+.autocomplete-input {
+  width: 100%;
+  padding: 1rem 3rem 1rem 1.25rem;
+  font-size: 1.1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 1rem;
+  background: white;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-weight: 500;
+}
+
+.autocomplete-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.autocomplete-input::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .brand-title {
+    font-size: 1.25rem;
+  }
+
+  .hero-text {
+    font-size: 1.25rem;
+  }
+
+  .icon-btn {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
+  }
+
+  .game-container {
+    padding: 1rem;
+  }
+}

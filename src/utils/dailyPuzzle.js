@@ -309,6 +309,24 @@ export function isDebugMode() {
 }
 
 /**
+ * Check for reset param and clear data if present
+ * Call this on app init to auto-reset when ?reset=true is in URL
+ */
+export function checkAutoReset() {
+  if (typeof window === 'undefined') return false;
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('reset') === 'true') {
+    clearAllData();
+    // Remove reset param from URL to prevent loop
+    params.delete('reset');
+    const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    window.history.replaceState({}, '', newUrl);
+    return true;
+  }
+  return false;
+}
+
+/**
  * Get debug date offset (days to add/subtract)
  * @returns {number}
  */

@@ -683,6 +683,35 @@
     {"id": "NORMANVANUA", "fullName": "Norman Vanua", "country": "Papua New Guinea", "role": "Bowler"},
     {"id": "SEMAKAMEA", "fullName": "Sema Kamea", "country": "Papua New Guinea", "role": "Bowler"},
     {"id": "SESEBAU", "fullName": "Sese Bau", "country": "Papua New Guinea", "role": "All-rounder"},
-    {"id": "TONYURA", "fullName": "Tony Ura", "country": "Papua New Guinea", "role": "Batsman"}
+    {"id": "TONYURA", "fullName": "Tony Ura", "country": "Papua New Guinea", "role": "Batsman"},
+
+    {"id": "WAYNEMADSEN", "fullName": "Wayne Madsen", "country": "Italy", "role": "Batsman"},
+    {"id": "MARCUSCAMPOPIANO", "fullName": "Marcus Campopiano", "country": "Italy", "role": "Wicketkeeper"},
+    {"id": "GIANPIEROMEADE", "fullName": "Gian Piero Meade", "country": "Italy", "role": "Batsman"},
+    {"id": "ZAINALI", "fullName": "Zain Ali", "country": "Italy", "role": "Bowler"},
+    {"id": "ALIHASAN", "fullName": "Ali Hasan", "country": "Italy", "role": "Bowler"},
+    {"id": "CRISHANJORGE", "fullName": "Crishan Jorge", "country": "Italy", "role": "Bowler"},
+    {"id": "HARRYMANENTI", "fullName": "Harry Manenti", "country": "Italy", "role": "All-rounder"},
+    {"id": "ANTHONYMOSCA", "fullName": "Anthony Mosca", "country": "Italy", "role": "All-rounder"},
+    {"id": "JUSTINMOSCA", "fullName": "Justin Mosca", "country": "Italy", "role": "All-rounder"},
+    {"id": "SYEDNAQVI", "fullName": "Syed Naqvi", "country": "Italy", "role": "Bowler"},
+    {"id": "BENJAMINMANENTI", "fullName": "Benjamin Manenti", "country": "Italy", "role": "Bowler"},
+    {"id": "JASPREETSINGH", "fullName": "Jaspreet Singh", "country": "Italy", "role": "Bowler"},
+    {"id": "JJSMUTS", "fullName": "JJ Smuts", "country": "Italy", "role": "All-rounder"},
+    {"id": "GRANTSTEWART", "fullName": "Grant Stewart", "country": "Italy", "role": "All-rounder"},
+    {"id": "THOMASDRACA", "fullName": "Thomas Draca", "country": "Italy", "role": "Bowler"},
+
+    {"id": "SUNDEEPJORA", "fullName": "Sundeep Jora", "country": "Nepal", "role": "Batsman"},
+    {"id": "AARIFSHEIKH", "fullName": "Aarif Sheikh", "country": "Nepal", "role": "All-rounder"},
+    {"id": "BASIRAHAMAD", "fullName": "Basir Ahamad", "country": "Nepal", "role": "All-rounder"},
+    {"id": "NANDANYADAV", "fullName": "Nandan Yadav", "country": "Nepal", "role": "All-rounder"},
+    {"id": "LALITRAJBANSHI", "fullName": "Lalit Rajbanshi", "country": "Nepal", "role": "Bowler"},
+    {"id": "SHERMALLA", "fullName": "Sher Malla", "country": "Nepal", "role": "Bowler"},
+    {"id": "LOKESHBAM", "fullName": "Lokesh Bam", "country": "Nepal", "role": "Batsman"},
+
+    {"id": "MONANKPATEL", "fullName": "Monank Patel", "country": "United States of America", "role": "Wicketkeeper"},
+    {"id": "JESSYSINGH", "fullName": "Jessy Singh", "country": "United States of America", "role": "Bowler"},
+    {"id": "SHADLEYVANSCHALKWYK", "fullName": "Shadley Van Schalkwyk", "country": "United States of America", "role": "Bowler"},
+    {"id": "NISARGPATEL", "fullName": "Nisarg Patel", "country": "United States of America", "role": "All-rounder"}
   ]
 }
