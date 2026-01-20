@@ -17,7 +17,8 @@ export const STORAGE_KEYS = {
   DEBUG_OFFSET: 'bowldem_debug_offset'
 };
 
-export const MAX_GUESSES = 3;
+// Maximum attempts per puzzle (increased from 3 to 4 for knowledge-based format)
+export const MAX_GUESSES = 4;
 
 // ============================================================================
 // DATE UTILITIES
@@ -221,7 +222,7 @@ function getDefaultStats() {
     gamesWon: 0,
     currentStreak: 0,
     maxStreak: 0,
-    guessDistribution: [0, 0, 0], // Index = guesses-1 (for 1, 2, 3 guesses)
+    guessDistribution: [0, 0, 0, 0], // Index = guesses-1 (for 1, 2, 3, 4 guesses)
     lastWinDate: null
   };
 }
@@ -305,6 +306,24 @@ export function isDebugMode() {
   if (typeof window === 'undefined') return false;
   const params = new URLSearchParams(window.location.search);
   return params.get('debug') === 'true';
+}
+
+/**
+ * Check for reset param and clear data if present
+ * Call this on app init to auto-reset when ?reset=true is in URL
+ */
+export function checkAutoReset() {
+  if (typeof window === 'undefined') return false;
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('reset') === 'true') {
+    clearAllData();
+    // Remove reset param from URL to prevent loop
+    params.delete('reset');
+    const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+    window.history.replaceState({}, '', newUrl);
+    return true;
+  }
+  return false;
 }
 
 /**
