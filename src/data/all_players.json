@@ -19,6 +19,12 @@
       "role": "Batsman"
     },
     {
+      "id": "AAQIBJ",
+      "fullName": "Aaqib Javed",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
       "id": "AARIFSHEIKH",
       "fullName": "Aarif Sheikh",
       "country": "Nepal",
@@ -79,16 +85,34 @@
       "role": "Batsman"
     },
     {
+      "id": "ABDULQADIR",
+      "fullName": "Abdul Qadir",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
       "id": "ABDULRAZZAQ",
       "fullName": "Abdul Razzaq",
       "country": "Pakistan",
       "role": "All-rounder"
     },
     {
+      "id": "ABEYKT",
+      "fullName": "Abey Kuruvilla",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
       "id": "ABHIMANYUE",
       "fullName": "Abhimanyu Easwaran",
       "country": "India",
       "role": "Batsman"
+    },
+    {
+      "id": "ABHISHEKSHARMA",
+      "fullName": "Abhishek Sharma",
+      "country": "India",
+      "role": "All-rounder"
     },
     {
       "id": "ABMORKEL",
@@ -127,6 +151,12 @@
       "role": "Wicketkeeper"
     },
     {
+      "id": "ADAMPARORE",
+      "fullName": "Adam Parore",
+      "country": "New Zealand",
+      "role": "Wicketkeeper"
+    },
+    {
       "id": "ADHALES",
       "fullName": "Alex Hales",
       "country": "England",
@@ -136,6 +166,12 @@
       "id": "ADMATHEWS",
       "fullName": "Angelo Mathews",
       "country": "Sri Lanka",
+      "role": "All-rounder"
+    },
+    {
+      "id": "ADRIANKUIPER",
+      "fullName": "Adrian Kuiper",
+      "country": "South Africa",
       "role": "All-rounder"
     },
     {
@@ -181,6 +217,12 @@
       "role": "Batsman"
     },
     {
+      "id": "AJANTHAM",
+      "fullName": "Ajantha Mendis",
+      "country": "Sri Lanka",
+      "role": "Bowler"
+    },
+    {
       "id": "AJAYJ",
       "fullName": "Ajay Jadeja",
       "country": "India",
@@ -203,6 +245,12 @@
       "fullName": "Ajinkya Rahane",
       "country": "India",
       "role": "Batsman"
+    },
+    {
+      "id": "AJITAGARKAR",
+      "fullName": "Ajit Agarkar",
+      "country": "India",
+      "role": "Bowler"
     },
     {
       "id": "AKASHDEEP",
@@ -349,6 +397,12 @@
       "role": "Wicketkeeper"
     },
     {
+      "id": "ANDRENETRUMPER",
+      "fullName": "Andrew Hall",
+      "country": "South Africa",
+      "role": "All-rounder"
+    },
+    {
       "id": "ANDREWFLINTOFF",
       "fullName": "Andrew Flintoff",
       "country": "England",
@@ -365,6 +419,24 @@
       "fullName": "Andrew Symonds",
       "country": "Australia",
       "role": "All-rounder"
+    },
+    {
+      "id": "ANDREWTYE",
+      "fullName": "Andrew Tye",
+      "country": "Australia",
+      "role": "Bowler"
+    },
+    {
+      "id": "ANDYBALBI",
+      "fullName": "Andy Balbirnie",
+      "country": "Ireland",
+      "role": "Batsman"
+    },
+    {
+      "id": "ANDYBICHEL",
+      "fullName": "Andy Bichel",
+      "country": "Australia",
+      "role": "Bowler"
     },
     {
       "id": "ANDYMCBRINE",
@@ -409,6 +481,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "ANUJRAWAT",
+      "fullName": "Anuj Rawat",
+      "country": "India",
+      "role": "Wicketkeeper"
+    },
+    {
       "id": "AQIBILYAS",
       "fullName": "Aqib Ilyas",
       "country": "Oman",
@@ -451,16 +529,34 @@
       "role": "All-rounder"
     },
     {
+      "id": "ASANKAGURUSINGHE",
+      "fullName": "Asanka Gurusinha",
+      "country": "Sri Lanka",
+      "role": "Batsman"
+    },
+    {
       "id": "ASGHARAFGHAN",
       "fullName": "Asghar Afghan",
       "country": "Afghanistan",
       "role": "Batsman"
     },
     {
+      "id": "ASHLEYGILES",
+      "fullName": "Ashley Giles",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
       "id": "ASIFALI",
       "fullName": "Asif Ali",
       "country": "Pakistan",
       "role": "Batsman"
+    },
+    {
+      "id": "ASIFIQBAL",
+      "fullName": "Asif Iqbal",
+      "country": "Pakistan",
+      "role": "All-rounder"
     },
     {
       "id": "ASIFKHANUAE",
@@ -613,6 +709,12 @@
       "role": "Bowler"
     },
     {
+      "id": "BILLYSTANLAKE",
+      "fullName": "Billy Stanlake",
+      "country": "Australia",
+      "role": "Bowler"
+    },
+    {
       "id": "BJHADDIN",
       "fullName": "Brad Haddin",
       "country": "Australia",
@@ -655,6 +757,24 @@
       "role": "Bowler"
     },
     {
+      "id": "BOETAD",
+      "fullName": "Boeta Dippenaar",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "BOYDRANKIN",
+      "fullName": "Boyd Rankin",
+      "country": "Ireland",
+      "role": "Bowler"
+    },
+    {
+      "id": "BRANDONMC",
+      "fullName": "Brandon McMullen",
+      "country": "Scotland",
+      "role": "All-rounder"
+    },
+    {
       "id": "BRENDONMCCULLUM",
       "fullName": "Brendon McCullum",
       "country": "New Zealand",
@@ -679,10 +799,22 @@
       "role": "Bowler"
     },
     {
+      "id": "BRIAN",
+      "fullName": "Brian McMillan",
+      "country": "South Africa",
+      "role": "All-rounder"
+    },
+    {
       "id": "BRIANBEN",
       "fullName": "Brian Bennett",
       "country": "Zimbabwe",
       "role": "Batsman"
+    },
+    {
+      "id": "BRIANBRYDON",
+      "fullName": "Brydon Carse",
+      "country": "England",
+      "role": "Bowler"
     },
     {
       "id": "BRIANLARA",
@@ -727,6 +859,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "CARLHOOPER",
+      "fullName": "Carl Hooper",
+      "country": "West Indies",
+      "role": "All-rounder"
+    },
+    {
       "id": "CBRLSKUMARA",
       "fullName": "Lahiru Kumara",
       "country": "Sri Lanka",
@@ -757,6 +895,12 @@
       "role": "Bowler"
     },
     {
+      "id": "CHETESH",
+      "fullName": "Saqib Mahmood",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
       "id": "CHETESHWARPU",
       "fullName": "Cheteshwar Pujara",
       "country": "India",
@@ -783,6 +927,12 @@
     {
       "id": "CHRISCAIRNS",
       "fullName": "Chris Cairns",
+      "country": "New Zealand",
+      "role": "All-rounder"
+    },
+    {
+      "id": "CHRISCAIRNS2",
+      "fullName": "Chris Harris",
       "country": "New Zealand",
       "role": "All-rounder"
     },
@@ -833,6 +983,12 @@
       "fullName": "Clive Lloyd",
       "country": "West Indies",
       "role": "Batsman"
+    },
+    {
+      "id": "CLIVERICE",
+      "fullName": "Clive Rice",
+      "country": "South Africa",
+      "role": "All-rounder"
     },
     {
       "id": "CLWHITE",
@@ -889,6 +1045,12 @@
       "role": "Bowler"
     },
     {
+      "id": "CRAIGMCMILLAN",
+      "fullName": "Craig McMillan",
+      "country": "New Zealand",
+      "role": "All-rounder"
+    },
+    {
       "id": "CRBRATHWAITE",
       "fullName": "Carlos Brathwaite",
       "country": "West Indies",
@@ -937,16 +1099,58 @@
       "role": "Bowler"
     },
     {
+      "id": "DAMIENMARTYN",
+      "fullName": "Damien Martyn",
+      "country": "Australia",
+      "role": "Batsman"
+    },
+    {
       "id": "DAMILLER",
       "fullName": "David Miller",
       "country": "South Africa",
       "role": "Batsman"
     },
     {
+      "id": "DANCHRISTIAN",
+      "fullName": "Dan Christian",
+      "country": "Australia",
+      "role": "All-rounder"
+    },
+    {
       "id": "DANIELVETTORI",
       "fullName": "Daniel Vettori",
       "country": "New Zealand",
       "role": "All-rounder"
+    },
+    {
+      "id": "DARCYSHORT",
+      "fullName": "Darcy Short",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "DARYLLCULLINAN",
+      "fullName": "Daryll Cullinan",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "DAVIDHTON",
+      "fullName": "Dave Houghton",
+      "country": "Zimbabwe",
+      "role": "Batsman"
+    },
+    {
+      "id": "DAVIDHUSSEY",
+      "fullName": "David Hussey",
+      "country": "Australia",
+      "role": "Batsman"
+    },
+    {
+      "id": "DAVIDRIC",
+      "fullName": "Dave Richardson",
+      "country": "South Africa",
+      "role": "Wicketkeeper"
     },
     {
       "id": "DAWARNER",
@@ -961,6 +1165,12 @@
       "role": "Bowler"
     },
     {
+      "id": "DEBASHISH",
+      "fullName": "Debashish Mohanty",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
       "id": "DEBOLLINGER",
       "fullName": "Doug Bollinger",
       "country": "Australia",
@@ -971,6 +1181,18 @@
       "fullName": "David Budge",
       "country": "Scotland",
       "role": "Bowler"
+    },
+    {
+      "id": "DEEPAKCHAHAR",
+      "fullName": "Deepak Chahar",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "DEEPAKHOODA",
+      "fullName": "Deepak Hooda",
+      "country": "India",
+      "role": "All-rounder"
     },
     {
       "id": "DENNISLILLEE",
@@ -997,6 +1219,12 @@
       "role": "Batsman"
     },
     {
+      "id": "DEVONSM",
+      "fullName": "Devon Smith",
+      "country": "West Indies",
+      "role": "Batsman"
+    },
+    {
       "id": "DHRUVJUREL",
       "fullName": "Dhruv Jurel",
       "country": "India",
@@ -1007,6 +1235,12 @@
       "fullName": "Dhruv Parashar",
       "country": "United Arab Emirates",
       "role": "Bowler"
+    },
+    {
+      "id": "DHRUVSHOREY",
+      "fullName": "Dhruv Shorey",
+      "country": "India",
+      "role": "Batsman"
     },
     {
       "id": "DILIPVENGSARKAR",
@@ -1048,6 +1282,12 @@
       "id": "DIONNYR",
       "fullName": "Dion Myers",
       "country": "Zimbabwe",
+      "role": "All-rounder"
+    },
+    {
+      "id": "DIONSASH",
+      "fullName": "Dion Nash",
+      "country": "New Zealand",
       "role": "All-rounder"
     },
     {
@@ -1147,6 +1387,18 @@
       "role": "Bowler"
     },
     {
+      "id": "EDDOMBRANDT",
+      "fullName": "Eddo Brandes",
+      "country": "Zimbabwe",
+      "role": "Bowler"
+    },
+    {
+      "id": "EDJOYC",
+      "fullName": "Ed Joyce",
+      "country": "Ireland",
+      "role": "Batsman"
+    },
+    {
       "id": "EJGMORGAN",
       "fullName": "Eoin Morgan",
       "country": "England",
@@ -1181,6 +1433,12 @@
       "fullName": "Fareed Ahmad",
       "country": "Afghanistan",
       "role": "Bowler"
+    },
+    {
+      "id": "FAWADALAM",
+      "fullName": "Fawad Alam",
+      "country": "Pakistan",
+      "role": "Batsman"
     },
     {
       "id": "FAYYAZBUTT",
@@ -1229,6 +1487,18 @@
       "fullName": "Fred Achelam",
       "country": "Uganda",
       "role": "Bowler"
+    },
+    {
+      "id": "GARYKIR",
+      "fullName": "Gary Kirsten",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "GARYWH",
+      "fullName": "Gary Brent",
+      "country": "Zimbabwe",
+      "role": "Batsman"
     },
     {
       "id": "GAUTAMGAMBHIR",
@@ -1289,6 +1559,12 @@
       "fullName": "Glenn McGrath",
       "country": "Australia",
       "role": "Bowler"
+    },
+    {
+      "id": "GLENNTURNER",
+      "fullName": "Glenn Turner",
+      "country": "New Zealand",
+      "role": "Batsman"
     },
     {
       "id": "GMOTIE",
@@ -1465,6 +1741,12 @@
       "role": "Bowler"
     },
     {
+      "id": "HASHAN",
+      "fullName": "Hashan Tillakaratne",
+      "country": "Sri Lanka",
+      "role": "Batsman"
+    },
+    {
       "id": "HASHIMAMLA",
       "fullName": "Hashim Amla",
       "country": "South Africa",
@@ -1505,6 +1787,12 @@
       "fullName": "Heath Streak",
       "country": "Zimbabwe",
       "role": "All-rounder"
+    },
+    {
+      "id": "HEMANGBADANI",
+      "fullName": "Hemang Badani",
+      "country": "India",
+      "role": "Batsman"
     },
     {
       "id": "HENRYO",
@@ -1597,6 +1885,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "IANHARVEY",
+      "fullName": "Ian Harvey",
+      "country": "Australia",
+      "role": "All-rounder"
+    },
+    {
       "id": "IBRAHIMZADRAN",
       "fullName": "Ibrahim Zadran",
       "country": "Afghanistan",
@@ -1635,6 +1929,12 @@
     {
       "id": "INZAMAM",
       "fullName": "Inzamam-ul-Haq",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "IRFANKHAN",
+      "fullName": "Irfan Khan",
       "country": "Pakistan",
       "role": "Batsman"
     },
@@ -1729,9 +2029,21 @@
       "role": "Wicketkeeper"
     },
     {
+      "id": "JAMISHR",
+      "fullName": "Jamie Overton",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
       "id": "JAMORKEL",
       "fullName": "Albie Morkel",
       "country": "South Africa",
+      "role": "All-rounder"
+    },
+    {
+      "id": "JANFRYLINCK",
+      "fullName": "Jan Frylinck",
+      "country": "Namibia",
       "role": "All-rounder"
     },
     {
@@ -1765,6 +2077,12 @@
       "role": "Bowler"
     },
     {
+      "id": "JATINDERS",
+      "fullName": "Jatinder Singh",
+      "country": "Oman",
+      "role": "Batsman"
+    },
+    {
       "id": "JAVAGALSRINATH",
       "fullName": "Javagal Srinath",
       "country": "India",
@@ -1786,6 +2104,12 @@
       "id": "JAYDENSPREAK",
       "fullName": "Jayden Seales",
       "country": "West Indies",
+      "role": "Bowler"
+    },
+    {
+      "id": "JAYDEVUNADKAT",
+      "fullName": "Jaydev Unadkat",
+      "country": "India",
       "role": "Bowler"
     },
     {
@@ -1825,6 +2149,18 @@
       "role": "All-rounder"
     },
     {
+      "id": "JEEVAN",
+      "fullName": "Jeevan Mendis",
+      "country": "Sri Lanka",
+      "role": "All-rounder"
+    },
+    {
+      "id": "JEFFDUJON",
+      "fullName": "Jeff Dujon",
+      "country": "West Indies",
+      "role": "Wicketkeeper"
+    },
+    {
       "id": "JEREMYGORDON",
       "fullName": "Jeremy Gordon",
       "country": "Canada",
@@ -1849,10 +2185,22 @@
       "role": "Bowler"
     },
     {
+      "id": "JHYERICHARDSON",
+      "fullName": "Jhye Richardson",
+      "country": "Australia",
+      "role": "Bowler"
+    },
+    {
       "id": "JIMMYANDERSON",
       "fullName": "James Anderson",
       "country": "England",
       "role": "Bowler"
+    },
+    {
+      "id": "JIMMYCOOK",
+      "fullName": "Jimmy Cook",
+      "country": "South Africa",
+      "role": "Batsman"
     },
     {
       "id": "JJBUMRAH",
@@ -1921,6 +2269,12 @@
       "role": "Batsman"
     },
     {
+      "id": "JOHANNBOTHA",
+      "fullName": "Johan Botha",
+      "country": "South Africa",
+      "role": "All-rounder"
+    },
+    {
       "id": "JOHARIKIM",
       "fullName": "Joylord Gumbie",
       "country": "Zimbabwe",
@@ -1933,10 +2287,28 @@
       "role": "Bowler"
     },
     {
+      "id": "JOHNNWRIGHT",
+      "fullName": "John Wright",
+      "country": "New Zealand",
+      "role": "Batsman"
+    },
+    {
+      "id": "JOHNYMOONEY",
+      "fullName": "John Mooney",
+      "country": "Ireland",
+      "role": "All-rounder"
+    },
+    {
       "id": "JONTYRHODES",
       "fullName": "Jonty Rhodes",
       "country": "South Africa",
       "role": "Batsman"
+    },
+    {
+      "id": "JOSHD",
+      "fullName": "Josh Davey",
+      "country": "Scotland",
+      "role": "Bowler"
     },
     {
       "id": "JOSHING",
@@ -1969,6 +2341,12 @@
       "role": "Batsman"
     },
     {
+      "id": "JREID",
+      "fullName": "John Reid",
+      "country": "New Zealand",
+      "role": "All-rounder"
+    },
+    {
       "id": "JRHAZLEWOOD",
       "fullName": "Josh Hazlewood",
       "country": "Australia",
@@ -1996,6 +2374,12 @@
       "id": "JUNAIDSIDDIQUI",
       "fullName": "Junaid Siddiqui",
       "country": "Canada",
+      "role": "All-rounder"
+    },
+    {
+      "id": "JUSTINKEMPT",
+      "fullName": "Justin Kemp",
+      "country": "South Africa",
       "role": "All-rounder"
     },
     {
@@ -2051,6 +2435,12 @@
       "fullName": "Kamran Akmal",
       "country": "Pakistan",
       "role": "Wicketkeeper"
+    },
+    {
+      "id": "KANERICHARD",
+      "fullName": "Kane Richardson",
+      "country": "Australia",
+      "role": "Bowler"
     },
     {
       "id": "KANWARPALTATHGUR",
@@ -2137,9 +2527,21 @@
       "role": "Bowler"
     },
     {
+      "id": "KEMORPAUL",
+      "fullName": "Keemo Paul",
+      "country": "West Indies",
+      "role": "All-rounder"
+    },
+    {
       "id": "KENNETHWAISWA",
       "fullName": "Kenneth Waiswa",
       "country": "Uganda",
+      "role": "Batsman"
+    },
+    {
+      "id": "KEPLER",
+      "fullName": "Kepler Wessels",
+      "country": "South Africa",
       "role": "Batsman"
     },
     {
@@ -2153,6 +2555,12 @@
       "fullName": "Kevin Pietersen",
       "country": "England",
       "role": "Batsman"
+    },
+    {
+      "id": "KHALEDSM",
+      "fullName": "Khaled Mashud",
+      "country": "Bangladesh",
+      "role": "Wicketkeeper"
     },
     {
       "id": "KHALIDKAIL",
@@ -2176,6 +2584,12 @@
       "id": "KICASALANKA",
       "fullName": "Charith Asalanka",
       "country": "Sri Lanka",
+      "role": "Batsman"
+    },
+    {
+      "id": "KIERANPOW",
+      "fullName": "Kieran Powell",
+      "country": "West Indies",
       "role": "Batsman"
     },
     {
@@ -2227,6 +2641,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "KRUNALPANDYA",
+      "fullName": "Krunal Pandya",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
       "id": "KSANTOKIE",
       "fullName": "Krishmar Santokie",
       "country": "West Indies",
@@ -2263,6 +2683,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "KYLEMILLS",
+      "fullName": "Kyle Mills",
+      "country": "New Zealand",
+      "role": "Bowler"
+    },
+    {
       "id": "LAHIRUMADUSH",
       "fullName": "Lahiru Madushanka",
       "country": "Sri Lanka",
@@ -2284,6 +2710,12 @@
       "id": "LANCEKLUSENER",
       "fullName": "Lance Klusener",
       "country": "South Africa",
+      "role": "All-rounder"
+    },
+    {
+      "id": "LAXMIRATAN",
+      "fullName": "Laxmi Ratan Shukla",
+      "country": "India",
       "role": "All-rounder"
     },
     {
@@ -2317,6 +2749,18 @@
       "role": "Wicketkeeper"
     },
     {
+      "id": "LITONKD",
+      "fullName": "Liton Kumer Das",
+      "country": "Bangladesh",
+      "role": "Batsman"
+    },
+    {
+      "id": "LITTON",
+      "fullName": "Litton Das",
+      "country": "Bangladesh",
+      "role": "Wicketkeeper"
+    },
+    {
       "id": "LMPSIMMONS",
       "fullName": "Lendl Simmons",
       "country": "West Indies",
@@ -2332,6 +2776,12 @@
       "id": "LOKESHBAM",
       "fullName": "Lokesh Bam",
       "country": "Nepal",
+      "role": "Batsman"
+    },
+    {
+      "id": "LOUFINCENT",
+      "fullName": "Lou Vincent",
+      "country": "New Zealand",
       "role": "Batsman"
     },
     {
@@ -2383,6 +2833,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "MAJIDKHAN",
+      "fullName": "Majid Khan",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
       "id": "MAKHAYANTINI",
       "fullName": "Makhaya Ntini",
       "country": "South Africa",
@@ -2411,6 +2867,12 @@
       "fullName": "Marcus Campopiano",
       "country": "Italy",
       "role": "Wicketkeeper"
+    },
+    {
+      "id": "MARCUSTRESCOTHICK",
+      "fullName": "Marcus Trescothick",
+      "country": "England",
+      "role": "Batsman"
     },
     {
       "id": "MARKBOUCHER",
@@ -2479,8 +2941,26 @@
       "role": "Batsman"
     },
     {
+      "id": "MATTHEWHOGGARD",
+      "fullName": "Matthew Hoggard",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
       "id": "MATTHEWPOTTS",
       "fullName": "Matthew Potts",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
+      "id": "MATTPARKINSON",
+      "fullName": "Matt Parkinson",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
+      "id": "MATTPO",
+      "fullName": "Matt Potts",
       "country": "England",
       "role": "Bowler"
     },
@@ -2507,6 +2987,12 @@
       "fullName": "Mayank Agarwal",
       "country": "India",
       "role": "Batsman"
+    },
+    {
+      "id": "MAYANKYADAV",
+      "fullName": "Mayank Yadav",
+      "country": "India",
+      "role": "Bowler"
     },
     {
       "id": "MDKJPERERA",
@@ -2551,6 +3037,12 @@
       "role": "Batsman"
     },
     {
+      "id": "MICHAELBEVAN",
+      "fullName": "Michael Bevan",
+      "country": "Australia",
+      "role": "Batsman"
+    },
+    {
       "id": "MICHAELBRACEWELL",
       "fullName": "Michael Bracewell",
       "country": "New Zealand",
@@ -2572,6 +3064,24 @@
       "id": "MICHAELHUSSEY",
       "fullName": "Michael Hussey",
       "country": "Australia",
+      "role": "Batsman"
+    },
+    {
+      "id": "MICHAELJONES",
+      "fullName": "Michael Jones",
+      "country": "Scotland",
+      "role": "Batsman"
+    },
+    {
+      "id": "MICHAELVAUGHAN",
+      "fullName": "Michael Vaughan",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "MICHIELT",
+      "fullName": "Michiel du Preez",
+      "country": "Namibia",
       "role": "Batsman"
     },
     {
@@ -2737,6 +3247,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "MOHAMMADRAFTQ",
+      "fullName": "Mohammad Rafique",
+      "country": "Bangladesh",
+      "role": "All-rounder"
+    },
+    {
       "id": "MOHAMMADRIZWAN",
       "fullName": "Mohammad Rizwan",
       "country": "Pakistan",
@@ -2761,6 +3277,12 @@
       "role": "Batsman"
     },
     {
+      "id": "MOHAMMEDNADE",
+      "fullName": "Mohammad Nadeem",
+      "country": "Oman",
+      "role": "Batsman"
+    },
+    {
       "id": "MOHAMMEDSHAMI",
       "fullName": "Mohammed Shami",
       "country": "India",
@@ -2771,6 +3293,12 @@
       "fullName": "Mohammed Siraj",
       "country": "India",
       "role": "Bowler"
+    },
+    {
+      "id": "MOISESHENRIQUES",
+      "fullName": "Moises Henriques",
+      "country": "Australia",
+      "role": "All-rounder"
     },
     {
       "id": "MOMINUL",
@@ -2843,6 +3371,12 @@
       "fullName": "Maheesh Theekshana",
       "country": "Sri Lanka",
       "role": "Bowler"
+    },
+    {
+      "id": "MUDASSAR",
+      "fullName": "Mudassar Nazar",
+      "country": "Pakistan",
+      "role": "All-rounder"
     },
     {
       "id": "MUHAMMADWASEEM",
@@ -2935,6 +3469,18 @@
       "role": "All-rounder"
     },
     {
+      "id": "NASSEMKH",
+      "fullName": "Naseem Khushi",
+      "country": "Oman",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "NASSERHUSSAIN",
+      "fullName": "Nasser Hussain",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
       "id": "NASUMAHMED",
       "fullName": "Nasum Ahmed",
       "country": "Bangladesh",
@@ -2947,10 +3493,28 @@
       "role": "Batsman"
     },
     {
+      "id": "NATHANBRACKEN",
+      "fullName": "Nathan Bracken",
+      "country": "Australia",
+      "role": "Bowler"
+    },
+    {
+      "id": "NATHANELLIS",
+      "fullName": "Nathan Ellis",
+      "country": "Australia",
+      "role": "Bowler"
+    },
+    {
       "id": "NATHANLYON",
       "fullName": "Nathan Lyon",
       "country": "Australia",
       "role": "Bowler"
+    },
+    {
+      "id": "NATHANMCCULLUM",
+      "fullName": "Nathan McCullum",
+      "country": "New Zealand",
+      "role": "All-rounder"
     },
     {
       "id": "NAVEENULHAQ",
@@ -3001,10 +3565,34 @@
       "role": "All-rounder"
     },
     {
+      "id": "NEILM",
+      "fullName": "Neil McKenzie",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
       "id": "NICHOLASKIRTON",
       "fullName": "Nicholas Kirton",
       "country": "Canada",
       "role": "Batsman"
+    },
+    {
+      "id": "NIOBRYEN",
+      "fullName": "Niall O'Brien",
+      "country": "Ireland",
+      "role": "Wicketkeeper"
+    },
+    {
+      "id": "NIRANJAN",
+      "fullName": "Niranjan Shah",
+      "country": "India",
+      "role": "Batsman"
+    },
+    {
+      "id": "NIROSHAN",
+      "fullName": "Niroshan Dickwella",
+      "country": "Sri Lanka",
+      "role": "Wicketkeeper"
     },
     {
       "id": "NISARGPATEL",
@@ -3079,14 +3667,32 @@
       "role": "Bowler"
     },
     {
+      "id": "ODEANJSMITH",
+      "fullName": "Odean Smith",
+      "country": "West Indies",
+      "role": "All-rounder"
+    },
+    {
       "id": "OEGBAARTMAN",
       "fullName": "Ottneil Baartman",
       "country": "South Africa",
       "role": "Bowler"
     },
     {
+      "id": "OLLIEROB",
+      "fullName": "Ollie Robinson",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
       "id": "OLLYPOPE",
       "fullName": "Ollie Pope",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "OWENMORGAN",
+      "fullName": "Owen Morgan",
       "country": "England",
       "role": "Batsman"
     },
@@ -3115,6 +3721,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "PAULSTRANG",
+      "fullName": "Paul Strang",
+      "country": "Zimbabwe",
+      "role": "Bowler"
+    },
+    {
       "id": "PAVANMEEKEREN",
       "fullName": "Paul van Meekeren",
       "country": "Netherlands",
@@ -3131,6 +3743,18 @@
       "fullName": "Phil Salt",
       "country": "England",
       "role": "Wicketkeeper"
+    },
+    {
+      "id": "PETERK",
+      "fullName": "Peter Kirsten",
+      "country": "South Africa",
+      "role": "Batsman"
+    },
+    {
+      "id": "PHILHUGHES",
+      "fullName": "Phillip Hughes",
+      "country": "Australia",
+      "role": "Batsman"
     },
     {
       "id": "PHKDMENDIS",
@@ -3155,6 +3779,18 @@
       "fullName": "Pathum Nissanka",
       "country": "Sri Lanka",
       "role": "Batsman"
+    },
+    {
+      "id": "PRAGYANOJHA",
+      "fullName": "Pragyan Ojha",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "PRAMODYADG",
+      "fullName": "Pramodya Wickramasinghe",
+      "country": "Sri Lanka",
+      "role": "Bowler"
     },
     {
       "id": "PRASIDHKR",
@@ -3229,10 +3865,34 @@
       "role": "Batsman"
     },
     {
+      "id": "RAHULTEWATIA",
+      "fullName": "Rahul Tewatia",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
       "id": "RAJADEJA",
       "fullName": "Ravindra Jadeja",
       "country": "India",
       "role": "All-rounder"
+    },
+    {
+      "id": "RAJATPATIDAR",
+      "fullName": "Rajat Patidar",
+      "country": "India",
+      "role": "Batsman"
+    },
+    {
+      "id": "RAMIZBR",
+      "fullName": "Ramiz Raja",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "RAMNARESHSARWAN",
+      "fullName": "Ramnaresh Sarwan",
+      "country": "West Indies",
+      "role": "Batsman"
     },
     {
       "id": "RASHIDKHAN",
@@ -3307,6 +3967,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "RICHIERICHARDSON",
+      "fullName": "Richie Richardson",
+      "country": "West Indies",
+      "role": "Batsman"
+    },
+    {
       "id": "RICKYPONTING",
       "fullName": "Ricky Ponting",
       "country": "Australia",
@@ -3346,6 +4012,12 @@
       "id": "RNGARAVA",
       "fullName": "Richard Ngarava",
       "country": "Zimbabwe",
+      "role": "Bowler"
+    },
+    {
+      "id": "ROBBIE",
+      "fullName": "Robbie Peterson",
+      "country": "South Africa",
       "role": "Bowler"
     },
     {
@@ -3395,6 +4067,12 @@
       "fullName": "Ronald Lutaaya",
       "country": "Uganda",
       "role": "Bowler"
+    },
+    {
+      "id": "ROSHANM",
+      "fullName": "Roshan Mahanama",
+      "country": "Sri Lanka",
+      "role": "Batsman"
     },
     {
       "id": "ROSST",
@@ -3475,10 +4153,22 @@
       "role": "Wicketkeeper"
     },
     {
+      "id": "RYANMCLA",
+      "fullName": "Ryan McLaren",
+      "country": "South Africa",
+      "role": "All-rounder"
+    },
+    {
       "id": "RYANRICKER",
       "fullName": "Ryan Rickelton",
       "country": "South Africa",
       "role": "Batsman"
+    },
+    {
+      "id": "RYANTENDOBTE",
+      "fullName": "Ryan ten Doeschate",
+      "country": "Netherlands",
+      "role": "All-rounder"
     },
     {
       "id": "SAADBINZAFAR",
@@ -3495,6 +4185,12 @@
     {
       "id": "SACHINTENDULKAR",
       "fullName": "Sachin Tendulkar",
+      "country": "India",
+      "role": "Batsman"
+    },
+    {
+      "id": "SADAGOPPAN",
+      "fullName": "Sadagoppan Ramesh",
       "country": "India",
       "role": "Batsman"
     },
@@ -3529,6 +4225,12 @@
       "role": "Batsman"
     },
     {
+      "id": "SALEEMM",
+      "fullName": "Saleem Malik",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
       "id": "SALEEMSAFI",
       "fullName": "Saleem Safi",
       "country": "Afghanistan",
@@ -3539,6 +4241,12 @@
       "fullName": "Salman Ali Agha",
       "country": "Pakistan",
       "role": "All-rounder"
+    },
+    {
+      "id": "SAMHAIN",
+      "fullName": "Sam Hain",
+      "country": "England",
+      "role": "Batsman"
     },
     {
       "id": "SAMIULLAHSHINWARI",
@@ -3559,10 +4267,22 @@
       "role": "All-rounder"
     },
     {
+      "id": "SANDEEPWARRIER",
+      "fullName": "Sandeep Warrier",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
       "id": "SANGAKKARA",
       "fullName": "Kumar Sangakkara",
       "country": "Sri Lanka",
       "role": "Wicketkeeper"
+    },
+    {
+      "id": "SAQIBZ",
+      "fullName": "Saqib Zulfiqar",
+      "country": "Netherlands",
+      "role": "Batsman"
     },
     {
       "id": "SAQLAINJAB",
@@ -3575,6 +4295,12 @@
       "fullName": "Sarfaraz Khan",
       "country": "India",
       "role": "Batsman"
+    },
+    {
+      "id": "SARFARAZN",
+      "fullName": "Sarfaraz Nawaz",
+      "country": "Pakistan",
+      "role": "Bowler"
     },
     {
       "id": "SARFRAZAHMED",
@@ -3605,6 +4331,12 @@
       "fullName": "Stuart Broad",
       "country": "England",
       "role": "Bowler"
+    },
+    {
+      "id": "SCOTTSTYRIS",
+      "fullName": "Scott Styris",
+      "country": "New Zealand",
+      "role": "All-rounder"
     },
     {
       "id": "SCVANSCHALKWYK",
@@ -3715,6 +4447,12 @@
       "role": "Batsman"
     },
     {
+      "id": "SHANELEE",
+      "fullName": "Shane Lee",
+      "country": "Australia",
+      "role": "All-rounder"
+    },
+    {
       "id": "SHANEPOLK",
       "fullName": "Shaun Pollock",
       "country": "South Africa",
@@ -3731,6 +4469,12 @@
       "fullName": "Shan Masood",
       "country": "Pakistan",
       "role": "Batsman"
+    },
+    {
+      "id": "SHAONEB",
+      "fullName": "Shane Bond",
+      "country": "New Zealand",
+      "role": "Bowler"
     },
     {
       "id": "SHAPOORZADRAN",
@@ -3754,6 +4498,12 @@
       "id": "SHARJEELKHAN",
       "fullName": "Sharjeel Khan",
       "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
+      "id": "SHAUNMARSH",
+      "fullName": "Shaun Marsh",
+      "country": "Australia",
       "role": "Batsman"
     },
     {
@@ -3833,6 +4583,18 @@
       "fullName": "Sikandar Raza",
       "country": "Zimbabwe",
       "role": "All-rounder"
+    },
+    {
+      "id": "SIMONCJONES",
+      "fullName": "Simon Jones",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
+      "id": "SIMONKATICH",
+      "fullName": "Simon Katich",
+      "country": "Australia",
+      "role": "Batsman"
     },
     {
       "id": "SIMONSSESAZI",
@@ -3967,6 +4729,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "SREESANTH",
+      "fullName": "S Sreesanth",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
       "id": "SRTAYLOR",
       "fullName": "Steven Taylor",
       "country": "United States of America",
@@ -3997,6 +4765,12 @@
       "role": "Batsman"
     },
     {
+      "id": "STEVEHARMISON",
+      "fullName": "Steve Harmison",
+      "country": "England",
+      "role": "Bowler"
+    },
+    {
       "id": "STEVEWAUGH",
       "fullName": "Steve Waugh",
       "country": "Australia",
@@ -4006,6 +4780,12 @@
       "id": "STUARTBROAD",
       "fullName": "Stuart Broad",
       "country": "England",
+      "role": "Bowler"
+    },
+    {
+      "id": "STUARTMACGILL",
+      "fullName": "Stuart MacGill",
+      "country": "Australia",
       "role": "Bowler"
     },
     {
@@ -4025,6 +4805,12 @@
       "fullName": "Sunil Gavaskar",
       "country": "India",
       "role": "Batsman"
+    },
+    {
+      "id": "SURANGA",
+      "fullName": "Suranga Lakmal",
+      "country": "Sri Lanka",
+      "role": "Bowler"
     },
     {
       "id": "SYEDNAQVI",
@@ -4061,6 +4847,12 @@
       "fullName": "Thilina Kandamby",
       "country": "Sri Lanka",
       "role": "Batsman"
+    },
+    {
+      "id": "TANGATANG",
+      "fullName": "Tangeni Lungameni",
+      "country": "Namibia",
+      "role": "Bowler"
     },
     {
       "id": "TANZIDHASAN",
@@ -4129,6 +4921,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "TIMBVL",
+      "fullName": "Tim van der Gugten",
+      "country": "Netherlands",
+      "role": "Bowler"
+    },
+    {
       "id": "TIMMORISH",
       "fullName": "Tim Murtagh",
       "country": "Ireland",
@@ -4177,10 +4975,46 @@
       "role": "Bowler"
     },
     {
+      "id": "TNATARAJAN",
+      "fullName": "T Natarajan",
+      "country": "India",
+      "role": "Bowler"
+    },
+    {
+      "id": "TOBIASVISK",
+      "fullName": "Tobias Visee",
+      "country": "Netherlands",
+      "role": "Batsman"
+    },
+    {
+      "id": "TOMAH",
+      "fullName": "Tom Abell",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
       "id": "TOMBLUNDELL",
       "fullName": "Tom Blundell",
       "country": "New Zealand",
       "role": "Wicketkeeper"
+    },
+    {
+      "id": "TOMBURWELL",
+      "fullName": "Tom Banton",
+      "country": "England",
+      "role": "Batsman"
+    },
+    {
+      "id": "TOMCURRAN",
+      "fullName": "Tom Curran",
+      "country": "England",
+      "role": "All-rounder"
+    },
+    {
+      "id": "TOMMOODY",
+      "fullName": "Tom Moody",
+      "country": "Australia",
+      "role": "All-rounder"
     },
     {
       "id": "TONYDEZ",
@@ -4243,6 +5077,18 @@
       "role": "Bowler"
     },
     {
+      "id": "UPULTHARANGA",
+      "fullName": "Upul Tharanga",
+      "country": "Sri Lanka",
+      "role": "Batsman"
+    },
+    {
+      "id": "USAMAMIR",
+      "fullName": "Usama Mir",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
       "id": "USMANGHANI",
       "fullName": "Usman Ghani",
       "country": "Afghanistan",
@@ -4253,6 +5099,18 @@
       "fullName": "Usman Khan",
       "country": "Pakistan",
       "role": "Batsman"
+    },
+    {
+      "id": "USMANQADIR",
+      "fullName": "Usman Qadir",
+      "country": "Pakistan",
+      "role": "Bowler"
+    },
+    {
+      "id": "USMANSH",
+      "fullName": "Usman Shinwari",
+      "country": "Pakistan",
+      "role": "Bowler"
     },
     {
       "id": "UTKHAWAJA",
@@ -4267,10 +5125,22 @@
       "role": "Batsman"
     },
     {
+      "id": "VENKATESHI",
+      "fullName": "Venkatesh Iyer",
+      "country": "India",
+      "role": "All-rounder"
+    },
+    {
       "id": "VENKATESHPRASAD",
       "fullName": "Venkatesh Prasad",
       "country": "India",
       "role": "Bowler"
+    },
+    {
+      "id": "VENUGOPAL",
+      "fullName": "Venugopal Rao",
+      "country": "India",
+      "role": "Batsman"
     },
     {
       "id": "VERNONPHILANDER",
@@ -4357,6 +5227,12 @@
       "role": "All-rounder"
     },
     {
+      "id": "WESSELBARENDREGT",
+      "fullName": "Wesley Barresi",
+      "country": "Netherlands",
+      "role": "Batsman"
+    },
+    {
       "id": "WGJACKS",
       "fullName": "Will Jacks",
       "country": "England",
@@ -4378,6 +5254,12 @@
       "id": "WILLLOUNG",
       "fullName": "Will Young",
       "country": "New Zealand",
+      "role": "Batsman"
+    },
+    {
+      "id": "WILLSMEED",
+      "fullName": "Will Smeed",
+      "country": "England",
       "role": "Batsman"
     },
     {
@@ -4403,6 +5285,12 @@
       "fullName": "Wriddhiman Saha",
       "country": "India",
       "role": "Wicketkeeper"
+    },
+    {
+      "id": "YANNICKCARN",
+      "fullName": "Yannic Cariah",
+      "country": "West Indies",
+      "role": "Bowler"
     },
     {
       "id": "YASHASWI",
@@ -4447,6 +5335,12 @@
       "role": "Bowler"
     },
     {
+      "id": "ZAHEERABBAS",
+      "fullName": "Zaheer Abbas",
+      "country": "Pakistan",
+      "role": "Batsman"
+    },
+    {
       "id": "ZAHOORKHANUAE",
       "fullName": "Zahoor Khan",
       "country": "United Arab Emirates",
@@ -4463,6 +5357,12 @@
       "fullName": "Zakir Hasan",
       "country": "Bangladesh",
       "role": "Batsman"
+    },
+    {
+      "id": "ZAMAN",
+      "fullName": "Zaman Khan",
+      "country": "Pakistan",
+      "role": "Bowler"
     },
     {
       "id": "ZEESHANMAQSOOD",
