@@ -31,7 +31,11 @@ import { ThirdUmpireFeedback } from "./components/ThirdUmpireFeedback.jsx";
 import { StatsModal } from "./components/StatsModal.jsx";
 import { DebugPanel } from "./components/DebugPanel.jsx";
 import { CountdownTimer } from "./components/CountdownTimer.jsx";
+import { validateGuess } from "./lib/supabase.js";
 import "./App.css";
+
+// Feature flag for Supabase validation (set to true to enable server-side validation)
+const USE_SUPABASE_VALIDATION = true;
 
 // Auto-reset if ?reset=true is in URL
 checkAutoReset();
@@ -134,21 +138,43 @@ function App() {
     }
   }, [gameStatus, guesses.length, currentPuzzle]);
 
-  const handlePlayerGuess = (playerKey) => {
+  const handlePlayerGuess = async (playerKey) => {
     if (gameWon || gameOver || usedPlayers.has(playerKey) || alreadyCompleted || isChecking) return;
-
-    const feedback = generateNewFeedback(playerKey);
-    if (!feedback) {
-      console.warn('Player not found:', playerKey);
-      return;
-    }
 
     // Start 3rd Umpire checking state
     setIsChecking(true);
-    setPendingFeedback(feedback);
     setUsedPlayers(prev => new Set([...prev, playerKey]));
 
-    // Checking delay (~700ms), then reveal with sequential animation
+    let feedback;
+
+    if (USE_SUPABASE_VALIDATION && currentPuzzle?.id) {
+      // Server-side validation (anti-cheat)
+      try {
+        feedback = await validateGuess(currentPuzzle.id, playerKey);
+        if (!feedback || feedback.error) {
+          console.error('Server validation error:', feedback?.error);
+          // Fallback to client-side
+          feedback = generateNewFeedback(playerKey);
+        }
+      } catch (err) {
+        console.error('Supabase error:', err);
+        // Fallback to client-side
+        feedback = generateNewFeedback(playerKey);
+      }
+    } else {
+      // Client-side validation (fallback)
+      feedback = generateNewFeedback(playerKey);
+    }
+
+    if (!feedback) {
+      console.warn('Player not found:', playerKey);
+      setIsChecking(false);
+      return;
+    }
+
+    setPendingFeedback(feedback);
+
+    // Small delay for UX, then reveal with sequential animation
     setTimeout(() => {
       const isWin = feedback.isMVP;
       const { newState, isGameOver } = recordGuess(playerKey, isWin);
@@ -170,7 +196,7 @@ function App() {
         setGameOver(true);
         setTimeout(() => setShowGameOverModal(true), 700);
       }
-    }, 700);
+    }, 300); // Shorter delay since server call adds latency
   };
 
   const handleCloseModal = () => {
