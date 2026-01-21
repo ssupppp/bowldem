@@ -2494,3 +2494,175 @@ body {
     padding: 1rem;
   }
 }
+
+/* ============================================================================
+   ARCHIVE MODAL STYLES
+   ============================================================================ */
+
+.archive-modal {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 90%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modal-scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.archive-description {
+  color: #64748b;
+  font-size: 0.875rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+.archive-loading,
+.archive-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+}
+
+.archive-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+  max-height: 400px;
+  padding: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.archive-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.875rem 1rem;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.archive-item:hover {
+  background: #f1f5f9;
+  border-color: #3b82f6;
+  transform: translateX(4px);
+}
+
+.archive-item.completed {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.archive-item.completed:hover {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
+
+.archive-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.archive-puzzle-number {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 1rem;
+}
+
+.archive-date {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.archive-item-right {
+  display: flex;
+  align-items: center;
+}
+
+.archive-status {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.archive-status.play {
+  color: #3b82f6;
+}
+
+.archive-status.completed {
+  font-size: 1.25rem;
+}
+
+/* Scrollbar styling for archive list */
+.archive-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.archive-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.archive-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.archive-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Mobile adjustments for archive */
+@media (max-width: 480px) {
+  .archive-modal {
+    max-height: 85vh;
+    padding: 1rem;
+  }
+
+  .archive-list {
+    max-height: 50vh;
+  }
+
+  .archive-item {
+    padding: 0.75rem;
+  }
+}
+
+/* Archive badge in header */
+.archive-badge {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Archive puzzle badge variant */
+.puzzle-badge.archive {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+}
+
+/* Back button styling */
+.icon-btn.back-btn {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: white;
+  font-weight: bold;
+}
+
+.icon-btn.back-btn:hover {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  transform: scale(1.05);
+}

@@ -97,3 +97,24 @@ export async function recordGameSession(sessionData) {
 
   return data;
 }
+
+/**
+ * Get archive puzzles (past puzzles only)
+ * Returns list of puzzle dates before today
+ */
+export async function getArchivePuzzles() {
+  const today = new Date().toISOString().split('T')[0];
+
+  const { data, error } = await supabase
+    .from('public_puzzles')
+    .select('id, puzzle_date, puzzle_number')
+    .lt('puzzle_date', today)
+    .order('puzzle_date', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching archive puzzles:', error);
+    return [];
+  }
+
+  return data;
+}

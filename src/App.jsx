@@ -31,7 +31,9 @@ import { ThirdUmpireFeedback } from "./components/ThirdUmpireFeedback.jsx";
 import { StatsModal } from "./components/StatsModal.jsx";
 import { DebugPanel } from "./components/DebugPanel.jsx";
 import { CountdownTimer } from "./components/CountdownTimer.jsx";
+import { ArchiveModal, saveArchiveCompletion } from "./components/ArchiveModal.jsx";
 import { validateGuess } from "./lib/supabase.js";
+import { getPuzzleIndex } from "./utils/dailyPuzzle.js";
 import "./App.css";
 
 // Feature flag for Supabase validation (set to true to enable server-side validation)
@@ -73,9 +75,20 @@ function App() {
   const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showStatsModal, setShowStatsModal] = useState(false);
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [pendingFeedback, setPendingFeedback] = useState(null);
   const [newFeedbackIndex, setNewFeedbackIndex] = useState(-1);
+
+  // Archive mode state
+  const [archiveMode, setArchiveMode] = useState(false);
+  const [archivePuzzleDate, setArchivePuzzleDate] = useState(null);
+  const [archivePuzzleNumber, setArchivePuzzleNumber] = useState(null);
+  const [archivePuzzle, setArchivePuzzle] = useState(null);
+  const [archiveFeedbackList, setArchiveFeedbackList] = useState([]);
+  const [archiveUsedPlayers, setArchiveUsedPlayers] = useState(new Set());
+  const [archiveGameWon, setArchiveGameWon] = useState(false);
+  const [archiveGameOver, setArchiveGameOver] = useState(false);
 
   // Create a lookup map for O(1) player access by ID
   const playersLookup = useMemo(() => {
@@ -99,11 +112,12 @@ function App() {
    * - sameRole: Does player's role match MVP's role?
    * - isMVP: Is this the correct answer?
    */
-  const generateNewFeedback = (guessedPlayerKey) => {
+  const generateNewFeedback = (guessedPlayerKey, puzzleToUse = null) => {
     const guessedPlayer = findPlayer(guessedPlayerKey);
-    if (!guessedPlayer || !currentPuzzle) return null;
+    const puzzle = puzzleToUse || currentPuzzle;
+    if (!guessedPlayer || !puzzle) return null;
 
-    const matchData = currentPuzzle.matchData;
+    const matchData = puzzle.matchData;
     const playersInMatch = matchData.playersInMatch || [];
     const targetPlayerTeam = matchData.targetPlayerTeam;
     const targetPlayerRole = matchData.targetPlayerRole;
@@ -115,8 +129,84 @@ function App() {
       playedInGame: playersInMatch.includes(guessedPlayerKey),
       sameTeam: guessedPlayer.country === targetPlayerTeam,
       sameRole: guessedPlayer.role === targetPlayerRole,
-      isMVP: guessedPlayerKey === currentPuzzle.targetPlayer
+      isMVP: guessedPlayerKey === puzzle.targetPlayer
     };
+  };
+
+  /**
+   * Handle selecting an archive puzzle to play
+   */
+  const handleSelectArchivePuzzle = (puzzleDate, puzzleNum) => {
+    // Calculate the puzzle index from the puzzle number
+    const puzzleIndex = getPuzzleIndex(puzzleNum, PUZZLES.length);
+    const puzzle = PUZZLES[puzzleIndex];
+
+    // Reset archive game state
+    setArchiveMode(true);
+    setArchivePuzzleDate(puzzleDate);
+    setArchivePuzzleNumber(puzzleNum);
+    setArchivePuzzle(puzzle);
+    setArchiveFeedbackList([]);
+    setArchiveUsedPlayers(new Set());
+    setArchiveGameWon(false);
+    setArchiveGameOver(false);
+  };
+
+  /**
+   * Exit archive mode and return to daily puzzle
+   */
+  const handleExitArchiveMode = () => {
+    setArchiveMode(false);
+    setArchivePuzzle(null);
+    setArchivePuzzleDate(null);
+    setArchivePuzzleNumber(null);
+    setArchiveFeedbackList([]);
+    setArchiveUsedPlayers(new Set());
+    setArchiveGameWon(false);
+    setArchiveGameOver(false);
+  };
+
+  /**
+   * Handle player guess in archive mode
+   */
+  const handleArchiveGuess = async (playerKey) => {
+    if (archiveGameWon || archiveGameOver || archiveUsedPlayers.has(playerKey) || isChecking) return;
+
+    setIsChecking(true);
+    setArchiveUsedPlayers(prev => new Set([...prev, playerKey]));
+
+    // Generate feedback (client-side for archive - no server validation needed)
+    const feedback = generateNewFeedback(playerKey, archivePuzzle);
+
+    if (!feedback) {
+      setIsChecking(false);
+      return;
+    }
+
+    setPendingFeedback(feedback);
+
+    setTimeout(() => {
+      const isWin = feedback.isMVP;
+      const newFeedback = [...archiveFeedbackList, feedback];
+      const isLastGuess = newFeedback.length >= maxGuesses;
+
+      setNewFeedbackIndex(newFeedback.length - 1);
+      setArchiveFeedbackList(newFeedback);
+      setIsChecking(false);
+      setPendingFeedback(null);
+
+      setTimeout(() => setNewFeedbackIndex(-1), 600);
+
+      if (isWin) {
+        setArchiveGameWon(true);
+        saveArchiveCompletion(archivePuzzleDate, 'won');
+        setTimeout(() => setShowSuccessModal(true), 700);
+      } else if (isLastGuess) {
+        setArchiveGameOver(true);
+        saveArchiveCompletion(archivePuzzleDate, 'lost');
+        setTimeout(() => setShowGameOverModal(true), 700);
+      }
+    }, 300);
   };
 
   useEffect(() => {
@@ -236,9 +326,12 @@ function App() {
   };
 
   const renderSimplifiedScorecard = () => {
-    if (!currentPuzzle) return null;
+    const puzzle = archiveMode ? archivePuzzle : currentPuzzle;
+    const displayPuzzleNumber = archiveMode ? archivePuzzleNumber : puzzleNumber;
 
-    const scorecard = currentPuzzle.matchData?.scorecard || {};
+    if (!puzzle) return null;
+
+    const scorecard = puzzle.matchData?.scorecard || {};
     const venue = scorecard.venue || "Unknown Venue";
     const team1Score = scorecard.team1Score;
     const team2Score = scorecard.team2Score;
@@ -247,7 +340,9 @@ function App() {
     return (
       <div className="scorecard-simplified">
         <div className="scorecard-header">
-          <span className="puzzle-badge">Puzzle #{puzzleNumber}</span>
+          <span className={`puzzle-badge ${archiveMode ? 'archive' : ''}`}>
+            {archiveMode ? `Archive #${displayPuzzleNumber}` : `Puzzle #${displayPuzzleNumber}`}
+          </span>
         </div>
         <div className="venue-display">
           <span className="venue-icon">📍</span>
@@ -274,15 +369,19 @@ function App() {
   };
 
   const SuccessModal = () => {
-    const targetPlayerKey = currentPuzzle?.targetPlayer;
+    const puzzle = archiveMode ? archivePuzzle : currentPuzzle;
+    const currentFeedbackList = archiveMode ? archiveFeedbackList : feedbackList;
+    const targetPlayerKey = puzzle?.targetPlayer;
     const targetPlayer = findPlayer(targetPlayerKey);
 
     return (
       <div className="success-modal">
         <div className="celebration-emoji">🏆</div>
-        <h2 className="overlay-title">Congratulations!</h2>
+        <h2 className="overlay-title">
+          {archiveMode ? 'Archive Complete!' : 'Congratulations!'}
+        </h2>
         <p className="overlay-text">
-          You found the Man of the Match in {feedbackList.length} {feedbackList.length === 1 ? 'guess' : 'guesses'}!
+          You found the Man of the Match in {currentFeedbackList.length} {currentFeedbackList.length === 1 ? 'guess' : 'guesses'}!
         </p>
 
         {targetPlayer && (
@@ -295,36 +394,59 @@ function App() {
           </div>
         )}
 
-        <div className="share-section">
-          <div className="share-title">Share Your Result</div>
-          <pre className="share-result">{generateShareText()}</pre>
-        </div>
-
-        <CountdownTimer />
+        {!archiveMode && (
+          <>
+            <div className="share-section">
+              <div className="share-title">Share Your Result</div>
+              <pre className="share-result">{generateShareText()}</pre>
+            </div>
+            <CountdownTimer />
+          </>
+        )}
 
         <div className="modal-buttons">
-          <button className="btn-enhanced btn-success" onClick={handleShare}>
-            Share Result
-          </button>
-          <button
-            className="btn-enhanced btn-secondary"
-            onClick={() => {
-              setShowSuccessModal(false);
-              setShowStatsModal(true);
-            }}
-          >
-            View Stats
-          </button>
-          <button className="btn-enhanced btn-primary" onClick={handleCloseModal}>
-            Close
-          </button>
+          {archiveMode ? (
+            <>
+              <button className="btn-enhanced btn-primary" onClick={() => {
+                setShowSuccessModal(false);
+                handleExitArchiveMode();
+              }}>
+                Back to Today
+              </button>
+              <button className="btn-enhanced btn-secondary" onClick={() => {
+                setShowSuccessModal(false);
+                setShowArchiveModal(true);
+              }}>
+                More Archives
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn-enhanced btn-success" onClick={handleShare}>
+                Share Result
+              </button>
+              <button
+                className="btn-enhanced btn-secondary"
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  setShowStatsModal(true);
+                }}
+              >
+                View Stats
+              </button>
+              <button className="btn-enhanced btn-primary" onClick={handleCloseModal}>
+                Close
+              </button>
+            </>
+          )}
         </div>
       </div>
     );
   };
 
   const GameOverModal = () => {
-    const targetPlayerKey = currentPuzzle?.targetPlayer;
+    const puzzle = archiveMode ? archivePuzzle : currentPuzzle;
+    const targetPlayerKey = puzzle?.targetPlayer;
     const targetPlayer = findPlayer(targetPlayerKey);
 
     return (
@@ -347,29 +469,51 @@ function App() {
           </div>
         )}
 
-        <div className="share-section">
-          <div className="share-title">Share Your Attempt</div>
-          <pre className="share-result">{generateShareText()}</pre>
-        </div>
-
-        <CountdownTimer />
+        {!archiveMode && (
+          <>
+            <div className="share-section">
+              <div className="share-title">Share Your Attempt</div>
+              <pre className="share-result">{generateShareText()}</pre>
+            </div>
+            <CountdownTimer />
+          </>
+        )}
 
         <div className="modal-buttons">
-          <button className="btn-enhanced btn-success" onClick={handleShare}>
-            Share Result
-          </button>
-          <button
-            className="btn-enhanced btn-secondary"
-            onClick={() => {
-              setShowGameOverModal(false);
-              setShowStatsModal(true);
-            }}
-          >
-            View Stats
-          </button>
-          <button className="btn-enhanced btn-primary" onClick={handleCloseModal}>
-            Close
-          </button>
+          {archiveMode ? (
+            <>
+              <button className="btn-enhanced btn-primary" onClick={() => {
+                setShowGameOverModal(false);
+                handleExitArchiveMode();
+              }}>
+                Back to Today
+              </button>
+              <button className="btn-enhanced btn-secondary" onClick={() => {
+                setShowGameOverModal(false);
+                setShowArchiveModal(true);
+              }}>
+                More Archives
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn-enhanced btn-success" onClick={handleShare}>
+                Share Result
+              </button>
+              <button
+                className="btn-enhanced btn-secondary"
+                onClick={() => {
+                  setShowGameOverModal(false);
+                  setShowStatsModal(true);
+                }}
+              >
+                View Stats
+              </button>
+              <button className="btn-enhanced btn-primary" onClick={handleCloseModal}>
+                Close
+              </button>
+            </>
+          )}
         </div>
       </div>
     );
@@ -452,8 +596,28 @@ function App() {
             <div className="header-left">
               <span className="brand-icon">🏏</span>
               <h1 className="brand-title">Bowldem</h1>
+              {archiveMode && (
+                <span className="archive-badge">Archive</span>
+              )}
             </div>
             <div className="header-right">
+              {archiveMode ? (
+                <button
+                  className="icon-btn back-btn"
+                  onClick={handleExitArchiveMode}
+                  title="Back to Today"
+                >
+                  ←
+                </button>
+              ) : (
+                <button
+                  className="icon-btn"
+                  onClick={() => setShowArchiveModal(true)}
+                  title="Archive"
+                >
+                  📚
+                </button>
+              )}
               <button
                 className="icon-btn"
                 onClick={() => setShowHowToPlay(true)}
@@ -475,22 +639,40 @@ function App() {
           {renderSimplifiedScorecard()}
 
           {/* Hero Section - Input */}
-          {!gameWon && !gameOver && !alreadyCompleted && (
-            <div className="hero-section">
-              <div className="hero-prompt">
-                <span className="hero-text">Who's the Man of the Match?</span>
+          {archiveMode ? (
+            // Archive mode input
+            !archiveGameWon && !archiveGameOver && (
+              <div className="hero-section">
+                <div className="hero-prompt">
+                  <span className="hero-text">Who's the Man of the Match?</span>
+                </div>
+                <PlayerAutocomplete
+                  players={allPlayersData.players}
+                  onSelectPlayer={handleArchiveGuess}
+                  disabled={archiveGameWon || archiveGameOver}
+                  usedPlayers={archiveUsedPlayers}
+                />
               </div>
-              <PlayerAutocomplete
-                players={allPlayersData.players}
-                onSelectPlayer={handlePlayerGuess}
-                disabled={gameWon || gameOver}
-                usedPlayers={usedPlayers}
-              />
-            </div>
+            )
+          ) : (
+            // Daily mode input
+            !gameWon && !gameOver && !alreadyCompleted && (
+              <div className="hero-section">
+                <div className="hero-prompt">
+                  <span className="hero-text">Who's the Man of the Match?</span>
+                </div>
+                <PlayerAutocomplete
+                  players={allPlayersData.players}
+                  onSelectPlayer={handlePlayerGuess}
+                  disabled={gameWon || gameOver}
+                  usedPlayers={usedPlayers}
+                />
+              </div>
+            )
           )}
 
-          {/* Completed State */}
-          {alreadyCompleted && (
+          {/* Completed State - Daily only */}
+          {!archiveMode && alreadyCompleted && (
             <div className="completed-banner">
               <span className="completed-icon">{gameStatus === 'won' ? '🏆' : '😔'}</span>
               <span className="completed-text">
@@ -501,30 +683,51 @@ function App() {
 
           {/* Feedback */}
           <ThirdUmpireFeedback
-            feedbackList={feedbackList}
-            guessesRemaining={guessesRemaining}
+            feedbackList={archiveMode ? archiveFeedbackList : feedbackList}
+            guessesRemaining={archiveMode ? (maxGuesses - archiveFeedbackList.length) : guessesRemaining}
             maxGuesses={maxGuesses}
             isChecking={isChecking}
             newFeedbackIndex={newFeedbackIndex}
           />
 
           <div className="game-controls">
-            {(gameOver || gameWon || alreadyCompleted) && (
-              <div className="game-actions">
-                <CountdownTimer />
-                <button
-                  className="btn-enhanced btn-success"
-                  onClick={handleShare}
-                >
-                  Share Result
-                </button>
-                <button
-                  className="btn-enhanced btn-secondary"
-                  onClick={() => setShowStatsModal(true)}
-                >
-                  View Stats
-                </button>
-              </div>
+            {archiveMode ? (
+              // Archive mode controls
+              (archiveGameOver || archiveGameWon) && (
+                <div className="game-actions">
+                  <button
+                    className="btn-enhanced btn-primary"
+                    onClick={handleExitArchiveMode}
+                  >
+                    ← Back to Today
+                  </button>
+                  <button
+                    className="btn-enhanced btn-secondary"
+                    onClick={() => setShowArchiveModal(true)}
+                  >
+                    More Archives
+                  </button>
+                </div>
+              )
+            ) : (
+              // Daily mode controls
+              (gameOver || gameWon || alreadyCompleted) && (
+                <div className="game-actions">
+                  <CountdownTimer />
+                  <button
+                    className="btn-enhanced btn-success"
+                    onClick={handleShare}
+                  >
+                    Share Result
+                  </button>
+                  <button
+                    className="btn-enhanced btn-secondary"
+                    onClick={() => setShowStatsModal(true)}
+                  >
+                    View Stats
+                  </button>
+                </div>
+              )
             )}
           </div>
         </div>
@@ -554,6 +757,17 @@ function App() {
         <div className="game-overlay" onClick={() => setShowStatsModal(false)}>
           <div onClick={e => e.stopPropagation()}>
             <StatsModal stats={stats} onClose={() => setShowStatsModal(false)} />
+          </div>
+        </div>
+      )}
+
+      {showArchiveModal && (
+        <div className="game-overlay" onClick={() => setShowArchiveModal(false)}>
+          <div onClick={e => e.stopPropagation()}>
+            <ArchiveModal
+              onClose={() => setShowArchiveModal(false)}
+              onSelectPuzzle={handleSelectArchivePuzzle}
+            />
           </div>
         </div>
       )}
