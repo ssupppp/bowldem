@@ -2666,3 +2666,1023 @@ body {
   background: linear-gradient(135deg, #7c3aed, #4f46e5);
   transform: scale(1.05);
 }
+
+/* ============================================================================
+   COMMUNITY FEATURES - Leaderboard, Name Entry, Notifications
+   ============================================================================ */
+
+/* ============================================================================
+   LEADERBOARD MODAL STYLES
+   ============================================================================ */
+.leaderboard-modal {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  max-width: 450px;
+  width: 90%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modal-scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.leaderboard-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.25rem;
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+}
+
+.leaderboard-tab {
+  flex: 1;
+  padding: 0.625rem 1rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-tab.active {
+  background: white;
+  color: #1e293b;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-tab:hover:not(.active) {
+  color: #1e293b;
+}
+
+.leaderboard-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 200px;
+}
+
+.leaderboard-loading,
+.leaderboard-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #64748b;
+}
+
+.leaderboard-empty .empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.leaderboard-empty .empty-hint {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 0.5rem;
+}
+
+.user-ranking-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  border: 2px solid #3b82f6;
+}
+
+.user-ranking-banner .ranking-label {
+  color: #1e40af;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.user-ranking-banner .ranking-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1e3a8a;
+}
+
+.user-ranking-banner .ranking-total {
+  color: #3b82f6;
+  font-size: 0.85rem;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.leaderboard-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease;
+}
+
+.leaderboard-entry:hover {
+  background: #f1f5f9;
+}
+
+.leaderboard-entry.top-three {
+  background: linear-gradient(135deg, #fef3c7, #fef9c3);
+  border: 1px solid #fcd34d;
+}
+
+.leaderboard-entry.lost {
+  background: #fef2f2;
+  opacity: 0.8;
+}
+
+.leaderboard-entry .entry-rank {
+  width: 2rem;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.leaderboard-entry .entry-name {
+  flex: 1;
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-entry .entry-result {
+  margin-right: 0.5rem;
+}
+
+.leaderboard-entry .entry-time {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  min-width: 3.5rem;
+  text-align: right;
+}
+
+.leaderboard-entry .entry-stats {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.leaderboard-entry .entry-winrate {
+  font-weight: 700;
+  color: #059669;
+  font-size: 0.85rem;
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+.guesses-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.guesses-badge.win {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.guesses-badge.loss {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.wins-badge,
+.games-badge {
+  display: inline-block;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.wins-badge {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.games-badge {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.leaderboard-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 1rem;
+  margin-top: 1rem;
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.leaderboard-stats .stat-item {
+  text-align: center;
+}
+
+.leaderboard-stats .stat-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.leaderboard-stats .stat-label {
+  font-size: 0.7rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================================
+   LEADERBOARD PREVIEW STYLES (for end-game modal)
+   ============================================================================ */
+.leaderboard-preview {
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid #e2e8f0;
+}
+
+.leaderboard-preview .preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.leaderboard-preview .preview-title {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 0.9rem;
+}
+
+.leaderboard-preview .preview-count {
+  font-size: 0.75rem;
+  color: #64748b;
+  background: #e2e8f0;
+  padding: 0.125rem 0.5rem;
+  border-radius: 1rem;
+}
+
+.leaderboard-preview .preview-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+
+.leaderboard-preview .preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.leaderboard-preview .preview-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  background: white;
+  border-radius: 0.375rem;
+  font-size: 0.85rem;
+}
+
+.leaderboard-preview .preview-rank {
+  width: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.leaderboard-preview .preview-name {
+  flex: 1;
+  font-weight: 500;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-preview .preview-result {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+.leaderboard-preview .preview-user-rank {
+  text-align: center;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+  font-weight: 600;
+  color: #3b82f6;
+  font-size: 0.85rem;
+}
+
+.leaderboard-preview .preview-view-all {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.leaderboard-preview .preview-view-all:hover {
+  background: #eff6ff;
+  border-color: #3b82f6;
+}
+
+/* ============================================================================
+   NAME ENTRY PROMPT STYLES
+   ============================================================================ */
+.name-entry-prompt {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 2px solid #86efac;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.name-entry-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.name-entry-icon {
+  font-size: 1.25rem;
+}
+
+.name-entry-title {
+  font-weight: 600;
+  color: #166534;
+  font-size: 0.9rem;
+}
+
+.name-entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.name-input-wrapper {
+  position: relative;
+}
+
+.name-entry-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  padding-right: 3rem;
+  border: 2px solid #86efac;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.name-entry-input:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}
+
+.name-entry-input.has-error {
+  border-color: #ef4444;
+}
+
+.name-input-wrapper .char-count {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.name-entry-error {
+  color: #dc2626;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.name-entry-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.name-entry-actions .btn-compact {
+  flex: 1;
+  padding: 0.625rem 1rem;
+  font-size: 0.85rem;
+}
+
+.name-entry-hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+}
+
+.name-entry-submitted {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.name-entry-submitted .submitted-icon {
+  color: #16a34a;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.name-entry-submitted .submitted-text {
+  color: #166534;
+  font-size: 0.9rem;
+}
+
+/* Quick Name Entry (compact version) */
+.quick-name-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.quick-name-entry .quick-name-label {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.quick-name-entry .quick-name-value {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.quick-name-entry .quick-name-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  font-size: 0.9rem;
+}
+
+.quick-name-entry .btn-small {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.quick-name-entry .btn-text {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.quick-name-entry .btn-text:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================================
+   NOTIFICATION OPT-IN STYLES
+   ============================================================================ */
+.notification-optin-modal {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modal-scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.notification-description {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.notification-emoji {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.notification-description p {
+  color: #4b5563;
+  font-size: 1rem;
+}
+
+.notification-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.notification-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.notification-input-group label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.85rem;
+}
+
+.notification-input {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.notification-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.notification-or {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.notification-preference {
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+}
+
+.notification-preference > span {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.notification-preference .preference-options {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.notification-preference .preference-option {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.notification-preference .preference-option.selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.notification-preference .preference-option input {
+  display: none;
+}
+
+.notification-error {
+  color: #dc2626;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.notification-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.notification-actions .btn-text {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.notification-actions .btn-text:hover {
+  color: #1e293b;
+  text-decoration: underline;
+}
+
+.notification-privacy {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 1rem;
+}
+
+.notification-success {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.notification-success .success-icon {
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 auto 1rem;
+}
+
+.notification-success h3 {
+  color: #166534;
+  margin-bottom: 0.5rem;
+}
+
+.notification-success p {
+  color: #64748b;
+}
+
+/* Notification Banner (inline) */
+.notification-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border: 2px solid #3b82f6;
+  border-radius: 0.75rem;
+  margin: 1rem 0;
+}
+
+.notification-banner .banner-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.notification-banner .banner-icon {
+  font-size: 1.25rem;
+}
+
+.notification-banner .banner-text {
+  font-weight: 500;
+  color: #1e40af;
+  font-size: 0.9rem;
+}
+
+.notification-banner .banner-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.notification-banner .banner-btn-primary {
+  padding: 0.375rem 0.75rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.notification-banner .banner-btn-primary:hover {
+  background: #2563eb;
+}
+
+.notification-banner .banner-btn-dismiss {
+  padding: 0.25rem 0.5rem;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.notification-banner .banner-btn-dismiss:hover {
+  color: #1e293b;
+}
+
+/* ============================================================================
+   WIN STATE BANNER STYLES
+   ============================================================================ */
+.win-state-banner {
+  background: linear-gradient(135deg, #fef3c7, #fef9c3);
+  border: 3px solid #fbbf24;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.win-banner-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.win-trophy {
+  position: relative;
+}
+
+.win-trophy .trophy-emoji {
+  font-size: 3rem;
+  display: block;
+  animation: trophy-bounce 1s ease-in-out infinite;
+}
+
+.win-trophy.trophy-perfect .trophy-emoji {
+  filter: drop-shadow(0 0 10px #fbbf24);
+}
+
+@keyframes trophy-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.win-message .win-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #92400e;
+  margin-bottom: 0.25rem;
+}
+
+.win-message .win-subtitle {
+  color: #a16207;
+  font-size: 1rem;
+}
+
+.win-streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border-radius: 1rem;
+  color: white;
+}
+
+.win-streak-badge .streak-flame {
+  font-size: 1.25rem;
+}
+
+.win-streak-badge .streak-count {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.win-streak-badge .streak-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.win-answer {
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 0.5rem;
+}
+
+.win-answer .answer-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.win-answer .answer-name {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.win-return-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #78716c;
+  font-size: 0.85rem;
+}
+
+.win-return-message .calendar-icon {
+  font-size: 1rem;
+}
+
+/* Loss State Banner */
+.loss-state-banner {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  border: 3px solid #fca5a5;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.loss-banner-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.loss-icon .loss-emoji {
+  font-size: 2.5rem;
+  display: block;
+}
+
+.loss-message .loss-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #991b1b;
+  margin-bottom: 0.25rem;
+}
+
+.loss-message .loss-subtitle {
+  color: #b91c1c;
+  font-size: 0.95rem;
+}
+
+.loss-return-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #78716c;
+  font-size: 0.85rem;
+}
+
+/* ============================================================================
+   ENHANCED MODAL STYLES
+   ============================================================================ */
+.enhanced-modal {
+  max-width: 450px;
+  width: 90%;
+}
+
+.percentile-badge {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border: 2px solid #3b82f6;
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem 0;
+}
+
+.percentile-badge .percentile-text {
+  color: #1e40af;
+  font-size: 0.9rem;
+}
+
+.match-context {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  text-align: center;
+}
+
+.match-context.loss {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+}
+
+.match-context .context-title {
+  font-weight: 700;
+  color: #166534;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.match-context.loss .context-title {
+  color: #991b1b;
+}
+
+.match-context .context-trivia {
+  font-size: 0.8rem;
+  color: #15803d;
+  font-style: italic;
+}
+
+.match-context.loss .context-trivia {
+  color: #b91c1c;
+}
+
+.player-highlight {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-style: italic;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.leaderboard-section-loss {
+  margin: 1rem 0;
+}
+
+.leaderboard-section-loss .section-header {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+/* ============================================================================
+   RESPONSIVE ADJUSTMENTS FOR COMMUNITY FEATURES
+   ============================================================================ */
+@media (max-width: 480px) {
+  .leaderboard-modal {
+    max-height: 90vh;
+    padding: 1rem;
+  }
+
+  .leaderboard-tabs {
+    padding: 0.125rem;
+  }
+
+  .leaderboard-tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .leaderboard-entry {
+    padding: 0.5rem;
+  }
+
+  .leaderboard-entry .entry-name {
+    font-size: 0.85rem;
+  }
+
+  .name-entry-prompt {
+    padding: 0.75rem;
+  }
+
+  .name-entry-actions {
+    flex-direction: column;
+  }
+
+  .notification-optin-modal {
+    padding: 1.5rem;
+  }
+
+  .notification-banner {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .win-state-banner,
+  .loss-state-banner {
+    padding: 1rem;
+  }
+
+  .win-trophy .trophy-emoji {
+    font-size: 2.5rem;
+  }
+
+  .win-message .win-title {
+    font-size: 1.25rem;
+  }
+}

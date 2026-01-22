@@ -1,0 +1,99 @@
+{
+  "highlights": [
+    {
+      "puzzleId": 1,
+      "matchContext": "T20 World Cup 2016 Final",
+      "triviaFact": "Carlos Brathwaite hit 4 sixes off the final over to win the title",
+      "playerHighlight": "Marlon Samuels scored a crucial 85*(66) in a pressure-packed final"
+    },
+    {
+      "puzzleId": 2,
+      "matchContext": "T20 World Cup 2021 - India vs Pakistan",
+      "triviaFact": "Pakistan's historic first win against India in T20 World Cup history",
+      "playerHighlight": "Shaheen Afridi's stunning spell of 3/31 including early Sharma and Rahul wickets"
+    },
+    {
+      "puzzleId": 3,
+      "matchContext": "T20 World Cup 2022 - India vs Pakistan",
+      "triviaFact": "One of the greatest T20 chases ever witnessed at the MCG",
+      "playerHighlight": "Virat Kohli's legendary 82*(53) - considered the best T20I innings ever"
+    },
+    {
+      "puzzleId": 4,
+      "matchContext": "T20 World Cup 2022 Semi-Final",
+      "triviaFact": "England demolished India's batting to reach the final",
+      "playerHighlight": null
+    },
+    {
+      "puzzleId": 5,
+      "matchContext": "T20 World Cup 2022 Final",
+      "triviaFact": "England won their second T20 World Cup title in dominant fashion",
+      "playerHighlight": null
+    },
+    {
+      "puzzleId": 6,
+      "matchContext": "T20 World Cup 2024 Group Stage",
+      "triviaFact": "USA shocked Pakistan in a historic Super Over victory",
+      "playerHighlight": null
+    },
+    {
+      "puzzleId": 7,
+      "matchContext": "T20 World Cup 2024 Final",
+      "triviaFact": "India won their second T20 World Cup, ending an 11-year ICC trophy drought",
+      "playerHighlight": "Virat Kohli's composed 76 in his T20I farewell"
+    },
+    {
+      "puzzleId": 8,
+      "matchContext": "T20 World Cup 2024 Semi-Final",
+      "triviaFact": "India defended 171 against England in a thriller",
+      "playerHighlight": "Rohit Sharma's explosive 57(39) set the foundation"
+    },
+    {
+      "puzzleId": 9,
+      "matchContext": "T20 World Cup 2024 Super 8s",
+      "triviaFact": "Afghanistan's maiden semi-final appearance in a World Cup",
+      "playerHighlight": null
+    },
+    {
+      "puzzleId": 10,
+      "matchContext": "T20 World Cup 2024",
+      "triviaFact": "A crucial group stage encounter",
+      "playerHighlight": null
+    },
+    {
+      "puzzleId": 11,
+      "matchContext": "T20 World Cup 2021",
+      "triviaFact": "A key Super 12 stage match",
+      "playerHighlight": null
+    },
+    {
+      "puzzleId": 12,
+      "matchContext": "T20 World Cup 2022",
+      "triviaFact": "Another exciting group stage battle",
+      "playerHighlight": null
+    },
+    {
+      "puzzleId": 13,
+      "matchContext": "T20 World Cup Classic",
+      "triviaFact": "A memorable encounter in T20 World Cup history",
+      "playerHighlight": null
+    },
+    {
+      "puzzleId": 14,
+      "matchContext": "T20 World Cup Classic",
+      "triviaFact": "A match that showcased the best of T20 cricket",
+      "playerHighlight": null
+    },
+    {
+      "puzzleId": 15,
+      "matchContext": "T20 World Cup Classic",
+      "triviaFact": "An unforgettable game from T20 history",
+      "playerHighlight": null
+    }
+  ],
+  "defaultHighlight": {
+    "matchContext": "T20 World Cup",
+    "triviaFact": "A classic T20 World Cup encounter",
+    "playerHighlight": null
+  }
+}
