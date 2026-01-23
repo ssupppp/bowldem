@@ -3,16 +3,23 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables');
+// Conditionally create client - only if env vars exist
+let supabase = null;
+
+if (supabaseUrl && supabaseAnonKey) {
+  supabase = createClient(supabaseUrl, supabaseAnonKey);
+} else {
+  console.warn('Supabase disabled - missing environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export { supabase };
 
 /**
  * Get today's puzzle (safe - doesn't expose answer)
  */
 export async function getTodaysPuzzle() {
+  if (!supabase) return null;
+
   const today = new Date().toISOString().split('T')[0];
 
   const { data, error } = await supabase
@@ -33,6 +40,8 @@ export async function getTodaysPuzzle() {
  * Get puzzle by date (safe - doesn't expose answer)
  */
 export async function getPuzzleByDate(date) {
+  if (!supabase) return null;
+
   const { data, error } = await supabase
     .from('public_puzzles')
     .select('*')
@@ -51,6 +60,8 @@ export async function getPuzzleByDate(date) {
  * Get all players (for autocomplete)
  */
 export async function getAllPlayers() {
+  if (!supabase) return [];
+
   const { data, error } = await supabase
     .from('players')
     .select('id, full_name, country, role')
@@ -69,6 +80,8 @@ export async function getAllPlayers() {
  * Returns feedback without exposing the answer
  */
 export async function validateGuess(puzzleId, guessedPlayerId) {
+  if (!supabase) return null;
+
   const { data, error } = await supabase.rpc('validate_guess', {
     p_puzzle_id: puzzleId,
     p_guessed_player_id: guessedPlayerId
@@ -86,6 +99,8 @@ export async function validateGuess(puzzleId, guessedPlayerId) {
  * Record a game session (analytics)
  */
 export async function recordGameSession(sessionData) {
+  if (!supabase) return null;
+
   const { data, error } = await supabase
     .from('game_sessions')
     .insert([sessionData]);
@@ -103,6 +118,8 @@ export async function recordGameSession(sessionData) {
  * Returns list of puzzle dates before today
  */
 export async function getArchivePuzzles() {
+  if (!supabase) return [];
+
   const today = new Date().toISOString().split('T')[0];
 
   const { data, error } = await supabase
@@ -129,6 +146,8 @@ export async function getArchivePuzzles() {
  * @returns {Array} - Leaderboard entries sorted by performance
  */
 export async function getLeaderboardForPuzzle(puzzleDate) {
+  if (!supabase) return [];
+
   const { data, error } = await supabase
     .from('leaderboard_entries')
     .select('*')
@@ -149,6 +168,8 @@ export async function getLeaderboardForPuzzle(puzzleDate) {
  * @returns {Array} - Players with total wins and games played
  */
 export async function getAllTimeLeaderboard() {
+  if (!supabase) return [];
+
   // Use RPC for aggregated query, or fallback to client-side aggregation
   const { data, error } = await supabase
     .from('leaderboard_entries')
@@ -195,6 +216,8 @@ export async function getAllTimeLeaderboard() {
  * @returns {Object} - { success: boolean, data?: any, error?: string }
  */
 export async function submitLeaderboardEntry(entry) {
+  if (!supabase) return { success: false, error: 'Supabase not configured' };
+
   // Check if device already submitted for this puzzle
   const { data: existing } = await supabase
     .from('leaderboard_entries')
@@ -228,6 +251,8 @@ export async function submitLeaderboardEntry(entry) {
  * @returns {number|null} - User's rank or null if not found
  */
 export async function getUserRanking(puzzleDate, deviceId) {
+  if (!supabase) return null;
+
   const { data, error } = await supabase
     .from('leaderboard_entries')
     .select('id, device_id, guesses_used, won, created_at')
@@ -253,6 +278,8 @@ export async function getUserRanking(puzzleDate, deviceId) {
  * @returns {Object} - { success: boolean, error?: string }
  */
 export async function subscribeForNotifications(contact) {
+  if (!supabase) return { success: false, error: 'Supabase not configured' };
+
   if (!contact.email && !contact.phone_number) {
     return { success: false, error: 'Email or phone number required' };
   }
@@ -286,6 +313,8 @@ export async function subscribeForNotifications(contact) {
  * @returns {Object} - { success: boolean }
  */
 export async function unsubscribeFromNotifications(email) {
+  if (!supabase) return { success: false, error: 'Supabase not configured' };
+
   const { error } = await supabase
     .from('contact_subscriptions')
     .update({ is_active: false })
