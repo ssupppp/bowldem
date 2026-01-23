@@ -12,9 +12,14 @@ import { useLeaderboard } from '../../hooks/useLeaderboard.js';
  * @param {number} props.puzzleNumber - Current puzzle number
  * @param {string} props.puzzleDate - Current puzzle date (YYYY-MM-DD)
  * @param {Function} props.onClose - Close handler
+ * @param {number} props.guessesUsed - Number of guesses used (for submission)
+ * @param {boolean} props.won - Whether user won (for submission)
+ * @param {boolean} props.gameCompleted - Whether game is completed
  */
-export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose }) {
+export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose, guessesUsed, won, gameCompleted }) {
   const [activeTab, setActiveTab] = useState('today'); // 'today' or 'allTime'
+  const [name, setName] = useState('');
+  const [submitError, setSubmitError] = useState('');
 
   const {
     puzzleLeaderboard,
@@ -24,8 +29,36 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose }) {
     allTimeLoading,
     fetchAllTimeLeaderboard,
     userRanking,
-    hasSubmitted
+    hasSubmitted,
+    displayName,
+    saveDisplayName,
+    submitToLeaderboard,
+    isSubmitting
   } = useLeaderboard(puzzleNumber, puzzleDate);
+
+  // Initialize name from saved displayName
+  React.useEffect(() => {
+    if (displayName) {
+      setName(displayName);
+    }
+  }, [displayName]);
+
+  // Handle leaderboard submission
+  const handleSubmit = async () => {
+    const trimmedName = name.trim();
+    if (trimmedName.length < 2) {
+      setSubmitError('Name must be at least 2 characters');
+      return;
+    }
+    if (trimmedName.length > 20) {
+      setSubmitError('Name must be 20 characters or less');
+      return;
+    }
+    setSubmitError('');
+    saveDisplayName(trimmedName);
+    await submitToLeaderboard(guessesUsed, won);
+    fetchPuzzleLeaderboard(); // Refresh leaderboard
+  };
 
   // Fetch leaderboards on mount
   useEffect(() => {
@@ -57,6 +90,21 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose }) {
         </button>
       </div>
 
+      {/* Success State - shown after submission */}
+      {gameCompleted && hasSubmitted && (
+        <div className="leaderboard-success-section">
+          <div className="success-content">
+            <span className="success-icon">✓</span>
+            <span className="success-text">
+              You're #{userRanking || '?'} of {puzzleLeaderboard.length}!
+            </span>
+          </div>
+          <div className="success-details">
+            as "{displayName}" ({guessesUsed}/4)
+          </div>
+        </div>
+      )}
+
       {/* Tab Navigation */}
       <div className="leaderboard-tabs">
         <button
@@ -78,31 +126,20 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose }) {
         <div className="leaderboard-content">
           {puzzleLeaderboardLoading ? (
             <div className="leaderboard-loading">Loading...</div>
-          ) : puzzleLeaderboard.length === 0 ? (
+          ) : puzzleLeaderboard.filter(e => e.won).length === 0 ? (
             <div className="leaderboard-empty">
               <div className="empty-icon">🏆</div>
-              <p>No entries yet!</p>
-              <p className="empty-hint">Be the first to complete today's puzzle</p>
+              <p>No winners yet!</p>
+              <p className="empty-hint">Be the first to solve today's puzzle</p>
             </div>
           ) : (
             <>
-              {/* User's position highlight */}
-              {hasSubmitted && userRanking && (
-                <div className="user-ranking-banner">
-                  <span className="ranking-label">Your Rank</span>
-                  <span className="ranking-value">
-                    {userRanking}{getRankSuffix(userRanking)}
-                  </span>
-                  <span className="ranking-total">of {puzzleLeaderboard.length}</span>
-                </div>
-              )}
-
-              {/* Leaderboard list */}
+              {/* Leaderboard list - WINNERS ONLY */}
               <div className="leaderboard-list">
                 {puzzleLeaderboard
+                  .filter(entry => entry.won) // Only show winners
                   .sort((a, b) => {
-                    // Winners first, then sort by guesses (fewer is better), then by time
-                    if (a.won !== b.won) return b.won - a.won;
+                    // Sort by guesses (fewer is better), then by time
                     if (a.guesses_used !== b.guesses_used) return a.guesses_used - b.guesses_used;
                     return new Date(a.created_at) - new Date(b.created_at);
                   })
@@ -110,35 +147,27 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose }) {
                   .map((entry, index) => (
                     <div
                       key={entry.id || index}
-                      className={`leaderboard-entry ${index < 3 ? 'top-three' : ''} ${!entry.won ? 'lost' : ''}`}
+                      className={`leaderboard-entry ${index < 3 ? 'top-three' : ''}`}
                     >
                       <span className="entry-rank">
-                        {index === 0 && entry.won && '🥇'}
-                        {index === 1 && entry.won && '🥈'}
-                        {index === 2 && entry.won && '🥉'}
-                        {(index > 2 || !entry.won) && `${index + 1}.`}
+                        {index === 0 && '🥇'}
+                        {index === 1 && '🥈'}
+                        {index === 2 && '🥉'}
+                        {index > 2 && `${index + 1}.`}
                       </span>
                       <span className="entry-name">{entry.display_name}</span>
                       <span className="entry-result">
-                        {entry.won ? (
-                          <span className="guesses-badge win">
-                            {entry.guesses_used}/4
-                          </span>
-                        ) : (
-                          <span className="guesses-badge loss">X/4</span>
-                        )}
+                        <span className="guesses-badge win">
+                          {entry.guesses_used}/4
+                        </span>
                       </span>
                       <span className="entry-time">{formatTime(entry.created_at)}</span>
                     </div>
                   ))}
               </div>
 
-              {/* Stats summary */}
+              {/* Stats summary - winners only */}
               <div className="leaderboard-stats">
-                <div className="stat-item">
-                  <span className="stat-value">{puzzleLeaderboard.length}</span>
-                  <span className="stat-label">Players</span>
-                </div>
                 <div className="stat-item">
                   <span className="stat-value">
                     {puzzleLeaderboard.filter(e => e.won).length}
@@ -201,6 +230,41 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose }) {
         </div>
       )}
 
+      {/* Submit Score Section - at bottom, shown if game completed, WON, and not yet submitted */}
+      {gameCompleted && won && !hasSubmitted && (
+        <div className="leaderboard-submit-section">
+          <div className="submit-header">
+            <span className="submit-icon">🏆</span>
+            <span className="submit-title">Add your score!</span>
+          </div>
+          <div className="submit-form">
+            <input
+              type="text"
+              className={`submit-name-input ${submitError ? 'has-error' : ''}`}
+              placeholder="Enter your name"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setSubmitError('');
+              }}
+              maxLength={20}
+              disabled={isSubmitting}
+            />
+            <button
+              className="btn-submit-score"
+              onClick={handleSubmit}
+              disabled={isSubmitting || !name.trim()}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </button>
+          </div>
+          {submitError && <div className="submit-error">{submitError}</div>}
+          <div className="submit-result-preview">
+            Your result: <strong>{guessesUsed}/4</strong>
+          </div>
+        </div>
+      )}
+
       <div className="modal-buttons">
         <button className="btn-enhanced btn-primary" onClick={onClose}>
           Close
@@ -212,13 +276,15 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose }) {
 
 /**
  * LeaderboardPreview - Compact view for end-game modal
+ * Shows Top 3 + 2 entries surrounding user's rank
  * @param {Object} props
  * @param {Array} props.entries - Top leaderboard entries
  * @param {number} props.userRanking - User's ranking
  * @param {number} props.totalPlayers - Total players count
+ * @param {string} props.displayName - User's display name
  * @param {Function} props.onViewFull - Handler to view full leaderboard
  */
-export function LeaderboardPreview({ entries = [], userRanking, totalPlayers, onViewFull }) {
+export function LeaderboardPreview({ entries = [], userRanking, totalPlayers, displayName, onViewFull }) {
   if (entries.length === 0) {
     return (
       <div className="leaderboard-preview">
@@ -235,6 +301,35 @@ export function LeaderboardPreview({ entries = [], userRanking, totalPlayers, on
     );
   }
 
+  // Filter to only show winners and sort
+  const winners = entries
+    .filter(e => e.won)
+    .sort((a, b) => {
+      if (a.guesses_used !== b.guesses_used) return a.guesses_used - b.guesses_used;
+      return new Date(a.created_at) - new Date(b.created_at);
+    });
+
+  // Get top 3
+  const top3 = winners.slice(0, 3);
+
+  // Get surrounding entries if user is ranked > 5
+  let surrounding = [];
+  let showDivider = false;
+
+  if (userRanking && userRanking > 3) {
+    showDivider = true;
+    const startIdx = Math.max(3, userRanking - 2);
+    const endIdx = Math.min(winners.length, userRanking + 1);
+    surrounding = winners.slice(startIdx - 1, endIdx);
+  }
+
+  const getRankEmoji = (index) => {
+    if (index === 0) return '🥇';
+    if (index === 1) return '🥈';
+    if (index === 2) return '🥉';
+    return `${index + 1}.`;
+  };
+
   return (
     <div className="leaderboard-preview">
       <div className="preview-header">
@@ -245,21 +340,38 @@ export function LeaderboardPreview({ entries = [], userRanking, totalPlayers, on
       </div>
 
       <div className="preview-list">
-        {entries.slice(0, 5).map((entry, index) => (
-          <div key={entry.id || index} className="preview-entry">
-            <span className="preview-rank">
-              {index === 0 && '🥇'}
-              {index === 1 && '🥈'}
-              {index === 2 && '🥉'}
-              {index > 2 && `${index + 1}.`}
-            </span>
+        {top3.map((entry, index) => (
+          <div
+            key={entry.id || index}
+            className={`preview-entry ${entry.display_name === displayName ? 'is-user' : ''}`}
+          >
+            <span className="preview-rank">{getRankEmoji(index)}</span>
             <span className="preview-name">{entry.display_name}</span>
             <span className="preview-result">{entry.guesses_used}/4</span>
           </div>
         ))}
+
+        {showDivider && surrounding.length > 0 && (
+          <>
+            <div className="preview-divider">• • •</div>
+            {surrounding.map((entry, idx) => {
+              const actualRank = winners.indexOf(entry);
+              return (
+                <div
+                  key={entry.id || `surrounding-${idx}`}
+                  className={`preview-entry ${entry.display_name === displayName ? 'is-user' : ''}`}
+                >
+                  <span className="preview-rank">{actualRank + 1}.</span>
+                  <span className="preview-name">{entry.display_name}</span>
+                  <span className="preview-result">{entry.guesses_used}/4</span>
+                </div>
+              );
+            })}
+          </>
+        )}
       </div>
 
-      {userRanking && (
+      {userRanking && !showDivider && (
         <div className="preview-user-rank">
           You're #{userRanking} of {totalPlayers}
         </div>

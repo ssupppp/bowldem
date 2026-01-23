@@ -591,6 +591,8 @@ body {
   align-items: center;
   z-index: 1000;
   animation: overlay-fade-in 0.3s ease-out;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 @keyframes overlay-fade-in {
@@ -610,8 +612,18 @@ body {
 }
 
 @keyframes modal-scale-in {
-  from { transform: scale(0.7); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.85) translateY(10px);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
 
 .success-modal {
@@ -2683,8 +2695,98 @@ body {
   max-height: 85vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   animation: modal-scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Leaderboard Submit Section */
+.leaderboard-submit-section {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 2px solid #fbbf24;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.leaderboard-submit-section .submit-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.leaderboard-submit-section .submit-icon {
+  font-size: 1.25rem;
+}
+
+.leaderboard-submit-section .submit-title {
+  font-weight: 600;
+  color: #92400e;
+  font-size: 0.9rem;
+}
+
+.leaderboard-submit-section .submit-form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.leaderboard-submit-section .submit-name-input {
+  flex: 1;
+  padding: 0.625rem 0.75rem;
+  border: 2px solid #fbbf24;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  background: white;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.leaderboard-submit-section .submit-name-input:focus {
+  outline: none;
+  border-color: #f59e0b;
+}
+
+.leaderboard-submit-section .submit-name-input.has-error {
+  border-color: #ef4444;
+}
+
+.leaderboard-submit-section .btn-submit-score {
+  padding: 0.625rem 1rem;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-submit-section .btn-submit-score:hover:not(:disabled) {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.leaderboard-submit-section .btn-submit-score:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.leaderboard-submit-section .submit-error {
+  color: #dc2626;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.leaderboard-submit-section .submit-result-preview {
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #78350f;
 }
 
 .leaderboard-tabs {
@@ -2722,7 +2824,7 @@ body {
 .leaderboard-content {
   flex: 1;
   overflow-y: auto;
-  min-height: 200px;
+  min-height: 0;
 }
 
 .leaderboard-loading,
@@ -2775,13 +2877,13 @@ body {
 .leaderboard-list {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: 0.5rem;
 }
 
 .leaderboard-entry {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   padding: 0.625rem 0.75rem;
   background: #f8fafc;
   border-radius: 0.5rem;
@@ -2811,12 +2913,13 @@ body {
 
 .leaderboard-entry .entry-name {
   flex: 1;
-  font-weight: 600;
+  font-weight: 500;
   color: #1e293b;
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .leaderboard-entry .entry-result {
@@ -2975,6 +3078,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .leaderboard-preview .preview-result {
@@ -2984,6 +3088,18 @@ body {
   background: #dcfce7;
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
+}
+
+.leaderboard-preview .preview-entry.is-user {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border: 1px solid #86efac;
+}
+
+.leaderboard-preview .preview-divider {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  padding: 0.25rem 0;
 }
 
 .leaderboard-preview .preview-user-rank {
@@ -3555,12 +3671,438 @@ body {
   font-size: 0.85rem;
 }
 
+/* Completed State Wrapper - contains banner + leaderboard status + notify */
+.completed-state-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Leaderboard status indicator */
+.leaderboard-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+  border: 2px solid #93c5fd;
+  border-radius: 0.75rem;
+}
+
+.leaderboard-status .status-icon {
+  font-size: 1rem;
+}
+
+.leaderboard-status .status-text {
+  font-size: 0.875rem;
+  color: #1e40af;
+}
+
+.leaderboard-status .status-text strong {
+  color: #1e3a8a;
+}
+
+/* Notify Me button */
+.btn-notify-me {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 2px solid #86efac;
+  border-radius: 0.75rem;
+  color: #166534;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-notify-me:hover {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border-color: #4ade80;
+  transform: translateY(-1px);
+}
+
+.btn-notify-me:active {
+  transform: translateY(0);
+}
+
+.btn-notify-me .notify-icon {
+  font-size: 1rem;
+}
+
+.btn-notify-me .notify-text {
+  flex: 1;
+  text-align: center;
+}
+
 /* ============================================================================
-   ENHANCED MODAL STYLES
+   COMPACT RESULT MODAL STYLES
+   ============================================================================ */
+.result-modal {
+  position: relative;
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  max-width: 340px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.result-modal-success {
+  border-top: 4px solid #22c55e;
+}
+
+.result-modal-failure {
+  border-top: 4px solid #ef4444;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: #f3f4f6;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.result-emoji {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.result-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.result-subtitle {
+  font-size: 0.95rem;
+  color: #4b5563;
+  margin: 0 0 1.25rem 0;
+  line-height: 1.4;
+}
+
+.result-subtitle strong {
+  color: #1f2937;
+}
+
+.result-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-result-secondary {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: #f3f4f6;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  color: #374151;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-result-secondary:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.btn-result-primary {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+.btn-result-primary:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+}
+
+.btn-result-primary:active {
+  transform: translateY(0);
+}
+
+/* ============================================================================
+   COMPACT RESULT MODAL - NEW SHARE-FIRST DESIGN
+   ============================================================================ */
+.result-modal-compact {
+  padding: 1.5rem;
+  max-width: 320px;
+}
+
+.result-modal-compact .result-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.result-modal-compact .result-emoji-inline {
+  font-size: 1.75rem;
+}
+
+.result-modal-compact .result-puzzle-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Game Radar - Emoji feedback grid */
+.game-radar {
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.game-radar-row {
+  font-size: 1.25rem;
+  letter-spacing: 0.1rem;
+  line-height: 1.5;
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+}
+
+/* Result text */
+.result-modal-compact .result-text {
+  font-size: 1rem;
+  color: #4b5563;
+  margin: 0 0 1.25rem 0;
+  font-weight: 500;
+}
+
+/* Primary Copy Result button */
+.btn-copy-result {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  margin-bottom: 0.75rem;
+}
+
+.btn-copy-result:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+}
+
+.btn-copy-result:active {
+  transform: translateY(0);
+}
+
+.btn-copy-result.copied {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+/* View Leaderboard text link */
+.btn-view-leaderboard-link {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.btn-view-leaderboard-link:hover {
+  color: #374151;
+}
+
+/* ============================================================================
+   LEADERBOARD SUCCESS STATE
+   ============================================================================ */
+.leaderboard-success-section {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.leaderboard-success-section .success-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.leaderboard-success-section .success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: #22c55e;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.leaderboard-success-section .success-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #166534;
+}
+
+.leaderboard-success-section .success-details {
+  font-size: 0.85rem;
+  color: #15803d;
+}
+
+/* ============================================================================
+   ENHANCED MODAL STYLES (legacy)
    ============================================================================ */
 .enhanced-modal {
   max-width: 450px;
   width: 90%;
+}
+
+/* Minimized modal after leaderboard submission */
+.modal-minimized {
+  max-width: 350px;
+  padding: 1.25rem !important;
+}
+
+.modal-minimized .minimized-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border-radius: 0.75rem;
+}
+
+.modal-minimized .minimized-icon {
+  font-size: 1.25rem;
+  color: #16a34a;
+}
+
+.modal-minimized .minimized-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #166534;
+}
+
+.modal-minimized .countdown-container {
+  margin: 0.75rem 0;
+}
+
+/* Hero share button for minimized modal */
+.btn-share-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  margin: 1rem 0;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.btn-share-hero:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.4);
+}
+
+.btn-share-hero:active {
+  transform: translateY(0);
+}
+
+.btn-share-hero .share-icon {
+  font-size: 1.25rem;
+}
+
+.btn-share-hero .share-text {
+  letter-spacing: 0.02em;
+}
+
+/* Secondary text links for minimized modal */
+.modal-buttons-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.btn-text-link {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.btn-text-link:hover {
+  color: #374151;
+  text-decoration: underline;
+}
+
+.btn-divider {
+  color: #d1d5db;
+  font-size: 0.75rem;
 }
 
 .percentile-badge {
@@ -3630,6 +4172,570 @@ body {
 }
 
 /* ============================================================================
+   COMPLETED HOMESCREEN REDESIGN - NEW COMPONENTS
+   ============================================================================ */
+
+/* Container for redesigned completed state */
+.completed-home-redesign {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Result Banner - Compact win/loss indicator */
+.result-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+}
+
+.result-banner-win {
+  background: linear-gradient(135deg, #fef3c7, #fef9c3);
+  border: 2px solid #fbbf24;
+}
+
+.result-banner-loss {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  border: 2px solid #fca5a5;
+}
+
+.result-banner-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.result-banner-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.result-banner-text {
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+.result-banner-win .result-banner-text {
+  color: #92400e;
+}
+
+.result-banner-loss .result-banner-text {
+  color: #991b1b;
+}
+
+.result-banner-streak {
+  font-size: 0.85rem;
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* Prominent Countdown Timer */
+.prominent-countdown {
+  background: linear-gradient(135deg, #1e3a8a, #3730a3);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 16px rgba(30, 58, 138, 0.3);
+}
+
+.prominent-countdown .countdown-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.countdown-digits {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.digit-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.digit {
+  font-size: 1.75rem;
+  font-weight: 800;
+  font-family: 'SF Mono', 'Roboto Mono', monospace;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  min-width: 2.5rem;
+}
+
+.digit-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-top: 0.25rem;
+  letter-spacing: 0.5px;
+}
+
+.digit-separator {
+  font-size: 1.5rem;
+  font-weight: 700;
+  opacity: 0.7;
+  margin-bottom: 1rem;
+}
+
+/* Share Section with Platform Icons */
+.share-section {
+  background: #f8fafc;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.share-section-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.share-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.share-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.share-btn:hover {
+  transform: translateY(-1px);
+}
+
+.share-btn:active {
+  transform: translateY(0);
+}
+
+.share-btn-x {
+  background: #000;
+  color: white;
+}
+
+.share-btn-x:hover {
+  background: #1a1a1a;
+}
+
+.share-btn-whatsapp {
+  background: #25D366;
+  color: white;
+}
+
+.share-btn-whatsapp:hover {
+  background: #1fb855;
+}
+
+.share-btn-copy {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.share-btn-copy:hover {
+  background: #cbd5e1;
+}
+
+.share-btn-copy.copied {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.share-btn svg {
+  flex-shrink: 0;
+}
+
+/* Notify Me Section - Clear Button Style */
+.notify-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #fef3c7, #fef9c3);
+  border: 2px solid #fbbf24;
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.notify-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.notify-bell {
+  font-size: 1.25rem;
+}
+
+.notify-label {
+  font-size: 0.9rem;
+  color: #92400e;
+  font-weight: 500;
+}
+
+.btn-notify {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-notify:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.btn-notify:active {
+  transform: translateY(0);
+}
+
+/* Inline Leaderboard Preview */
+.leaderboard-preview-inline {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.preview-inline-header {
+  margin-bottom: 0.75rem;
+}
+
+.preview-inline-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #64748b;
+}
+
+.preview-inline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.preview-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+}
+
+.preview-entry.is-user {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border: 1px solid #86efac;
+}
+
+.preview-rank {
+  width: 1.75rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.preview-name {
+  flex: 1;
+  font-weight: 500;
+  color: #1e293b;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.preview-result {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.preview-divider {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  padding: 0.25rem 0;
+}
+
+.preview-view-full {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.625rem;
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preview-view-full:hover {
+  background: #f8fafc;
+  border-color: #3b82f6;
+}
+
+/* Archive Button */
+.archive-button {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.archive-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+/* ============================================================================
+   LIVE LEADERBOARD - Permanent visible on main page
+   ============================================================================ */
+.live-leaderboard {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.live-leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.live-leaderboard-title {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 0.95rem;
+}
+
+.live-leaderboard-count {
+  font-size: 0.75rem;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-weight: 600;
+}
+
+/* Submit section */
+.live-submit-section {
+  background: linear-gradient(135deg, #fef3c7, #fef9c3);
+  border: 2px solid #fbbf24;
+  border-radius: 0.75rem;
+  padding: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.live-submit-prompt {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 0.5rem;
+}
+
+.live-submit-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.live-submit-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #fbbf24;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  background: white;
+  min-width: 0;
+}
+
+.live-submit-input:focus {
+  outline: none;
+  border-color: #f59e0b;
+}
+
+.live-submit-input.has-error {
+  border-color: #ef4444;
+}
+
+.live-submit-btn {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.live-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.live-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.live-submit-error {
+  color: #dc2626;
+  font-size: 0.75rem;
+  margin-top: 0.375rem;
+}
+
+/* Success message */
+.live-submit-success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.625rem;
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border: 2px solid #86efac;
+  border-radius: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #166534;
+  font-size: 0.9rem;
+}
+
+.live-submit-success .success-check {
+  color: #22c55e;
+  font-size: 1.1rem;
+}
+
+/* Leaderboard list */
+.live-leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.live-leaderboard-loading,
+.live-leaderboard-empty {
+  text-align: center;
+  padding: 1rem;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.live-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.625rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease;
+}
+
+.live-entry:hover {
+  background: #f1f5f9;
+}
+
+.live-entry.is-user {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border: 1px solid #86efac;
+}
+
+.live-entry-rank {
+  width: 1.5rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.live-entry-name {
+  flex: 1;
+  font-weight: 500;
+  color: #1e293b;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.live-entry-result {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.live-view-full {
+  width: 100%;
+  margin-top: 0.625rem;
+  padding: 0.5rem;
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  color: #3b82f6;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.live-view-full:hover {
+  background: #f8fafc;
+  border-color: #3b82f6;
+}
+
+/* ============================================================================
    RESPONSIVE ADJUSTMENTS FOR COMMUNITY FEATURES
    ============================================================================ */
 @media (max-width: 480px) {
@@ -3684,5 +4790,150 @@ body {
 
   .win-message .win-title {
     font-size: 1.25rem;
+  }
+
+  /* Completed Home Redesign - Mobile */
+  .completed-home-redesign {
+    gap: 0.75rem;
+  }
+
+  .result-banner {
+    padding: 0.875rem 1rem;
+  }
+
+  .result-banner-icon {
+    font-size: 1.75rem;
+  }
+
+  .result-banner-text {
+    font-size: 1rem;
+  }
+
+  .prominent-countdown {
+    padding: 1rem;
+  }
+
+  .digit {
+    font-size: 1.5rem;
+    padding: 0.375rem 0.5rem;
+    min-width: 2rem;
+  }
+
+  .digit-separator {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .share-btn {
+    padding: 0.625rem 0.5rem;
+    font-size: 0.75rem;
+    gap: 0.25rem;
+  }
+
+  .share-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .notify-section {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .btn-notify {
+    width: 100%;
+  }
+
+  .preview-entry {
+    padding: 0.375rem 0.5rem;
+  }
+
+  .preview-name {
+    font-size: 0.8rem;
+  }
+
+  /* Live Leaderboard - Mobile */
+  .live-leaderboard {
+    padding: 0.875rem;
+  }
+
+  .live-submit-form {
+    flex-direction: column;
+  }
+
+  .live-submit-btn {
+    width: 100%;
+  }
+
+  .live-entry {
+    padding: 0.375rem 0.5rem;
+  }
+
+  .live-entry-name {
+    font-size: 0.8rem;
+  }
+}
+
+/* ============================================================================
+   LAPTOP SCREEN OPTIMIZATIONS (1024px - 1366px)
+   Fixes modal scaling issues on smaller laptop displays
+   ============================================================================ */
+@media (min-width: 769px) and (max-width: 1366px) {
+  .game-overlay {
+    padding: 1rem;
+  }
+
+  .success-modal,
+  .failure-modal,
+  .enhanced-modal {
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+  }
+
+  .how-to-play-modal {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .archive-modal {
+    max-height: 75vh;
+  }
+
+  .leaderboard-modal {
+    max-height: 80vh;
+  }
+
+  .notification-optin-modal {
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .celebration-emoji {
+    font-size: 2.5rem;
+  }
+
+  .overlay-title {
+    font-size: 1.5rem;
+  }
+
+  .cricket-trivia {
+    padding: 0.75rem;
+  }
+
+  .share-result {
+    font-size: 0.8rem;
+    padding: 0.75rem;
+  }
+
+  .modal-buttons {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .modal-buttons button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
   }
 }

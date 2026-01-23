@@ -37,7 +37,7 @@ import { ArchiveModal, saveArchiveCompletion } from "./components/ArchiveModal.j
 import { LeaderboardModal, LeaderboardPreview } from "./components/community/LeaderboardModal.jsx";
 import { NameEntryPrompt } from "./components/community/NameEntryPrompt.jsx";
 import { NotificationOptIn, hasHandledNotifications } from "./components/community/NotificationOptIn.jsx";
-import { CompletedStateBanner } from "./components/home/WinStateBanner.jsx";
+import { CompletedStateBanner, LiveLeaderboard } from "./components/home/WinStateBanner.jsx";
 import { validateGuess } from "./lib/supabase.js";
 import { getPuzzleIndex } from "./utils/dailyPuzzle.js";
 import "./App.css";
@@ -87,6 +87,8 @@ function App() {
   const [isChecking, setIsChecking] = useState(false);
   const [pendingFeedback, setPendingFeedback] = useState(null);
   const [newFeedbackIndex, setNewFeedbackIndex] = useState(-1);
+  const [modalMinimized, setModalMinimized] = useState(false);
+  const [copyButtonState, setCopyButtonState] = useState('idle'); // 'idle' | 'copied'
 
   // Get puzzle date for leaderboard
   const puzzleDate = getEffectiveDate();
@@ -116,7 +118,12 @@ function App() {
     hasSubmitted: hasLeaderboardSubmitted
   } = useLeaderboard(puzzleNumber, puzzleDate);
 
-  // Fetch leaderboard when game ends
+  // Fetch leaderboard on mount and when game ends (for live updates)
+  useEffect(() => {
+    fetchPuzzleLeaderboard();
+  }, [fetchPuzzleLeaderboard]);
+
+  // Refresh leaderboard when game status changes
   useEffect(() => {
     if (gameWon || gameOver || alreadyCompleted) {
       fetchPuzzleLeaderboard();
@@ -136,6 +143,8 @@ function App() {
   const handleLeaderboardSubmit = useCallback(async (name, guessCount, won) => {
     saveDisplayName(name);
     await submitToLeaderboard(guessCount, won);
+    // Minimize modal after successful submission
+    setModalMinimized(true);
   }, [saveDisplayName, submitToLeaderboard]);
 
   // Create a lookup map for O(1) player access by ID
@@ -248,14 +257,17 @@ function App() {
       if (isWin) {
         setArchiveGameWon(true);
         saveArchiveCompletion(archivePuzzleDate, 'won');
-        setTimeout(() => setShowSuccessModal(true), 700);
+        setTimeout(() => setShowSuccessModal(true), 850);
       } else if (isLastGuess) {
         setArchiveGameOver(true);
         saveArchiveCompletion(archivePuzzleDate, 'lost');
-        setTimeout(() => setShowGameOverModal(true), 700);
+        setTimeout(() => setShowGameOverModal(true), 850);
       }
     }, 300);
   };
+
+  // Track if this is initial load to prevent duplicate modal opening
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
     if (guesses.length > 0 && currentPuzzle) {
@@ -266,15 +278,20 @@ function App() {
       setFeedbackList(rebuiltFeedback);
       setUsedPlayers(new Set(guesses));
 
-      if (gameStatus === 'won') {
-        setGameWon(true);
-        setShowSuccessModal(true);
-      } else if (gameStatus === 'lost') {
-        setGameOver(true);
-        setShowGameOverModal(true);
+      // Only show modals on initial load (restoring from localStorage)
+      // Live game completion shows modals via handlePlayerGuess
+      if (isInitialLoad && alreadyCompleted) {
+        if (gameStatus === 'won') {
+          setGameWon(true);
+          setShowSuccessModal(true);
+        } else if (gameStatus === 'lost') {
+          setGameOver(true);
+          setShowGameOverModal(true);
+        }
       }
     }
-  }, [gameStatus, guesses.length, currentPuzzle]);
+    setIsInitialLoad(false);
+  }, [gameStatus, guesses.length, currentPuzzle, alreadyCompleted]);
 
   const handlePlayerGuess = async (playerKey) => {
     if (gameWon || gameOver || usedPlayers.has(playerKey) || alreadyCompleted || isChecking) return;
@@ -326,13 +343,13 @@ function App() {
       // Reset newFeedbackIndex after animation completes (~600ms)
       setTimeout(() => setNewFeedbackIndex(-1), 600);
 
-      // Show modal after sequential reveal animation (~700ms)
+      // Show modal after sequential reveal animation (~850ms)
       if (isWin) {
         setGameWon(true);
-        setTimeout(() => setShowSuccessModal(true), 700);
+        setTimeout(() => setShowSuccessModal(true), 850);
       } else if (newFeedbackList.length >= maxGuesses) {
         setGameOver(true);
-        setTimeout(() => setShowGameOverModal(true), 700);
+        setTimeout(() => setShowGameOverModal(true), 850);
       }
     }, 300); // Shorter delay since server call adds latency
   };
@@ -353,26 +370,59 @@ function App() {
 
     const gridPattern = feedbackLines.join('\n');
 
-    // Enhanced result line with streak indicator
+    // Result line with streak indicator (streak only shown if > 1)
     const guessText = gameWon ? feedbackList.length + '/' + maxGuesses : 'X/' + maxGuesses;
-    const streakText = stats.currentStreak > 1 ? ' | 🔥' + stats.currentStreak : '';
-    const resultText = (gameWon ? '✅ ' : '❌ ') + guessText + streakText;
+    const streakText = stats.currentStreak > 1 ? ' 🔥' + stats.currentStreak : '';
 
-    return '🏏 Bowldem #' + puzzleNumber + '\n\n' + gridPattern + '\n\n' + resultText + '\n\nbowldem.com';
+    return '🏏 Bowldem #' + puzzleNumber + '\n\n' + gridPattern + '\n\n' + guessText + streakText + '\n\nbowldem.com';
+  };
+
+  // GameRadar component - renders emoji feedback grid in modals
+  const GameRadar = ({ feedback }) => {
+    if (!feedback || feedback.length === 0) return null;
+
+    const feedbackLines = feedback.map(fb => {
+      const played = fb.playedInGame ? '🟢' : '🔴';
+      const team = fb.sameTeam ? '🟢' : '🔴';
+      const role = fb.sameRole ? '🟢' : '🔴';
+      const mvp = fb.isMVP ? '🏆' : '🔴';
+      return played + team + role + mvp;
+    });
+
+    return (
+      <div className="game-radar">
+        {feedbackLines.map((line, index) => (
+          <div key={index} className="game-radar-row">{line}</div>
+        ))}
+      </div>
+    );
   };
 
   const handleShare = () => {
     const shareText = generateShareText();
 
-    if (navigator.share) {
-      navigator.share({
-        title: 'Bowldem #' + puzzleNumber,
-        text: shareText
-      });
-    } else {
-      navigator.clipboard.writeText(shareText);
-      alert('Result copied to clipboard!');
-    }
+    // Always use clipboard (Wordle-style) - no native share dialog
+    navigator.clipboard.writeText(shareText).then(() => {
+      setCopyButtonState('copied');
+      // Reset button after 2 seconds
+      setTimeout(() => setCopyButtonState('idle'), 2000);
+    }).catch(() => {
+      // Fallback for older browsers
+      setCopyButtonState('copied');
+      setTimeout(() => setCopyButtonState('idle'), 2000);
+    });
+  };
+
+  const handleShareX = () => {
+    const shareText = generateShareText();
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    window.open(url, '_blank', 'width=550,height=420');
+  };
+
+  const handleShareWhatsApp = () => {
+    const shareText = generateShareText();
+    const url = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    window.open(url, '_blank');
   };
 
   const renderSimplifiedScorecard = () => {
@@ -421,126 +471,73 @@ function App() {
   const SuccessModal = () => {
     const puzzle = archiveMode ? archivePuzzle : currentPuzzle;
     const currentFeedbackList = archiveMode ? archiveFeedbackList : feedbackList;
+    const displayPuzzleNumber = archiveMode ? archivePuzzleNumber : puzzleNumber;
     const targetPlayerKey = puzzle?.targetPlayer;
     const targetPlayer = findPlayer(targetPlayerKey);
-    const percentile = !archiveMode ? calculatePercentile(currentFeedbackList.length, true) : null;
-    const topEntries = !archiveMode ? getTopEntries(5) : [];
 
-    return (
-      <div className="success-modal enhanced-modal">
-        <div className="celebration-emoji">🏆</div>
-        <h2 className="overlay-title">
-          {archiveMode ? 'Archive Complete!' : 'Congratulations!'}
-        </h2>
-        <p className="overlay-text">
-          You found the Man of the Match in {currentFeedbackList.length} {currentFeedbackList.length === 1 ? 'guess' : 'guesses'}!
-        </p>
-
-        {/* Percentile indicator (daily mode only) */}
-        {!archiveMode && percentile !== null && puzzleLeaderboard.length >= 5 && (
-          <div className="percentile-badge">
-            <span className="percentile-text">
-              Better than <strong>{percentile}%</strong> of players today!
-            </span>
-          </div>
-        )}
-
-        {/* Match Context / Nostalgia (daily mode only) */}
-        {!archiveMode && matchHighlight && matchHighlight.matchContext && (
-          <div className="match-context">
-            <div className="context-title">{matchHighlight.matchContext}</div>
-            {matchHighlight.triviaFact && (
-              <div className="context-trivia">{matchHighlight.triviaFact}</div>
-            )}
-          </div>
-        )}
-
-        {/* Player Spotlight */}
-        {targetPlayer && (
-          <div className="cricket-trivia">
-            <div className="trivia-title">Player Spotlight</div>
-            <div className="trivia-text">
-              <strong>{targetPlayer.fullName}</strong><br/>
-              {targetPlayer.country} - {targetPlayer.role}
-              {!archiveMode && matchHighlight && matchHighlight.playerHighlight && (
-                <><br/><span className="player-highlight">{matchHighlight.playerHighlight}</span></>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Leaderboard Preview (daily mode only) */}
-        {!archiveMode && (
-          <LeaderboardPreview
-            entries={topEntries}
-            userRanking={userRanking}
-            totalPlayers={puzzleLeaderboard.length}
-            onViewFull={() => {
+    // Archive mode - different layout
+    if (archiveMode) {
+      return (
+        <div className="result-modal result-modal-success">
+          <button className="modal-close-btn" onClick={handleCloseModal}>×</button>
+          <div className="result-emoji">🏆</div>
+          <h2 className="result-title">Archive Complete!</h2>
+          <p className="result-subtitle">
+            Found <strong>{targetPlayer?.fullName}</strong> in {currentFeedbackList.length}/{maxGuesses}
+          </p>
+          <div className="result-actions">
+            <button className="btn-result-secondary" onClick={() => {
               setShowSuccessModal(false);
-              setShowLeaderboardModal(true);
-            }}
-          />
-        )}
-
-        {/* Name Entry Prompt (daily mode only, if not already submitted) */}
-        {!archiveMode && !hasLeaderboardSubmitted && (
-          <NameEntryPrompt
-            savedName={displayName}
-            onSubmit={(name) => handleLeaderboardSubmit(name, currentFeedbackList.length, true)}
-            onSkip={() => {}}
-            guessesUsed={currentFeedbackList.length}
-            won={true}
-            isSubmitting={isLeaderboardSubmitting}
-            hasSubmitted={hasLeaderboardSubmitted}
-          />
-        )}
-
-        {!archiveMode && (
-          <>
-            <div className="share-section">
-              <div className="share-title">Share Your Result</div>
-              <pre className="share-result">{generateShareText()}</pre>
-            </div>
-            <CountdownTimer />
-          </>
-        )}
-
-        <div className="modal-buttons">
-          {archiveMode ? (
-            <>
-              <button className="btn-enhanced btn-primary" onClick={() => {
-                setShowSuccessModal(false);
-                handleExitArchiveMode();
-              }}>
-                Back to Today
-              </button>
-              <button className="btn-enhanced btn-secondary" onClick={() => {
-                setShowSuccessModal(false);
-                setShowArchiveModal(true);
-              }}>
-                More Archives
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="btn-enhanced btn-success" onClick={handleShare}>
-                Share Result
-              </button>
-              <button
-                className="btn-enhanced btn-secondary"
-                onClick={() => {
-                  setShowSuccessModal(false);
-                  setShowLeaderboardModal(true);
-                }}
-              >
-                Leaderboard
-              </button>
-              <button className="btn-enhanced btn-primary" onClick={handleCloseModal}>
-                Close
-              </button>
-            </>
-          )}
+              setShowArchiveModal(true);
+            }}>
+              More Archives
+            </button>
+            <button className="btn-result-primary" onClick={() => {
+              setShowSuccessModal(false);
+              handleExitArchiveMode();
+            }}>
+              Back to Today
+            </button>
+          </div>
         </div>
+      );
+    }
+
+    // Daily mode - NEW compact design with game radar
+    return (
+      <div className="result-modal result-modal-success result-modal-compact">
+        <button className="modal-close-btn" onClick={handleCloseModal}>×</button>
+
+        {/* Header with emoji and puzzle number */}
+        <div className="result-header">
+          <span className="result-emoji-inline">🏆</span>
+          <span className="result-puzzle-title">Bowldem #{displayPuzzleNumber}</span>
+        </div>
+
+        {/* Game Radar - emoji feedback grid */}
+        <GameRadar feedback={currentFeedbackList} />
+
+        {/* Result text */}
+        <p className="result-text">Solved in {currentFeedbackList.length}/{maxGuesses}!</p>
+
+        {/* Primary CTA - Copy Result */}
+        <button
+          className={`btn-copy-result ${copyButtonState === 'copied' ? 'copied' : ''}`}
+          onClick={handleShare}
+        >
+          {copyButtonState === 'copied' ? 'Copied ✓' : 'Copy Result'}
+        </button>
+
+        {/* Secondary CTA - View Leaderboard (text link) */}
+        <button
+          className="btn-view-leaderboard-link"
+          onClick={() => {
+            setShowSuccessModal(false);
+            setShowLeaderboardModal(true);
+          }}
+        >
+          View Leaderboard →
+        </button>
       </div>
     );
   };
@@ -548,118 +545,64 @@ function App() {
   const GameOverModal = () => {
     const puzzle = archiveMode ? archivePuzzle : currentPuzzle;
     const currentFeedbackList = archiveMode ? archiveFeedbackList : feedbackList;
+    const displayPuzzleNumber = archiveMode ? archivePuzzleNumber : puzzleNumber;
     const targetPlayerKey = puzzle?.targetPlayer;
     const targetPlayer = findPlayer(targetPlayerKey);
-    const topEntries = !archiveMode ? getTopEntries(5) : [];
 
-    return (
-      <div className="failure-modal enhanced-modal">
-        <div className="celebration-emoji">😔</div>
-        <h2 className="overlay-title">Game Over!</h2>
-        <p className="overlay-text">
-          The Man of the Match was <strong>
-            {targetPlayer?.fullName || "Unknown Player"}
-          </strong>
-        </p>
-
-        {/* Match Context / Nostalgia (daily mode only) */}
-        {!archiveMode && matchHighlight && matchHighlight.matchContext && (
-          <div className="match-context loss">
-            <div className="context-title">{matchHighlight.matchContext}</div>
-            {matchHighlight.triviaFact && (
-              <div className="context-trivia">{matchHighlight.triviaFact}</div>
-            )}
+    // Archive mode - different layout (still shows answer for archives)
+    if (archiveMode) {
+      return (
+        <div className="result-modal result-modal-failure">
+          <button className="modal-close-btn" onClick={handleCloseModal}>×</button>
+          <div className="result-emoji">😔</div>
+          <h2 className="result-title">Game Over</h2>
+          <p className="result-subtitle">
+            The answer was <strong>{targetPlayer?.fullName || "Unknown"}</strong>
+          </p>
+          <div className="result-actions">
+            <button className="btn-result-secondary" onClick={() => {
+              setShowGameOverModal(false);
+              setShowArchiveModal(true);
+            }}>
+              More Archives
+            </button>
+            <button className="btn-result-primary" onClick={() => {
+              setShowGameOverModal(false);
+              handleExitArchiveMode();
+            }}>
+              Back to Today
+            </button>
           </div>
-        )}
-
-        {targetPlayer && (
-          <div className="cricket-trivia">
-            <div className="trivia-title">The Answer</div>
-            <div className="trivia-text">
-              <strong>{targetPlayer.fullName}</strong><br/>
-              {targetPlayer.country} - {targetPlayer.role}
-              {!archiveMode && matchHighlight && matchHighlight.playerHighlight && (
-                <><br/><span className="player-highlight">{matchHighlight.playerHighlight}</span></>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Leaderboard Preview (daily mode only) */}
-        {!archiveMode && topEntries.length > 0 && (
-          <div className="leaderboard-section-loss">
-            <div className="section-header">See how others did</div>
-            <LeaderboardPreview
-              entries={topEntries}
-              userRanking={null}
-              totalPlayers={puzzleLeaderboard.length}
-              onViewFull={() => {
-                setShowGameOverModal(false);
-                setShowLeaderboardModal(true);
-              }}
-            />
-          </div>
-        )}
-
-        {/* Name Entry for loss (optional - can still appear on leaderboard) */}
-        {!archiveMode && !hasLeaderboardSubmitted && (
-          <NameEntryPrompt
-            savedName={displayName}
-            onSubmit={(name) => handleLeaderboardSubmit(name, currentFeedbackList.length, false)}
-            onSkip={() => {}}
-            guessesUsed={currentFeedbackList.length}
-            won={false}
-            isSubmitting={isLeaderboardSubmitting}
-            hasSubmitted={hasLeaderboardSubmitted}
-          />
-        )}
-
-        {!archiveMode && (
-          <>
-            <div className="share-section">
-              <div className="share-title">Share Your Attempt</div>
-              <pre className="share-result">{generateShareText()}</pre>
-            </div>
-            <CountdownTimer />
-          </>
-        )}
-
-        <div className="modal-buttons">
-          {archiveMode ? (
-            <>
-              <button className="btn-enhanced btn-primary" onClick={() => {
-                setShowGameOverModal(false);
-                handleExitArchiveMode();
-              }}>
-                Back to Today
-              </button>
-              <button className="btn-enhanced btn-secondary" onClick={() => {
-                setShowGameOverModal(false);
-                setShowArchiveModal(true);
-              }}>
-                More Archives
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="btn-enhanced btn-success" onClick={handleShare}>
-                Share Result
-              </button>
-              <button
-                className="btn-enhanced btn-secondary"
-                onClick={() => {
-                  setShowGameOverModal(false);
-                  setShowLeaderboardModal(true);
-                }}
-              >
-                Leaderboard
-              </button>
-              <button className="btn-enhanced btn-primary" onClick={handleCloseModal}>
-                Close
-              </button>
-            </>
-          )}
         </div>
+      );
+    }
+
+    // Daily mode - NEW compact design with game radar, NO answer reveal
+    return (
+      <div className="result-modal result-modal-failure result-modal-compact">
+        <button className="modal-close-btn" onClick={handleCloseModal}>×</button>
+
+        {/* Header with emoji and puzzle number */}
+        <div className="result-header">
+          <span className="result-emoji-inline">😔</span>
+          <span className="result-puzzle-title">Bowldem #{displayPuzzleNumber}</span>
+        </div>
+
+        {/* Game Radar - emoji feedback grid */}
+        <GameRadar feedback={currentFeedbackList} />
+
+        {/* Result text - NO answer revealed */}
+        <p className="result-text">Better luck tomorrow!</p>
+
+        {/* Primary CTA - Copy Result */}
+        <button
+          className={`btn-copy-result ${copyButtonState === 'copied' ? 'copied' : ''}`}
+          onClick={handleShare}
+        >
+          {copyButtonState === 'copied' ? 'Copied ✓' : 'Copy Result'}
+        </button>
+
+        {/* NO leaderboard link for losses - winners only */}
       </div>
     );
   };
@@ -825,7 +768,7 @@ function App() {
             )
           )}
 
-          {/* Completed State - Daily only */}
+          {/* Completed State - Daily only - Redesigned */}
           {!archiveMode && alreadyCompleted && (
             <CompletedStateBanner
               won={gameStatus === 'won'}
@@ -833,6 +776,17 @@ function App() {
               maxGuesses={maxGuesses}
               streak={stats.currentStreak}
               playerName={findPlayer(currentPuzzle?.targetPlayer)?.fullName}
+              displayName={displayName}
+              hasSubmitted={hasLeaderboardSubmitted}
+              onNotifyMe={!hasHandledNotifications() ? () => setShowNotificationOptIn(true) : null}
+              onShareX={handleShareX}
+              onShareWhatsApp={handleShareWhatsApp}
+              onCopy={handleShare}
+              copyState={copyButtonState}
+              leaderboardEntries={puzzleLeaderboard}
+              userRanking={userRanking}
+              onViewLeaderboard={() => setShowLeaderboardModal(true)}
+              onOpenArchive={() => setShowArchiveModal(true)}
             />
           )}
 
@@ -844,6 +798,27 @@ function App() {
             isChecking={isChecking}
             newFeedbackIndex={newFeedbackIndex}
           />
+
+          {/* Live Leaderboard - Always visible for social proof (daily mode only) */}
+          {!archiveMode && (
+            <LiveLeaderboard
+              entries={puzzleLeaderboard}
+              loading={puzzleLeaderboardLoading}
+              gameCompleted={gameWon || gameOver || alreadyCompleted}
+              won={gameWon || gameStatus === 'won'}
+              hasSubmitted={hasLeaderboardSubmitted}
+              displayName={displayName}
+              userRanking={userRanking}
+              guessesUsed={feedbackList.length}
+              onSubmit={async (name) => {
+                saveDisplayName(name);
+                await submitToLeaderboard(feedbackList.length, gameWon || gameStatus === 'won');
+                fetchPuzzleLeaderboard();
+              }}
+              isSubmitting={isLeaderboardSubmitting}
+              onViewFull={() => setShowLeaderboardModal(true)}
+            />
+          )}
 
           <div className="game-controls">
             {archiveMode ? (
@@ -865,8 +840,9 @@ function App() {
                 </div>
               )
             ) : (
-              // Daily mode controls
-              (gameOver || gameWon || alreadyCompleted) && (
+              // Daily mode controls - only show for just-completed games (not alreadyCompleted)
+              // alreadyCompleted uses the new CompletedStateBanner with integrated controls
+              !alreadyCompleted && (gameOver || gameWon) && (
                 <div className="game-actions">
                   <CountdownTimer />
                   <button
@@ -874,12 +850,6 @@ function App() {
                     onClick={handleShare}
                   >
                     Share Result
-                  </button>
-                  <button
-                    className="btn-enhanced btn-secondary"
-                    onClick={() => setShowStatsModal(true)}
-                  >
-                    View Stats
                   </button>
                 </div>
               )
@@ -934,6 +904,9 @@ function App() {
               puzzleNumber={puzzleNumber}
               puzzleDate={puzzleDate}
               onClose={() => setShowLeaderboardModal(false)}
+              guessesUsed={feedbackList.length}
+              won={gameWon || gameStatus === 'won'}
+              gameCompleted={gameWon || gameOver || alreadyCompleted}
             />
           </div>
         </div>
