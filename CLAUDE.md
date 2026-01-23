@@ -52,6 +52,13 @@ These folders contain outdated versions of the project:
 - [x] Add roles to all 370 existing players
 - [x] Add ~200 more professional cricketers (now 569 total)
 - [x] Create PLAYER_DATABASE_PLAN.md
+- [x] Add puzzle archive feature
+
+---
+
+## Bugs / Data Fixes
+
+- [ ] **Abhishek Sharma** - Role should be "Batsman" not "All-rounder" (he's primarily an opening batsman for SRH, occasional spin is not primary skill)
 
 ---
 
