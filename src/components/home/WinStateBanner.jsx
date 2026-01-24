@@ -217,7 +217,7 @@ function ResultBanner({ won, guessesUsed, maxGuesses = 4, streak = 0 }) {
       <div className="result-banner-icon">😔</div>
       <div className="result-banner-content">
         <span className="result-banner-text">
-          <strong>X/{maxGuesses}</strong> - Better luck tomorrow!
+          Better luck tomorrow!
         </span>
       </div>
     </div>
@@ -255,6 +255,42 @@ function ArchiveButton({ onClick }) {
 }
 
 /**
+ * NostalgiaCard - Displays match context and trivia after puzzle completion
+ * Shows fun facts and highlights to enhance the post-game experience
+ */
+function NostalgiaCard({ matchContext, triviaFact, playerHighlight }) {
+  // Don't render if no meaningful content
+  if (!matchContext && !triviaFact && !playerHighlight) {
+    return null;
+  }
+
+  return (
+    <div className="nostalgia-card">
+      {matchContext && (
+        <div className="nostalgia-context">
+          <span className="nostalgia-icon">🏏</span>
+          <span className="nostalgia-context-text">{matchContext}</span>
+        </div>
+      )}
+
+      {triviaFact && (
+        <div className="nostalgia-fact">
+          <span className="nostalgia-icon">💡</span>
+          <span className="nostalgia-fact-text">{triviaFact}</span>
+        </div>
+      )}
+
+      {playerHighlight && (
+        <div className="nostalgia-highlight">
+          <span className="nostalgia-icon">⭐</span>
+          <span className="nostalgia-highlight-text">{playerHighlight}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
  * CompletedStateBanner - Complete redesigned home screen for completed state
  * Combines all sections: Result, Countdown, Leaderboard, Share, Notify, Archive
  */
@@ -274,7 +310,8 @@ export function CompletedStateBanner({
   leaderboardEntries = [],
   userRanking,
   onViewLeaderboard,
-  onOpenArchive
+  onOpenArchive,
+  matchHighlight = null
 }) {
   return (
     <div className="completed-home-redesign">
@@ -285,6 +322,15 @@ export function CompletedStateBanner({
         maxGuesses={maxGuesses}
         streak={streak}
       />
+
+      {/* Nostalgia Card - Match trivia and highlights */}
+      {matchHighlight && (
+        <NostalgiaCard
+          matchContext={matchHighlight.matchContext}
+          triviaFact={matchHighlight.triviaFact}
+          playerHighlight={matchHighlight.playerHighlight}
+        />
+      )}
 
       {/* Prominent Countdown */}
       <ProminentCountdown />
@@ -456,7 +502,220 @@ function LiveLeaderboard({
   );
 }
 
+/**
+ * CompletedMobileView - Mobile-optimized completed state
+ * Shows leaderboard as hero section with collapsible puzzle details
+ *
+ * Layout:
+ * 1. Your Rank (hero - if won and submitted)
+ * 2. Leaderboard preview
+ * 3. Countdown
+ * 4. Share buttons
+ * 5. Collapsible puzzle details
+ */
+export function CompletedMobileView({
+  won,
+  guessesUsed,
+  maxGuesses = 4,
+  streak = 0,
+  displayName,
+  hasSubmitted,
+  userRanking,
+  leaderboardEntries = [],
+  leaderboardLoading = false,
+  onSubmitToLeaderboard,
+  isSubmitting = false,
+  onViewLeaderboard,
+  onShareX,
+  onShareWhatsApp,
+  onCopy,
+  copyState,
+  onNotifyMe,
+  onOpenArchive,
+  matchHighlight = null,
+  children // Puzzle content (scorecard + feedback) as children
+}) {
+  const [showPuzzleDetails, setShowPuzzleDetails] = React.useState(false);
+  const [name, setName] = React.useState(displayName || '');
+  const [submitError, setSubmitError] = React.useState('');
+
+  // Update name when displayName changes
+  React.useEffect(() => {
+    if (displayName) setName(displayName);
+  }, [displayName]);
+
+  const handleSubmit = () => {
+    const trimmedName = name.trim();
+    if (trimmedName.length < 2) {
+      setSubmitError('Name must be at least 2 characters');
+      return;
+    }
+    if (trimmedName.length > 20) {
+      setSubmitError('Name must be 20 characters or less');
+      return;
+    }
+    setSubmitError('');
+    if (onSubmitToLeaderboard) {
+      onSubmitToLeaderboard(trimmedName);
+    }
+  };
+
+  // Filter to only show winners and sort
+  const winners = leaderboardEntries
+    .filter(e => e.won)
+    .sort((a, b) => {
+      if (a.guesses_used !== b.guesses_used) return a.guesses_used - b.guesses_used;
+      return new Date(a.created_at) - new Date(b.created_at);
+    });
+
+  const getRankEmoji = (index) => {
+    if (index === 0) return '🥇';
+    if (index === 1) return '🥈';
+    if (index === 2) return '🥉';
+    return `${index + 1}.`;
+  };
+
+  return (
+    <div className="completed-mobile-view">
+      {/* Hero Section - Rank or Result */}
+      <div className="mobile-hero-section">
+        {won ? (
+          hasSubmitted && userRanking ? (
+            <div className="mobile-rank-hero">
+              <div className="rank-hero-emoji">🎉</div>
+              <div className="rank-hero-title">You're #{userRanking}!</div>
+              <div className="rank-hero-subtitle">
+                Solved in {guessesUsed}/{maxGuesses} guesses
+                {streak > 1 && <span className="rank-hero-streak"> • 🔥 {streak} streak</span>}
+              </div>
+            </div>
+          ) : (
+            <div className="mobile-result-hero result-hero-win">
+              <div className="result-hero-emoji">🏆</div>
+              <div className="result-hero-title">You Won!</div>
+              <div className="result-hero-subtitle">
+                Solved in {guessesUsed}/{maxGuesses}
+                {streak > 1 && <span className="result-hero-streak"> • 🔥 {streak}</span>}
+              </div>
+            </div>
+          )
+        ) : (
+          <div className="mobile-result-hero result-hero-loss">
+            <div className="result-hero-emoji">😔</div>
+            <div className="result-hero-title">Game Over</div>
+            <div className="result-hero-subtitle">Better luck tomorrow!</div>
+          </div>
+        )}
+      </div>
+
+      {/* Submit Form - if won but not submitted */}
+      {won && !hasSubmitted && (
+        <div className="mobile-submit-section">
+          <div className="mobile-submit-prompt">Join the leaderboard!</div>
+          <div className="mobile-submit-form">
+            <input
+              type="text"
+              className={`mobile-submit-input ${submitError ? 'has-error' : ''}`}
+              placeholder="Your name"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setSubmitError('');
+              }}
+              maxLength={20}
+              disabled={isSubmitting}
+            />
+            <button
+              className="mobile-submit-btn"
+              onClick={handleSubmit}
+              disabled={isSubmitting || !name.trim()}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </button>
+          </div>
+          {submitError && <div className="mobile-submit-error">{submitError}</div>}
+        </div>
+      )}
+
+      {/* Leaderboard Preview - Top 3 */}
+      {won && winners.length > 0 && (
+        <div className="mobile-leaderboard-section">
+          <div className="mobile-leaderboard-header">
+            <span className="mobile-leaderboard-title">Today's Leaderboard</span>
+            <span className="mobile-leaderboard-count">{winners.length} solved</span>
+          </div>
+          <div className="mobile-leaderboard-list">
+            {leaderboardLoading ? (
+              <div className="mobile-leaderboard-loading">Loading...</div>
+            ) : (
+              winners.slice(0, 3).map((entry, index) => (
+                <div
+                  key={entry.id || index}
+                  className={`mobile-leaderboard-entry ${entry.display_name === displayName ? 'is-user' : ''}`}
+                >
+                  <span className="entry-rank">{getRankEmoji(index)}</span>
+                  <span className="entry-name">{entry.display_name}</span>
+                  <span className="entry-result">{entry.guesses_used}/4</span>
+                </div>
+              ))
+            )}
+          </div>
+          {winners.length > 3 && onViewLeaderboard && (
+            <button className="mobile-view-full-btn" onClick={onViewLeaderboard}>
+              View all {winners.length} →
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Countdown */}
+      <ProminentCountdown />
+
+      {/* Share Buttons */}
+      <ShareButtons
+        onShareX={onShareX}
+        onShareWhatsApp={onShareWhatsApp}
+        onCopy={onCopy}
+        copyState={copyState}
+      />
+
+      {/* Nostalgia Card */}
+      {matchHighlight && (
+        <NostalgiaCard
+          matchContext={matchHighlight.matchContext}
+          triviaFact={matchHighlight.triviaFact}
+          playerHighlight={matchHighlight.playerHighlight}
+        />
+      )}
+
+      {/* Notify Me */}
+      <NotifySection onNotifyMe={onNotifyMe} />
+
+      {/* Collapsible Puzzle Details */}
+      <div className="mobile-puzzle-details">
+        <button
+          className={`mobile-puzzle-toggle ${showPuzzleDetails ? 'expanded' : ''}`}
+          onClick={() => setShowPuzzleDetails(!showPuzzleDetails)}
+        >
+          <span>{showPuzzleDetails ? '▼' : '▶'}</span>
+          <span>{showPuzzleDetails ? 'Hide Puzzle Details' : 'View Your Puzzle'}</span>
+        </button>
+        {showPuzzleDetails && (
+          <div className="mobile-puzzle-content">
+            {children}
+          </div>
+        )}
+      </div>
+
+      {/* Archive Button */}
+      {onOpenArchive && (
+        <ArchiveButton onClick={onOpenArchive} />
+      )}
+    </div>
+  );
+}
+
 // Export individual components for flexibility
-export { ProminentCountdown, ShareButtons, LeaderboardPreviewInline, ResultBanner, NotifySection, LiveLeaderboard };
+export { ProminentCountdown, ShareButtons, LeaderboardPreviewInline, ResultBanner, NotifySection, LiveLeaderboard, NostalgiaCard };
 
 export default CompletedStateBanner;

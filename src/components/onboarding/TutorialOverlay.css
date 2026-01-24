@@ -1,0 +1,249 @@
+/**
+ * TutorialOverlay Styles
+ *
+ * Video-based onboarding tutorial overlay
+ */
+
+.tutorial-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.tutorial-content {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #000;
+}
+
+.tutorial-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 1rem;
+}
+
+.tutorial-skip {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.tutorial-skip:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Loading state */
+.tutorial-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: white;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fallback static tutorial - Dark theme matching design */
+.tutorial-content-fallback {
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-radius: 1rem;
+}
+
+.tutorial-title {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.tutorial-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  font-weight: 400;
+  font-style: italic;
+  margin-bottom: 1.75rem;
+}
+
+.tutorial-steps {
+  text-align: left;
+  margin-bottom: 1.25rem;
+}
+
+.tutorial-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.625rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.step-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* P/T/R/M Legend - 2x2 grid with cards */
+.ptrm-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.625rem;
+  margin: 1.25rem 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.legend-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.legend-circle.legend-p {
+  background: #f97316;
+}
+
+.legend-circle.legend-t {
+  background: #3b82f6;
+}
+
+.legend-circle.legend-r {
+  background: #ef4444;
+}
+
+.legend-circle.legend-m {
+  background: #8b5cf6;
+}
+
+.legend-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  text-align: left;
+}
+
+.tutorial-footer {
+  color: #22c55e;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.5rem 0;
+}
+
+.tutorial-start-btn {
+  background: #22c55e;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.tutorial-start-btn:hover {
+  background: #16a34a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .tutorial-content-fallback {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .tutorial-title {
+    font-size: 1.35rem;
+  }
+
+  .tutorial-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .step-text {
+    font-size: 0.85rem;
+  }
+
+  .legend-item {
+    padding: 0.625rem;
+  }
+
+  .legend-circle {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  .legend-label {
+    font-size: 0.65rem;
+  }
+}

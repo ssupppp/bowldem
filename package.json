@@ -1,17 +1,27 @@
 {
-  "name": "react-javascript",
-  "version": "1.0.0",
+  "name": "bowldem",
+  "version": "2.0.0",
   "type": "module",
-  "description": "React TypeScript on Replit, using Vite bundler",
+  "description": "Bowldem - Daily Cricket Puzzle Game",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug"
   },
-  "keywords": [],
+  "keywords": [
+    "cricket",
+    "puzzle",
+    "game",
+    "wordle"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/test": "^1.58.0",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.0",

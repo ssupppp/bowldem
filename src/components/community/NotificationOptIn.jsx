@@ -3,8 +3,9 @@
  * Email/phone capture for daily puzzle notifications
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { subscribeForNotifications } from '../../lib/supabase.js';
+import { trackFeature, trackFunnel } from '../../lib/analytics.js';
 
 // Storage key for tracking opt-in state
 const NOTIFICATION_STORAGE_KEY = 'bowldem_notification_optin';
@@ -35,11 +36,16 @@ function markNotificationsHandled(status) {
  */
 export function NotificationOptIn({ onClose, onSuccess }) {
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [preferredChannel, setPreferredChannel] = useState('email');
+  const [phone, setPhone] = useState('+91 ');
+  const [preferredChannel, setPreferredChannel] = useState('whatsapp');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  // Track opt-in shown on mount
+  useEffect(() => {
+    trackFeature.notificationOptInShown();
+  }, []);
 
   // Validate email format
   const isValidEmail = (email) => {
@@ -58,7 +64,7 @@ export function NotificationOptIn({ onClose, onSuccess }) {
 
     // Validate at least one contact method
     const hasEmail = email.trim().length > 0;
-    const hasPhone = phone.trim().length > 0;
+    const hasPhone = phone.trim().length > 0 && phone.trim() !== '+91';
 
     if (!hasEmail && !hasPhone) {
       setError('Please enter an email or phone number');
@@ -87,6 +93,8 @@ export function NotificationOptIn({ onClose, onSuccess }) {
       if (result.success) {
         setSuccess(true);
         markNotificationsHandled('subscribed');
+        trackFeature.notificationOptInCompleted(preferredChannel);
+        trackFunnel.notificationEnabled();
         setTimeout(() => {
           onSuccess && onSuccess();
           onClose();
@@ -103,6 +111,7 @@ export function NotificationOptIn({ onClose, onSuccess }) {
 
   // Handle dismiss
   const handleDismiss = () => {
+    trackFeature.notificationOptInDismissed();
     markNotificationsHandled('dismissed');
     onClose();
   };
@@ -153,14 +162,14 @@ export function NotificationOptIn({ onClose, onSuccess }) {
           <span>and/or</span>
         </div>
 
-        {/* Phone input */}
+        {/* Phone input - WhatsApp */}
         <div className="notification-input-group">
-          <label htmlFor="notification-phone">Phone (SMS)</label>
+          <label htmlFor="notification-phone">WhatsApp Number</label>
           <input
             id="notification-phone"
             type="tel"
             className="notification-input"
-            placeholder="+1 234 567 8900"
+            placeholder="+91 98765 43210"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             disabled={isSubmitting}
@@ -168,10 +177,20 @@ export function NotificationOptIn({ onClose, onSuccess }) {
         </div>
 
         {/* Preferred channel (if both provided) */}
-        {email && phone && (
+        {email && phone && phone.trim() !== '+91 ' && (
           <div className="notification-preference">
             <span>Prefer notifications via:</span>
             <div className="preference-options">
+              <label className={`preference-option ${preferredChannel === 'whatsapp' ? 'selected' : ''}`}>
+                <input
+                  type="radio"
+                  name="channel"
+                  value="whatsapp"
+                  checked={preferredChannel === 'whatsapp'}
+                  onChange={() => setPreferredChannel('whatsapp')}
+                />
+                <span>WhatsApp</span>
+              </label>
               <label className={`preference-option ${preferredChannel === 'email' ? 'selected' : ''}`}>
                 <input
                   type="radio"
@@ -181,16 +200,6 @@ export function NotificationOptIn({ onClose, onSuccess }) {
                   onChange={() => setPreferredChannel('email')}
                 />
                 <span>Email</span>
-              </label>
-              <label className={`preference-option ${preferredChannel === 'sms' ? 'selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="channel"
-                  value="sms"
-                  checked={preferredChannel === 'sms'}
-                  onChange={() => setPreferredChannel('sms')}
-                />
-                <span>SMS</span>
               </label>
             </div>
           </div>

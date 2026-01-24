@@ -7,7 +7,7 @@ import React from 'react';
  * Shows colored boxes for each attribute:
  * - Green: Correct match
  * - Red/Dark: Incorrect
- * - Gold: MVP found (win)
+ * - Gold: MOTM found (win)
  */
 export function FeedbackDisplay({
   feedbackList = [],
@@ -21,7 +21,7 @@ export function FeedbackDisplay({
     return (
       <div className="wordle-feedback">
         <div className="wordle-empty">
-          <div className="wordle-empty-title">Guess the MVP</div>
+          <div className="wordle-empty-title">Guess the MOTM</div>
           <div className="wordle-empty-hint">
             Type a player name to start
           </div>
@@ -39,7 +39,7 @@ export function FeedbackDisplay({
             <span>PLAYED</span>
             <span>TEAM</span>
             <span>ROLE</span>
-            <span>MVP</span>
+            <span>MOTM</span>
           </div>
         </div>
       </div>
@@ -78,7 +78,7 @@ export function FeedbackDisplay({
               </div>
               <div
                 className={`wordle-box ${feedback.isMVP ? 'mvp' : 'incorrect'}`}
-                title={`MVP: ${feedback.isMVP ? 'Yes!' : 'No'}`}
+                title={`MOTM: ${feedback.isMVP ? 'Yes!' : 'No'}`}
               >
                 <span className="box-label">{feedback.isMVP ? '🏆' : 'M'}</span>
               </div>
@@ -94,7 +94,7 @@ export function FeedbackDisplay({
           <span>PLAYED</span>
           <span>TEAM</span>
           <span>ROLE</span>
-          <span>MVP</span>
+          <span>MOTM</span>
         </div>
       </div>
     </div>

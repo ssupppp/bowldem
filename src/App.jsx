@@ -37,10 +37,16 @@ import { ArchiveModal, saveArchiveCompletion } from "./components/ArchiveModal.j
 import { LeaderboardModal, LeaderboardPreview } from "./components/community/LeaderboardModal.jsx";
 import { NameEntryPrompt } from "./components/community/NameEntryPrompt.jsx";
 import { NotificationOptIn, hasHandledNotifications } from "./components/community/NotificationOptIn.jsx";
-import { CompletedStateBanner, LiveLeaderboard } from "./components/home/WinStateBanner.jsx";
+import { CompletedStateBanner, LiveLeaderboard, CompletedMobileView } from "./components/home/WinStateBanner.jsx";
+import { TutorialOverlay, hasTutorialBeenSeen } from "./components/onboarding/TutorialOverlay.jsx";
+import { Icon } from "./components/ui/Icon.jsx";
 import { validateGuess } from "./lib/supabase.js";
 import { getPuzzleIndex } from "./utils/dailyPuzzle.js";
+import { initAnalytics, trackGame, trackFeature, trackFunnel, trackButtonTap } from "./lib/analytics.js";
 import "./App.css";
+
+// Initialize analytics on app load
+initAnalytics();
 
 // Feature flag for Supabase validation (set to true to enable server-side validation)
 const USE_SUPABASE_VALIDATION = true;
@@ -61,8 +67,10 @@ function App() {
     guessesRemaining,
     gameStatus,
     alreadyCompleted,
+    modalShown,
     stats,
     recordGuess,
+    setModalShown,
     debugMode,
     debugOffset,
     effectiveDate,
@@ -84,6 +92,7 @@ function App() {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
   const [showNotificationOptIn, setShowNotificationOptIn] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(() => !hasTutorialBeenSeen());
   const [isChecking, setIsChecking] = useState(false);
   const [pendingFeedback, setPendingFeedback] = useState(null);
   const [newFeedbackIndex, setNewFeedbackIndex] = useState(-1);
@@ -257,11 +266,11 @@ function App() {
       if (isWin) {
         setArchiveGameWon(true);
         saveArchiveCompletion(archivePuzzleDate, 'won');
-        setTimeout(() => setShowSuccessModal(true), 850);
+        setTimeout(() => setShowSuccessModal(true), 2500);
       } else if (isLastGuess) {
         setArchiveGameOver(true);
         saveArchiveCompletion(archivePuzzleDate, 'lost');
-        setTimeout(() => setShowGameOverModal(true), 850);
+        setTimeout(() => setShowGameOverModal(true), 2500);
       }
     }, 300);
   };
@@ -279,22 +288,30 @@ function App() {
       setUsedPlayers(new Set(guesses));
 
       // Only show modals on initial load (restoring from localStorage)
+      // AND only if modal hasn't been shown before (prevents re-trigger on return)
       // Live game completion shows modals via handlePlayerGuess
-      if (isInitialLoad && alreadyCompleted) {
+      if (isInitialLoad && alreadyCompleted && !modalShown) {
         if (gameStatus === 'won') {
           setGameWon(true);
           setShowSuccessModal(true);
+          setModalShown(); // Mark modal as shown to prevent re-trigger
         } else if (gameStatus === 'lost') {
           setGameOver(true);
           setShowGameOverModal(true);
+          setModalShown(); // Mark modal as shown to prevent re-trigger
         }
       }
     }
     setIsInitialLoad(false);
-  }, [gameStatus, guesses.length, currentPuzzle, alreadyCompleted]);
+  }, [gameStatus, guesses.length, currentPuzzle, alreadyCompleted, modalShown, setModalShown]);
 
   const handlePlayerGuess = async (playerKey) => {
     if (gameWon || gameOver || usedPlayers.has(playerKey) || alreadyCompleted || isChecking) return;
+
+    // Track first guess for funnel
+    if (feedbackList.length === 0) {
+      trackFunnel.firstGuess();
+    }
 
     // Start 3rd Umpire checking state
     setIsChecking(true);
@@ -340,16 +357,23 @@ function App() {
       setIsChecking(false);
       setPendingFeedback(null);
 
+      // Track guess
+      trackGame.guess(newFeedbackList.length, feedback.playerName, feedback);
+
       // Reset newFeedbackIndex after animation completes (~600ms)
       setTimeout(() => setNewFeedbackIndex(-1), 600);
 
-      // Show modal after sequential reveal animation (~850ms)
+      // Show modal after feedback is fully visible (2500ms gives time to see result)
       if (isWin) {
         setGameWon(true);
-        setTimeout(() => setShowSuccessModal(true), 850);
+        trackGame.win(puzzleNumber, newFeedbackList.length);
+        trackFunnel.gameCompleted(true);
+        setTimeout(() => setShowSuccessModal(true), 2500);
       } else if (newFeedbackList.length >= maxGuesses) {
         setGameOver(true);
-        setTimeout(() => setShowGameOverModal(true), 850);
+        trackGame.lose(puzzleNumber, newFeedbackList.length);
+        trackFunnel.gameCompleted(false);
+        setTimeout(() => setShowGameOverModal(true), 2500);
       }
     }, 300); // Shorter delay since server call adds latency
   };
@@ -364,17 +388,16 @@ function App() {
       const played = feedback.playedInGame ? '🟢' : '🔴';
       const team = feedback.sameTeam ? '🟢' : '🔴';
       const role = feedback.sameRole ? '🟢' : '🔴';
-      const mvp = feedback.isMVP ? '🏆' : '🔴';
-      return played + team + role + mvp;
+      const motm = feedback.isMVP ? '🏆' : '🔴';
+      return played + team + role + motm;
     });
 
     const gridPattern = feedbackLines.join('\n');
 
-    // Result line with streak indicator (streak only shown if > 1)
-    const guessText = gameWon ? feedbackList.length + '/' + maxGuesses : 'X/' + maxGuesses;
-    const streakText = stats.currentStreak > 1 ? ' 🔥' + stats.currentStreak : '';
+    // Streak indicator (only shown if > 1)
+    const streakText = stats.currentStreak > 1 ? '🔥' + stats.currentStreak : '';
 
-    return '🏏 Bowldem #' + puzzleNumber + '\n\n' + gridPattern + '\n\n' + guessText + streakText + '\n\nbowldem.com';
+    return '🏏 Bowldem #' + puzzleNumber + '\n\n' + gridPattern + (streakText ? '\n\n' + streakText : '') + '\n\nbowldem.com';
   };
 
   // GameRadar component - renders emoji feedback grid in modals
@@ -385,8 +408,8 @@ function App() {
       const played = fb.playedInGame ? '🟢' : '🔴';
       const team = fb.sameTeam ? '🟢' : '🔴';
       const role = fb.sameRole ? '🟢' : '🔴';
-      const mvp = fb.isMVP ? '🏆' : '🔴';
-      return played + team + role + mvp;
+      const motm = fb.isMVP ? '🏆' : '🔴';
+      return played + team + role + motm;
     });
 
     return (
@@ -401,6 +424,10 @@ function App() {
   const handleShare = () => {
     const shareText = generateShareText();
 
+    // Track share
+    trackFeature.shareCopy();
+    trackFunnel.shareCompleted();
+
     // Always use clipboard (Wordle-style) - no native share dialog
     navigator.clipboard.writeText(shareText).then(() => {
       setCopyButtonState('copied');
@@ -414,12 +441,18 @@ function App() {
   };
 
   const handleShareX = () => {
+    trackFeature.shareX();
+    trackFunnel.shareCompleted();
+
     const shareText = generateShareText();
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
     window.open(url, '_blank', 'width=550,height=420');
   };
 
   const handleShareWhatsApp = () => {
+    trackFeature.shareWhatsApp();
+    trackFunnel.shareCompleted();
+
     const shareText = generateShareText();
     const url = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(url, '_blank');
@@ -437,12 +470,19 @@ function App() {
     const team2Score = scorecard.team2Score;
     const result = scorecard.result;
 
+    // Get match context (includes year) from highlights
+    const puzzleHighlight = matchHighlightsData.highlights.find(h => h.puzzleId === puzzle.id);
+    const matchContext = puzzleHighlight?.matchContext;
+
     return (
       <div className="scorecard-simplified">
         <div className="scorecard-header">
           <span className={`puzzle-badge ${archiveMode ? 'archive' : ''}`}>
             {archiveMode ? `Archive #${displayPuzzleNumber}` : `Puzzle #${displayPuzzleNumber}`}
           </span>
+          {matchContext && (
+            <span className="match-context-badge">{matchContext}</span>
+          )}
         </div>
         <div className="venue-display">
           <span className="venue-icon">📍</span>
@@ -479,7 +519,9 @@ function App() {
     if (archiveMode) {
       return (
         <div className="result-modal result-modal-success">
-          <button className="modal-close-btn" onClick={handleCloseModal}>×</button>
+          <button className="modal-close-btn" onClick={handleCloseModal} aria-label="Close">
+            <Icon name="close" size={20} />
+          </button>
           <div className="result-emoji">🏆</div>
           <h2 className="result-title">Archive Complete!</h2>
           <p className="result-subtitle">
@@ -506,7 +548,9 @@ function App() {
     // Daily mode - NEW compact design with game radar
     return (
       <div className="result-modal result-modal-success result-modal-compact">
-        <button className="modal-close-btn" onClick={handleCloseModal}>×</button>
+        <button className="modal-close-btn" onClick={handleCloseModal} aria-label="Close">
+          <Icon name="close" size={20} />
+        </button>
 
         {/* Header with emoji and puzzle number */}
         <div className="result-header">
@@ -553,7 +597,9 @@ function App() {
     if (archiveMode) {
       return (
         <div className="result-modal result-modal-failure">
-          <button className="modal-close-btn" onClick={handleCloseModal}>×</button>
+          <button className="modal-close-btn" onClick={handleCloseModal} aria-label="Close">
+            <Icon name="close" size={20} />
+          </button>
           <div className="result-emoji">😔</div>
           <h2 className="result-title">Game Over</h2>
           <p className="result-subtitle">
@@ -580,7 +626,9 @@ function App() {
     // Daily mode - NEW compact design with game radar, NO answer reveal
     return (
       <div className="result-modal result-modal-failure result-modal-compact">
-        <button className="modal-close-btn" onClick={handleCloseModal}>×</button>
+        <button className="modal-close-btn" onClick={handleCloseModal} aria-label="Close">
+          <Icon name="close" size={20} />
+        </button>
 
         {/* Header with emoji and puzzle number */}
         <div className="result-header">
@@ -612,8 +660,8 @@ function App() {
       <div className="how-to-play-modal">
         <div className="modal-header">
           <h2 className="overlay-title">How to Play Bowldem</h2>
-          <button className="close-button" onClick={() => setShowHowToPlay(false)}>
-            ✕
+          <button className="close-button" onClick={() => setShowHowToPlay(false)} aria-label="Close">
+            <Icon name="close" size={20} />
           </button>
         </div>
 
@@ -623,7 +671,7 @@ function App() {
             <div className="instruction-item">
               <div className="instruction-text">
                 Find the <strong>Man of the Match</strong> in <strong>{maxGuesses} guesses</strong>!
-                You'll see only the venue - use your cricket knowledge to identify the MVP.
+                You'll see only the venue - use your cricket knowledge to identify the Man of the Match.
               </div>
             </div>
           </div>
@@ -643,9 +691,9 @@ function App() {
             <div className="instruction-item">
               <div className="instruction-text">
                 <strong>Played</strong> - Did this player play in this match?<br/>
-                <strong>Team</strong> - Is this player on the same team as the MVP?<br/>
-                <strong>Role</strong> - Does this player have the same role as the MVP?<br/>
-                <strong>MVP</strong> - Is this player the Man of the Match?
+                <strong>Team</strong> - Is this player on the same team as the MOTM?<br/>
+                <strong>Role</strong> - Does this player have the same role as the MOTM?<br/>
+                <strong>MOTM</strong> - Is this player the Man of the Match?
               </div>
             </div>
           </div>
@@ -665,6 +713,15 @@ function App() {
 
         <div className="modal-buttons">
           <button
+            className="btn-enhanced btn-secondary"
+            onClick={() => {
+              setShowHowToPlay(false);
+              setShowTutorial(true);
+            }}
+          >
+            Watch Tutorial
+          </button>
+          <button
             className="btn-enhanced btn-primary"
             onClick={() => setShowHowToPlay(false)}
           >
@@ -678,9 +735,10 @@ function App() {
   return (
     <div>
       <div className="page-background">
-        <div className="game-container">
-          {/* Minimal Header */}
-          <div className="header-minimal">
+        <div className="game-layout">
+          <div className="game-container">
+            {/* Minimal Header */}
+            <div className="header-minimal">
             <div className="header-left">
               <span className="brand-icon">🏏</span>
               <h1 className="brand-title">Bowldem</h1>
@@ -694,40 +752,61 @@ function App() {
                   className="icon-btn back-btn"
                   onClick={handleExitArchiveMode}
                   title="Back to Today"
+                  aria-label="Back to Today"
                 >
-                  ←
+                  <Icon name="arrowLeft" size={20} />
                 </button>
               ) : (
                 <>
                   <button
                     className="icon-btn"
-                    onClick={() => setShowLeaderboardModal(true)}
+                    onClick={() => {
+                      trackFeature.leaderboardOpened();
+                      trackButtonTap('header_leaderboard');
+                      setShowLeaderboardModal(true);
+                    }}
                     title="Leaderboard"
+                    aria-label="Leaderboard"
                   >
-                    🏆
+                    <Icon name="trophy" size={20} />
                   </button>
                   <button
                     className="icon-btn"
-                    onClick={() => setShowArchiveModal(true)}
+                    onClick={() => {
+                      trackFeature.archiveOpened();
+                      trackButtonTap('header_archive');
+                      setShowArchiveModal(true);
+                    }}
                     title="Archive"
+                    aria-label="Archive"
                   >
-                    📚
+                    <Icon name="archive" size={20} />
                   </button>
                 </>
               )}
               <button
                 className="icon-btn"
-                onClick={() => setShowHowToPlay(true)}
+                onClick={() => {
+                  trackFeature.howToPlayOpened();
+                  trackButtonTap('header_how_to_play');
+                  setShowHowToPlay(true);
+                }}
                 title="How to Play"
+                aria-label="How to Play"
               >
-                ?
+                <Icon name="helpCircle" size={20} />
               </button>
               <button
                 className="icon-btn"
-                onClick={() => setShowStatsModal(true)}
+                onClick={() => {
+                  trackFeature.statsOpened();
+                  trackButtonTap('header_stats');
+                  setShowStatsModal(true);
+                }}
                 title="Stats"
+                aria-label="Stats"
               >
-                📊
+                <Icon name="stats" size={20} />
               </button>
             </div>
           </div>
@@ -787,6 +866,7 @@ function App() {
               userRanking={userRanking}
               onViewLeaderboard={() => setShowLeaderboardModal(true)}
               onOpenArchive={() => setShowArchiveModal(true)}
+              matchHighlight={matchHighlight}
             />
           )}
 
@@ -799,25 +879,67 @@ function App() {
             newFeedbackIndex={newFeedbackIndex}
           />
 
-          {/* Live Leaderboard - Always visible for social proof (daily mode only) */}
+          {/* Mobile-only section (hidden on desktop where sidebar shows) */}
           {!archiveMode && (
-            <LiveLeaderboard
-              entries={puzzleLeaderboard}
-              loading={puzzleLeaderboardLoading}
-              gameCompleted={gameWon || gameOver || alreadyCompleted}
-              won={gameWon || gameStatus === 'won'}
-              hasSubmitted={hasLeaderboardSubmitted}
-              displayName={displayName}
-              userRanking={userRanking}
-              guessesUsed={feedbackList.length}
-              onSubmit={async (name) => {
-                saveDisplayName(name);
-                await submitToLeaderboard(feedbackList.length, gameWon || gameStatus === 'won');
-                fetchPuzzleLeaderboard();
-              }}
-              isSubmitting={isLeaderboardSubmitting}
-              onViewFull={() => setShowLeaderboardModal(true)}
-            />
+            <div className="mobile-leaderboard">
+              {alreadyCompleted ? (
+                /* Mobile Completed View - shows leaderboard as hero */
+                <CompletedMobileView
+                  won={gameStatus === 'won'}
+                  guessesUsed={feedbackList.length}
+                  maxGuesses={maxGuesses}
+                  streak={stats.currentStreak}
+                  displayName={displayName}
+                  hasSubmitted={hasLeaderboardSubmitted}
+                  userRanking={userRanking}
+                  leaderboardEntries={puzzleLeaderboard}
+                  leaderboardLoading={puzzleLeaderboardLoading}
+                  onSubmitToLeaderboard={async (name) => {
+                    saveDisplayName(name);
+                    await submitToLeaderboard(feedbackList.length, gameStatus === 'won');
+                    fetchPuzzleLeaderboard();
+                  }}
+                  isSubmitting={isLeaderboardSubmitting}
+                  onViewLeaderboard={() => setShowLeaderboardModal(true)}
+                  onShareX={handleShareX}
+                  onShareWhatsApp={handleShareWhatsApp}
+                  onCopy={handleShare}
+                  copyState={copyButtonState}
+                  onNotifyMe={!hasHandledNotifications() ? () => setShowNotificationOptIn(true) : null}
+                  onOpenArchive={() => setShowArchiveModal(true)}
+                  matchHighlight={matchHighlight}
+                >
+                  {/* Collapsible puzzle content */}
+                  {renderSimplifiedScorecard()}
+                  <ThirdUmpireFeedback
+                    feedbackList={feedbackList}
+                    guessesRemaining={guessesRemaining}
+                    maxGuesses={maxGuesses}
+                    isChecking={false}
+                    newFeedbackIndex={-1}
+                  />
+                </CompletedMobileView>
+              ) : (
+                /* Regular leaderboard for active game */
+                <LiveLeaderboard
+                  entries={puzzleLeaderboard}
+                  loading={puzzleLeaderboardLoading}
+                  gameCompleted={gameWon || gameOver}
+                  won={gameWon}
+                  hasSubmitted={hasLeaderboardSubmitted}
+                  displayName={displayName}
+                  userRanking={userRanking}
+                  guessesUsed={feedbackList.length}
+                  onSubmit={async (name) => {
+                    saveDisplayName(name);
+                    await submitToLeaderboard(feedbackList.length, gameWon);
+                    fetchPuzzleLeaderboard();
+                  }}
+                  isSubmitting={isLeaderboardSubmitting}
+                  onViewFull={() => setShowLeaderboardModal(true)}
+                />
+              )}
+            </div>
           )}
 
           <div className="game-controls">
@@ -855,6 +977,30 @@ function App() {
               )
             )}
           </div>
+        </div>
+
+          {/* Sidebar - Live Leaderboard (desktop: right side, mobile: below) */}
+          {!archiveMode && (
+            <div className="game-sidebar">
+              <LiveLeaderboard
+                entries={puzzleLeaderboard}
+                loading={puzzleLeaderboardLoading}
+                gameCompleted={gameWon || gameOver || alreadyCompleted}
+                won={gameWon || gameStatus === 'won'}
+                hasSubmitted={hasLeaderboardSubmitted}
+                displayName={displayName}
+                userRanking={userRanking}
+                guessesUsed={feedbackList.length}
+                onSubmit={async (name) => {
+                  saveDisplayName(name);
+                  await submitToLeaderboard(feedbackList.length, gameWon || gameStatus === 'won');
+                  fetchPuzzleLeaderboard();
+                }}
+                isSubmitting={isLeaderboardSubmitting}
+                onViewFull={() => setShowLeaderboardModal(true)}
+              />
+            </div>
+          )}
         </div>
       </div>
 
@@ -935,6 +1081,10 @@ function App() {
           onResetDate={resetDebugDate}
           onClearData={resetAllData}
         />
+      )}
+
+      {showTutorial && (
+        <TutorialOverlay onComplete={() => setShowTutorial(false)} />
       )}
     </div>
   );
