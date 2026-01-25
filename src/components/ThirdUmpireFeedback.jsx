@@ -132,7 +132,7 @@ function LegendPopup({ isOpen, onClose }) {
           <div className="legend-row">
             <div className="legend-box-demo mvp-demo">M</div>
             <div className="legend-info">
-              <strong>MVP</strong>
+              <strong>MOTM</strong>
               <span>Is this the Man of the Match?</span>
             </div>
           </div>
@@ -194,15 +194,16 @@ export function ThirdUmpireFeedback({
         <div className="header-num">#</div>
         <div className="header-player">PLAYER</div>
         <div className="header-boxes">
-          <span>P</span>
-          <span>T</span>
-          <span>R</span>
-          <span>M</span>
+          <span className="ptrm-label" data-tooltip="Played in match?">P</span>
+          <span className="ptrm-label" data-tooltip="Same Team as MOTM?">T</span>
+          <span className="ptrm-label" data-tooltip="Same Role as MOTM?">R</span>
+          <span className="ptrm-label" data-tooltip="Is this the MOTM?">M</span>
         </div>
         <button
-          className="help-btn"
+          className="help-btn help-btn-prominent"
           onClick={() => setShowLegend(true)}
           title="What do these mean?"
+          aria-label="Show feedback legend"
         >
           ?
         </button>

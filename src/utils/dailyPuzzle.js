@@ -91,7 +91,8 @@ function getDefaultGameState() {
     lastPlayedDate: null,
     lastPuzzleNumber: null,
     guesses: [],
-    gameStatus: 'not_started' // 'not_started' | 'in_progress' | 'won' | 'lost'
+    gameStatus: 'not_started', // 'not_started' | 'in_progress' | 'won' | 'lost'
+    modalShown: false // Tracks if result modal has been shown (prevents re-trigger on page return)
   };
 }
 
@@ -206,6 +207,16 @@ export function completeGame(won) {
   // Update stats
   updateStatsOnComplete(won, state.guesses.length);
 
+  return state;
+}
+
+/**
+ * Mark the result modal as shown (prevents re-trigger on page return)
+ */
+export function markModalShown() {
+  const state = loadGameState();
+  state.modalShown = true;
+  saveGameState(state);
   return state;
 }
 

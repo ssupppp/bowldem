@@ -10,6 +10,7 @@ import {
   submitLeaderboardEntry,
   getUserRanking
 } from '../lib/supabase.js';
+import { trackFeature, trackFunnel } from '../lib/analytics.js';
 
 // Storage keys for local data
 const STORAGE_KEYS = {
@@ -145,6 +146,10 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
         // Get user's ranking
         const ranking = await getUserRanking(puzzleDate, deviceId);
         setUserRanking(ranking);
+
+        // Track leaderboard submission
+        trackFeature.leaderboardSubmitted(ranking);
+        trackFunnel.leaderboardJoined();
       }
 
       return result;

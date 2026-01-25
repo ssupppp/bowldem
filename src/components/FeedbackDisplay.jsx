@@ -7,7 +7,7 @@ import React from 'react';
  * Shows colored boxes for each attribute:
  * - Green: Correct match
  * - Red/Dark: Incorrect
- * - Gold: MVP found (win)
+ * - Gold: MOTM found (win)
  */
 export function FeedbackDisplay({
   feedbackList = [],
@@ -21,7 +21,7 @@ export function FeedbackDisplay({
     return (
       <div className="wordle-feedback">
         <div className="wordle-empty">
-          <div className="wordle-empty-title">Guess the MVP</div>
+          <div className="wordle-empty-title">Guess the MOTM</div>
           <div className="wordle-empty-hint">
             Type a player name to start
           </div>
@@ -39,7 +39,7 @@ export function FeedbackDisplay({
             <span>PLAYED</span>
             <span>TEAM</span>
             <span>ROLE</span>
-            <span>MVP</span>
+            <span>MOTM</span>
           </div>
         </div>
       </div>
@@ -59,26 +59,26 @@ export function FeedbackDisplay({
             <div className="wordle-player">{feedback.playerName}</div>
             <div className="wordle-boxes">
               <div
-                className={`wordle-box ${feedback.playedInGame ? 'correct' : 'incorrect'}`}
-                title={`Played: ${feedback.playedInGame ? 'Yes' : 'No'}`}
+                className={`wordle-box has-tooltip ${feedback.playedInGame ? 'correct' : 'incorrect'}`}
+                data-tooltip={`Played: ${feedback.playedInGame ? 'Yes' : 'No'}`}
               >
                 <span className="box-label">P</span>
               </div>
               <div
-                className={`wordle-box ${feedback.sameTeam ? 'correct' : 'incorrect'}`}
-                title={`Team: ${feedback.sameTeam ? 'Match' : 'No match'}`}
+                className={`wordle-box has-tooltip ${feedback.sameTeam ? 'correct' : 'incorrect'}`}
+                data-tooltip={`Team: ${feedback.sameTeam ? 'Match' : 'No match'}`}
               >
                 <span className="box-label">T</span>
               </div>
               <div
-                className={`wordle-box ${feedback.sameRole ? 'correct' : 'incorrect'}`}
-                title={`Role: ${feedback.sameRole ? 'Match' : 'No match'}`}
+                className={`wordle-box has-tooltip ${feedback.sameRole ? 'correct' : 'incorrect'}`}
+                data-tooltip={`Role: ${feedback.sameRole ? 'Match' : 'No match'}`}
               >
                 <span className="box-label">R</span>
               </div>
               <div
-                className={`wordle-box ${feedback.isMVP ? 'mvp' : 'incorrect'}`}
-                title={`MVP: ${feedback.isMVP ? 'Yes!' : 'No'}`}
+                className={`wordle-box has-tooltip ${feedback.isMVP ? 'mvp' : 'incorrect'}`}
+                data-tooltip={`MOTM: ${feedback.isMVP ? 'Yes!' : 'No'}`}
               >
                 <span className="box-label">{feedback.isMVP ? '🏆' : 'M'}</span>
               </div>
@@ -94,7 +94,7 @@ export function FeedbackDisplay({
           <span>PLAYED</span>
           <span>TEAM</span>
           <span>ROLE</span>
-          <span>MVP</span>
+          <span>MOTM</span>
         </div>
       </div>
     </div>

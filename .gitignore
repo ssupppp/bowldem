@@ -130,3 +130,5 @@ dist
 .pnp.*.env
 .env.local
 .vercel
+test-results/
+supabase/env/

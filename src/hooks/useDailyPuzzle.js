@@ -12,6 +12,7 @@ import {
   saveGameState,
   loadStats,
   completeGame,
+  markModalShown,
   isDebugMode,
   getEffectiveDate,
   getPuzzleNumber,
@@ -152,6 +153,14 @@ export function useDailyPuzzle(puzzles) {
     refreshPuzzle();
   }, [refreshPuzzle]);
 
+  /**
+   * Mark the result modal as shown (prevents re-trigger on page return)
+   */
+  const setModalShown = useCallback(() => {
+    const updatedState = markModalShown();
+    setGameState(updatedState);
+  }, []);
+
   // ============================================================================
   // RETURN VALUE
   // ============================================================================
@@ -169,6 +178,7 @@ export function useDailyPuzzle(puzzles) {
     guessesRemaining,
     gameStatus: gameState.gameStatus,
     alreadyCompleted,
+    modalShown: gameState.modalShown,
 
     // Stats
     stats,
@@ -176,6 +186,7 @@ export function useDailyPuzzle(puzzles) {
     // Actions
     recordGuess,
     refreshPuzzle,
+    setModalShown,
 
     // Debug
     debugMode,
