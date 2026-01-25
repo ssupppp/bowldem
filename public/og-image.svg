@@ -1,0 +1,92 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a"/>
+      <stop offset="50%" style="stop-color:#312e81"/>
+      <stop offset="100%" style="stop-color:#1e1b4b"/>
+    </linearGradient>
+
+    <!-- Gold gradient for accents -->
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+
+    <!-- Green gradient for correct boxes -->
+    <linearGradient id="greenGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e"/>
+      <stop offset="100%" style="stop-color:#16a34a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+
+  <!-- Subtle stadium pattern -->
+  <ellipse cx="600" cy="800" rx="700" ry="400" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2"/>
+  <ellipse cx="600" cy="850" rx="600" ry="350" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="2"/>
+  <ellipse cx="600" cy="900" rx="500" ry="300" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="2"/>
+
+  <!-- Cricket ball icon -->
+  <g transform="translate(100, 80)">
+    <circle cx="60" cy="60" r="50" fill="#dc2626"/>
+    <path d="M 25 40 Q 60 20 95 40" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 25 80 Q 60 100 95 80" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <!-- Seam stitches -->
+    <line x1="30" y1="45" x2="35" y2="50" stroke="white" stroke-width="2"/>
+    <line x1="45" y1="35" x2="50" y2="40" stroke="white" stroke-width="2"/>
+    <line x1="60" y1="30" x2="60" y2="37" stroke="white" stroke-width="2"/>
+    <line x1="75" y1="35" x2="70" y2="40" stroke="white" stroke-width="2"/>
+    <line x1="90" y1="45" x2="85" y2="50" stroke="white" stroke-width="2"/>
+  </g>
+
+  <!-- Main title: BOWLDEM -->
+  <text x="600" y="260" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="120" font-weight="800" fill="white" letter-spacing="4">
+    BOWLDEM
+  </text>
+
+  <!-- Subtitle -->
+  <text x="600" y="320" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="500" fill="rgba(255,255,255,0.8)" letter-spacing="6">
+    DAILY CRICKET PUZZLE
+  </text>
+
+  <!-- Wordle-style feedback boxes -->
+  <g transform="translate(340, 370)">
+    <!-- Row 1: Example guess -->
+    <rect x="0" y="0" width="70" height="70" rx="8" fill="url(#greenGradient)"/>
+    <rect x="85" y="0" width="70" height="70" rx="8" fill="url(#greenGradient)"/>
+    <rect x="170" y="0" width="70" height="70" rx="8" fill="#64748b"/>
+    <rect x="255" y="0" width="70" height="70" rx="8" fill="#64748b"/>
+    <rect x="340" y="0" width="70" height="70" rx="8" fill="#64748b"/>
+    <rect x="425" y="0" width="70" height="70" rx="8" fill="#64748b"/>
+
+    <!-- Labels -->
+    <text x="35" y="48" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="white">P</text>
+    <text x="120" y="48" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="white">T</text>
+    <text x="205" y="48" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="white">R</text>
+    <text x="290" y="48" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="white">M</text>
+
+    <!-- Row 2: Winning guess -->
+    <rect x="0" y="85" width="70" height="70" rx="8" fill="url(#greenGradient)"/>
+    <rect x="85" y="85" width="70" height="70" rx="8" fill="url(#greenGradient)"/>
+    <rect x="170" y="85" width="70" height="70" rx="8" fill="url(#greenGradient)"/>
+    <rect x="255" y="85" width="70" height="70" rx="8" fill="url(#goldGradient)"/>
+
+    <!-- Labels row 2 -->
+    <text x="35" y="133" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="white">P</text>
+    <text x="120" y="133" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="white">T</text>
+    <text x="205" y="133" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="white">R</text>
+    <text x="290" y="130" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="white">🏆</text>
+  </g>
+
+  <!-- Tagline -->
+  <text x="600" y="580" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="600" fill="url(#goldGradient)">
+    Guess the Man of the Match in 4 tries!
+  </text>
+
+  <!-- URL -->
+  <text x="1100" y="600" text-anchor="end" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="500" fill="rgba(255,255,255,0.5)">
+    bowldem.com
+  </text>
+</svg>
