@@ -69,9 +69,9 @@
 .feedback-grid .ptrm-label::after {
   content: attr(data-tooltip) !important;
   position: absolute !important;
-  bottom: 100% !important;
+  top: 100% !important;
   left: 50% !important;
-  transform: translateX(-50%) translateY(-4px) !important;
+  transform: translateX(-50%) translateY(4px) !important;
   background: #1e293b !important;
   color: white !important;
   padding: 0.375rem 0.625rem !important;
@@ -90,11 +90,11 @@
 .feedback-grid .ptrm-label::before {
   content: '' !important;
   position: absolute !important;
-  bottom: 100% !important;
+  top: 100% !important;
   left: 50% !important;
-  transform: translateX(-50%) translateY(2px) !important;
+  transform: translateX(-50%) translateY(-2px) !important;
   border: 4px solid transparent !important;
-  border-top-color: #1e293b !important;
+  border-bottom-color: #1e293b !important;
   opacity: 0 !important;
   visibility: hidden !important;
   transition: all 0.15s ease !important;

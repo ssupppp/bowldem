@@ -165,6 +165,21 @@ function App() {
     return map;
   }, []);
 
+  // Create a Set of all player IDs that appear in puzzles (active T20 players)
+  // These players are prioritized in autocomplete results
+  const priorityPlayerIds = useMemo(() => {
+    const ids = new Set();
+    PUZZLES.forEach(puzzle => {
+      const playersInMatch = puzzle.matchData?.playersInMatch || [];
+      playersInMatch.forEach(id => ids.add(id));
+      // Also add the target player
+      if (puzzle.targetPlayer) {
+        ids.add(puzzle.targetPlayer);
+      }
+    });
+    return ids;
+  }, []);
+
   // Helper to find player by ID from the lookup map
   const findPlayer = (playerId) => {
     return playersLookup[playerId] || null;
@@ -827,6 +842,7 @@ function App() {
                   onSelectPlayer={handleArchiveGuess}
                   disabled={archiveGameWon || archiveGameOver}
                   usedPlayers={archiveUsedPlayers}
+                  priorityPlayerIds={priorityPlayerIds}
                 />
               </div>
             )
@@ -842,6 +858,7 @@ function App() {
                   onSelectPlayer={handlePlayerGuess}
                   disabled={gameWon || gameOver}
                   usedPlayers={usedPlayers}
+                  priorityPlayerIds={priorityPlayerIds}
                 />
               </div>
             )

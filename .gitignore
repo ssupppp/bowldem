@@ -131,3 +131,4 @@ dist
 .env.local
 .vercel
 test-results/
+supabase/env/

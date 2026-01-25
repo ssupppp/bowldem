@@ -13,18 +13,21 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
  * - Auto-excludes already guessed players from suggestions
  * - Maximum 10 suggestions shown for performance
  * - Mobile-friendly with 16px font to prevent iOS zoom
+ * - Prioritizes active T20 players (those in puzzles) over others
  *
  * Props:
  * - players: Array of player objects from all_players.json
  * - onSelectPlayer: Callback with player.id when selection is made
  * - disabled: Disables input when game is over
  * - usedPlayers: Set of already guessed player IDs to exclude
+ * - priorityPlayerIds: Set of player IDs to prioritize in results (e.g., players in puzzles)
  */
 export function PlayerAutocomplete({
   players,
   onSelectPlayer,
   disabled,
-  usedPlayers = new Set()
+  usedPlayers = new Set(),
+  priorityPlayerIds = new Set()
 }) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -32,23 +35,36 @@ export function PlayerAutocomplete({
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  // Filter players based on query (min 3 characters)
+  // Filter and sort players based on query (min 3 characters)
+  // Priority players (those in puzzles/active T20) appear first
   const suggestions = useMemo(() => {
     if (query.length < 3) return [];
 
     const normalizedQuery = query.toLowerCase().trim();
 
-    return players
-      .filter(player => {
-        // Skip already guessed players
-        if (usedPlayers.has(player.id)) return false;
+    const filtered = players.filter(player => {
+      // Skip already guessed players
+      if (usedPlayers.has(player.id)) return false;
 
-        // Search in fullName and country
-        const searchText = `${player.fullName} ${player.country}`.toLowerCase();
-        return searchText.includes(normalizedQuery);
+      // Search in fullName and country
+      const searchText = `${player.fullName} ${player.country}`.toLowerCase();
+      return searchText.includes(normalizedQuery);
+    });
+
+    // Sort: priority players first, then alphabetically within each group
+    return filtered
+      .sort((a, b) => {
+        const aPriority = priorityPlayerIds.has(a.id);
+        const bPriority = priorityPlayerIds.has(b.id);
+
+        if (aPriority && !bPriority) return -1;
+        if (!aPriority && bPriority) return 1;
+
+        // Within same priority, sort alphabetically
+        return a.fullName.localeCompare(b.fullName);
       })
       .slice(0, 10); // Limit to 10 suggestions for performance
-  }, [query, players, usedPlayers]);
+  }, [query, players, usedPlayers, priorityPlayerIds]);
 
   // Reset highlighted index when suggestions change
   useEffect(() => {
