@@ -2279,17 +2279,28 @@ body {
 /* Responsive */
 @media (max-width: 480px) {
   .wordle-row {
+    flex-direction: column;
+    align-items: flex-start;
     padding: 0.625rem 0.75rem;
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
 
   .wordle-player {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    width: 100%;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  .wordle-boxes {
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .wordle-box {
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     font-size: 0.75rem;
   }
 
@@ -2297,9 +2308,8 @@ body {
     font-size: 1rem;
   }
 
-  .wordle-labels .label-row span {
-    width: 2rem;
-    font-size: 0.5rem;
+  .wordle-labels {
+    display: none;
   }
 
   .wordle-attributes span {
