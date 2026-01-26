@@ -525,7 +525,7 @@
    RESPONSIVE
    ============================================================================= */
 
-@media (max-width: 400px) {
+@media (max-width: 480px) {
   .feedback-grid .grid-header {
     grid-template-columns: 1.5rem 1fr 8.5rem 1.75rem !important;
     padding: 0.5rem !important;
@@ -575,7 +575,7 @@
   }
 }
 
-@media (min-width: 500px) {
+@media (min-width: 481px) {
   .feedback-grid .grid-header,
   .feedback-grid .guess-row {
     grid-template-columns: 2.5rem 1fr 11rem 2.5rem !important;
