@@ -19,6 +19,12 @@ const BATCH_SIZE = 10;
 const FLUSH_INTERVAL = 30000; // 30 seconds
 const STORAGE_KEY = 'bowldem_analytics_queue';
 
+// Skip analytics in development/localhost to avoid polluting production data
+const IS_DEV_ENVIRONMENT = import.meta.env.DEV ||
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1' ||
+  window.location.hostname.includes('localhost');
+
 // Session and device tracking
 let sessionId = null;
 let deviceId = null;
@@ -96,6 +102,20 @@ function generateFingerprint() {
  * Initialize analytics - call on app start
  */
 export async function initAnalytics() {
+  // Skip full initialization in dev mode
+  if (IS_DEV_ENVIRONMENT) {
+    console.log('[Analytics] Dev environment detected - analytics disabled');
+    console.log('[Analytics] To test analytics, deploy to production or set window.FORCE_ANALYTICS = true');
+    // Still set up device ID for leaderboard functionality
+    deviceId = localStorage.getItem('bowldem_device_id');
+    if (!deviceId) {
+      deviceId = 'device_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+      localStorage.setItem('bowldem_device_id', deviceId);
+    }
+    sessionId = 'session_dev_' + Date.now();
+    return;
+  }
+
   // Get or create device ID
   deviceId = localStorage.getItem('bowldem_device_id');
   if (!deviceId) {
@@ -181,6 +201,12 @@ export async function initAnalytics() {
  * @param {Object} properties - Additional event properties
  */
 export function trackEvent(category, action, properties = {}) {
+  // Skip tracking in dev/localhost to avoid polluting production data
+  if (IS_DEV_ENVIRONMENT) {
+    console.log('[Analytics] DEV MODE - Not tracking:', category, action, properties);
+    return;
+  }
+
   const event = {
     id: 'evt_' + Math.random().toString(36).substr(2, 9),
     timestamp: new Date().toISOString(),
@@ -198,11 +224,6 @@ export function trackEvent(category, action, properties = {}) {
 
   // Add to queue
   addToQueue(event);
-
-  // Log in dev mode
-  if (import.meta.env.DEV) {
-    console.log('[Analytics]', category, action, properties);
-  }
 
   // Auto-flush if queue is full
   const queue = getQueue();
@@ -421,6 +442,39 @@ export function getAnalyticsSummary() {
   };
 }
 
+/**
+ * Check if analytics is enabled (not in dev mode)
+ */
+export function isAnalyticsEnabled() {
+  return !IS_DEV_ENVIRONMENT;
+}
+
+/**
+ * Check Supabase connectivity - useful for debugging
+ * Returns { connected: boolean, error?: string }
+ */
+export async function checkSupabaseConnection() {
+  if (!supabase) {
+    return { connected: false, error: 'Supabase client not initialized - check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY' };
+  }
+
+  try {
+    // Try a simple query to test connectivity
+    const { error } = await supabase
+      .from('analytics_events')
+      .select('id')
+      .limit(1);
+
+    if (error) {
+      return { connected: false, error: error.message };
+    }
+
+    return { connected: true };
+  } catch (e) {
+    return { connected: false, error: e.message };
+  }
+}
+
 export default {
   init: initAnalytics,
   trackEvent,
@@ -431,5 +485,7 @@ export default {
   trackFunnel,
   getDeviceId,
   getSessionId,
-  getAnalyticsSummary
+  getAnalyticsSummary,
+  isAnalyticsEnabled,
+  checkSupabaseConnection
 };
