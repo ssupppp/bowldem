@@ -68,27 +68,39 @@
     },
     {
       "puzzleId": 12,
-      "matchContext": "T20 World Cup 2022",
-      "triviaFact": "Another exciting group stage battle",
-      "playerHighlight": null
+      "matchContext": "T20 World Cup 2016 - SA vs ENG",
+      "triviaFact": "One of the greatest T20 chases - England needed 229 and won with 2 balls to spare",
+      "playerHighlight": "Joe Root's masterful 83(44) anchored the impossible chase"
     },
     {
       "puzzleId": 13,
-      "matchContext": "T20 World Cup Classic",
-      "triviaFact": "A memorable encounter in T20 World Cup history",
-      "playerHighlight": null
+      "matchContext": "T20 World Cup 2024 Super 8s - SA vs ENG",
+      "triviaFact": "South Africa's bowlers restricted England to defend 163, securing a crucial Super 8 win",
+      "playerHighlight": "Quinton de Kock's explosive 65(38) set up South Africa's competitive total"
     },
     {
       "puzzleId": 14,
-      "matchContext": "T20 World Cup Classic",
-      "triviaFact": "A match that showcased the best of T20 cricket",
-      "playerHighlight": null
+      "matchContext": "T20 World Cup 2016 - SA vs WI",
+      "triviaFact": "West Indies continued their march to the title with a gritty chase",
+      "playerHighlight": "Marlon Samuels guided West Indies home with an unbeaten 44*(31)"
     },
     {
       "puzzleId": 15,
-      "matchContext": "T20 World Cup Classic",
-      "triviaFact": "An unforgettable game from T20 history",
-      "playerHighlight": null
+      "matchContext": "T20 World Cup 2021 - WI vs ENG",
+      "triviaFact": "Defending champions West Indies were demolished for just 55 - their lowest T20I score",
+      "playerHighlight": "Moeen Ali's 2/17 helped England bowl out West Indies in 14.2 overs"
+    },
+    {
+      "puzzleId": 16,
+      "matchContext": "T20 World Cup 2021 - WI vs SA",
+      "triviaFact": "South Africa kept their semi-final hopes alive with a comprehensive win",
+      "playerHighlight": "Anrich Nortje's pace was unplayable - 3/7 in 4 overs"
+    },
+    {
+      "puzzleId": 17,
+      "matchContext": "T20 World Cup 2024 Super 8s - WI vs SA",
+      "triviaFact": "South Africa survived a scare to book their semi-final spot",
+      "playerHighlight": "Tabraiz Shamsi's leg-spin troubled the West Indies batters - 3/27"
     }
   ],
   "defaultHighlight": {

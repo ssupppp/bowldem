@@ -5,6 +5,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { getMillisecondsUntilNextPuzzle, formatCountdown } from '../../utils/dailyPuzzle.js';
+import { MatchRevealCard } from './MatchRevealCard.jsx';
+import { EmailPersistence, HistoricalEntries } from '../community/EmailPersistence.jsx';
 
 /**
  * ProminentCountdown - Large countdown timer for next puzzle
@@ -311,8 +313,22 @@ export function CompletedStateBanner({
   userRanking,
   onViewLeaderboard,
   onOpenArchive,
-  matchHighlight = null
+  matchHighlight = null,
+  // New props for rich match reveal
+  scorecard = null,
+  targetPlayerTeam = null,
+  cricinfoUrl = null,
+  // Email persistence props
+  email = null,
+  onLinkEmail = null,
+  onSkipEmail = null,
+  isLinkingEmail = false,
+  historicalEntries = [],
+  onViewHistory = null,
+  showEmailPrompt = false
 }) {
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+
   return (
     <div className="completed-home-redesign">
       {/* Result Banner */}
@@ -323,8 +339,21 @@ export function CompletedStateBanner({
         streak={streak}
       />
 
-      {/* Nostalgia Card - Match trivia and highlights */}
-      {matchHighlight && (
+      {/* Match Reveal Card - shown on WIN with full match details */}
+      {won && matchHighlight && (
+        <MatchRevealCard
+          scorecard={scorecard}
+          matchContext={matchHighlight.matchContext}
+          triviaFact={matchHighlight.triviaFact}
+          playerHighlight={matchHighlight.playerHighlight}
+          targetPlayerTeam={targetPlayerTeam}
+          mvpName={playerName}
+          cricinfoUrl={cricinfoUrl}
+        />
+      )}
+
+      {/* Nostalgia Card - shown on LOSS (simpler version) */}
+      {!won && matchHighlight && (
         <NostalgiaCard
           matchContext={matchHighlight.matchContext}
           triviaFact={matchHighlight.triviaFact}
@@ -360,6 +389,18 @@ export function CompletedStateBanner({
       {onOpenArchive && (
         <ArchiveButton onClick={onOpenArchive} />
       )}
+
+      {/* Historical Entries Modal */}
+      {showHistoryModal && (
+        <div className="history-modal-overlay" onClick={() => setShowHistoryModal(false)}>
+          <div onClick={e => e.stopPropagation()}>
+            <HistoricalEntries
+              entries={historicalEntries}
+              onClose={() => setShowHistoryModal(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -379,7 +420,13 @@ function LiveLeaderboard({
   guessesUsed,
   onSubmit,
   isSubmitting = false,
-  onViewFull
+  onViewFull,
+  // Email persistence props
+  email = null,
+  onLinkEmail = null,
+  onSkipEmail = null,
+  isLinkingEmail = false,
+  showEmailPrompt = false
 }) {
   const [name, setName] = React.useState(displayName);
   const [submitError, setSubmitError] = React.useState('');
@@ -470,6 +517,16 @@ function LiveLeaderboard({
         </div>
       )}
 
+      {/* Email Persistence - show in sidebar after submission */}
+      {gameCompleted && won && hasSubmitted && showEmailPrompt && (
+        <EmailPersistence
+          onLinkEmail={onLinkEmail}
+          onSkip={onSkipEmail}
+          existingEmail={email}
+          isLinking={isLinkingEmail}
+        />
+      )}
+
       {/* Leaderboard entries */}
       <div className="live-leaderboard-list">
         {loading ? (
@@ -533,7 +590,19 @@ export function CompletedMobileView({
   onNotifyMe,
   onOpenArchive,
   matchHighlight = null,
-  children // Puzzle content (scorecard + feedback) as children
+  children, // Puzzle content (scorecard + feedback) as children
+  // New props for rich match reveal
+  scorecard = null,
+  targetPlayerTeam = null,
+  playerName = null,
+  cricinfoUrl = null,
+  // Email persistence props
+  email = null,
+  onLinkEmail = null,
+  onSkipEmail = null,
+  isLinkingEmail = false,
+  historicalEntries = [],
+  showEmailPrompt = false
 }) {
   const [showPuzzleDetails, setShowPuzzleDetails] = React.useState(false);
   const [name, setName] = React.useState(displayName || '');
@@ -679,12 +748,35 @@ export function CompletedMobileView({
         copyState={copyState}
       />
 
-      {/* Nostalgia Card */}
-      {matchHighlight && (
+      {/* Match Reveal Card - shown on WIN */}
+      {won && matchHighlight && (
+        <MatchRevealCard
+          scorecard={scorecard}
+          matchContext={matchHighlight.matchContext}
+          triviaFact={matchHighlight.triviaFact}
+          playerHighlight={matchHighlight.playerHighlight}
+          targetPlayerTeam={targetPlayerTeam}
+          mvpName={playerName}
+          cricinfoUrl={cricinfoUrl}
+        />
+      )}
+
+      {/* Nostalgia Card - shown on LOSS */}
+      {!won && matchHighlight && (
         <NostalgiaCard
           matchContext={matchHighlight.matchContext}
           triviaFact={matchHighlight.triviaFact}
           playerHighlight={matchHighlight.playerHighlight}
+        />
+      )}
+
+      {/* Email Persistence - show after leaderboard submission */}
+      {won && hasSubmitted && showEmailPrompt && (
+        <EmailPersistence
+          onLinkEmail={onLinkEmail}
+          onSkip={onSkipEmail}
+          existingEmail={email}
+          isLinking={isLinkingEmail}
         />
       )}
 

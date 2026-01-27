@@ -327,3 +327,97 @@ export async function unsubscribeFromNotifications(email) {
 
   return { success: true };
 }
+
+// ============================================================================
+// EMAIL PERSISTENCE FUNCTIONS
+// ============================================================================
+
+/**
+ * Link an email to an existing leaderboard entry
+ * @param {string} entryId - The leaderboard entry ID
+ * @param {string} email - Email to link
+ * @returns {Object} - { success: boolean, error?: string }
+ */
+export async function linkEmailToEntry(entryId, email) {
+  if (!supabase) return { success: false, error: 'Supabase not configured' };
+
+  const { error } = await supabase
+    .from('leaderboard_entries')
+    .update({ email: email.toLowerCase().trim() })
+    .eq('id', entryId);
+
+  if (error) {
+    console.error('Error linking email to entry:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+/**
+ * Link email to all entries for a device ID
+ * This allows users to claim all their past entries with one email
+ * @param {string} deviceId - The device ID
+ * @param {string} email - Email to link
+ * @returns {Object} - { success: boolean, count: number, error?: string }
+ */
+export async function linkEmailToDevice(deviceId, email) {
+  if (!supabase) return { success: false, error: 'Supabase not configured' };
+
+  const { data, error } = await supabase
+    .from('leaderboard_entries')
+    .update({ email: email.toLowerCase().trim() })
+    .eq('device_id', deviceId)
+    .is('email', null)
+    .select('id');
+
+  if (error) {
+    console.error('Error linking email to device entries:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true, count: data?.length || 0 };
+}
+
+/**
+ * Get all leaderboard entries for an email
+ * @param {string} email - Email to look up
+ * @returns {Array} - Array of leaderboard entries
+ */
+export async function getEntriesByEmail(email) {
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from('leaderboard_entries')
+    .select('*')
+    .eq('email', email.toLowerCase().trim())
+    .order('puzzle_date', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching entries by email:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/**
+ * Check if an email is already linked to any entries
+ * @param {string} email - Email to check
+ * @returns {boolean} - True if email has linked entries
+ */
+export async function isEmailLinked(email) {
+  if (!supabase) return false;
+
+  const { data, error } = await supabase
+    .from('leaderboard_entries')
+    .select('id')
+    .eq('email', email.toLowerCase().trim())
+    .limit(1);
+
+  if (error) {
+    return false;
+  }
+
+  return data && data.length > 0;
+}

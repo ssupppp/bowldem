@@ -309,7 +309,16 @@ export const trackFeature = {
 
   notificationOptInShown: () => trackEvent('feature', 'notification_optin_shown'),
   notificationOptInCompleted: (channel) => trackEvent('feature', 'notification_optin_completed', { channel }),
-  notificationOptInDismissed: () => trackEvent('feature', 'notification_optin_dismissed')
+  notificationOptInDismissed: () => trackEvent('feature', 'notification_optin_dismissed'),
+
+  // Email persistence tracking
+  emailPromptShown: () => trackEvent('feature', 'email_prompt_shown'),
+  emailLinked: () => trackEvent('feature', 'email_linked'),
+  emailSkipped: () => trackEvent('feature', 'email_skipped'),
+  historicalEntriesViewed: () => trackEvent('feature', 'historical_entries_viewed'),
+
+  // Win celebration tracking
+  confettiTriggered: () => trackEvent('feature', 'confetti_triggered')
 };
 
 /**

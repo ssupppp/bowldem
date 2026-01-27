@@ -8,14 +8,17 @@ import {
   getLeaderboardForPuzzle,
   getAllTimeLeaderboard,
   submitLeaderboardEntry,
-  getUserRanking
+  getUserRanking,
+  linkEmailToDevice,
+  getEntriesByEmail
 } from '../lib/supabase.js';
 import { trackFeature, trackFunnel } from '../lib/analytics.js';
 
 // Storage keys for local data
 const STORAGE_KEYS = {
   DISPLAY_NAME: 'bowldem_display_name',
-  DEVICE_ID: 'bowldem_device_id'
+  DEVICE_ID: 'bowldem_device_id',
+  EMAIL: 'bowldem_email'
 };
 
 /**
@@ -49,6 +52,18 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
   const [displayName, setDisplayName] = useState(() => {
     return localStorage.getItem(STORAGE_KEYS.DISPLAY_NAME) || '';
   });
+
+  // User's email for persistence (stored locally)
+  const [email, setEmail] = useState(() => {
+    return localStorage.getItem(STORAGE_KEYS.EMAIL) || '';
+  });
+
+  // Historical entries for the user's email
+  const [historicalEntries, setHistoricalEntries] = useState([]);
+  const [historicalLoading, setHistoricalLoading] = useState(false);
+
+  // Email linking state
+  const [isLinkingEmail, setIsLinkingEmail] = useState(false);
 
   // User's ranking for today's puzzle
   const [userRanking, setUserRanking] = useState(null);
@@ -199,6 +214,68 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
   }, [puzzleLeaderboard]);
 
   /**
+   * Link email to all entries for this device
+   */
+  const linkEmail = useCallback(async (newEmail) => {
+    const trimmedEmail = newEmail.trim().toLowerCase();
+    if (!trimmedEmail) {
+      return { success: false, error: 'Email required' };
+    }
+
+    setIsLinkingEmail(true);
+    setError(null);
+
+    try {
+      const deviceId = getOrCreateDeviceId();
+      const result = await linkEmailToDevice(deviceId, trimmedEmail);
+
+      if (result.success) {
+        setEmail(trimmedEmail);
+        localStorage.setItem(STORAGE_KEYS.EMAIL, trimmedEmail);
+        // Fetch historical entries for this email
+        fetchHistoricalEntries(trimmedEmail);
+      }
+
+      return result;
+    } catch (err) {
+      console.error('Error linking email:', err);
+      setError('Failed to link email');
+      return { success: false, error: err.message };
+    } finally {
+      setIsLinkingEmail(false);
+    }
+  }, []);
+
+  /**
+   * Fetch historical entries for an email
+   */
+  const fetchHistoricalEntries = useCallback(async (emailToFetch = null) => {
+    const targetEmail = emailToFetch || email;
+    if (!targetEmail) return;
+
+    setHistoricalLoading(true);
+
+    try {
+      const entries = await getEntriesByEmail(targetEmail);
+      setHistoricalEntries(entries);
+    } catch (err) {
+      console.error('Error fetching historical entries:', err);
+      setHistoricalEntries([]);
+    } finally {
+      setHistoricalLoading(false);
+    }
+  }, [email]);
+
+  /**
+   * Clear saved email
+   */
+  const clearEmail = useCallback(() => {
+    setEmail('');
+    localStorage.removeItem(STORAGE_KEYS.EMAIL);
+    setHistoricalEntries([]);
+  }, []);
+
+  /**
    * Check if user has already submitted for today
    */
   useEffect(() => {
@@ -211,6 +288,13 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
       }
     }
   }, [puzzleLeaderboard]);
+
+  // Fetch historical entries on mount if email exists
+  useEffect(() => {
+    if (email) {
+      fetchHistoricalEntries(email);
+    }
+  }, []);
 
   return {
     // Puzzle leaderboard
@@ -229,6 +313,15 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
     saveDisplayName,
     userRanking,
     calculatePercentile,
+
+    // Email persistence
+    email,
+    linkEmail,
+    clearEmail,
+    isLinkingEmail,
+    historicalEntries,
+    historicalLoading,
+    fetchHistoricalEntries,
 
     // Submission
     submitToLeaderboard,

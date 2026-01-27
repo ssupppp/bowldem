@@ -3,12 +3,15 @@
     {
       "id": 1,
       "targetPlayer": "MNSAMUELS",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/world-t20-2015-16-901359/england-vs-west-indies-final-951373/full-scorecard",
       "matchData": {
         "scorecard": {
           "venue": "Eden Gardens",
+          "team1Name": "England",
+          "team2Name": "West Indies",
           "team1Score": "155/9 (19.1 overs)",
           "team2Score": "161/6 (19.4 overs)",
-          "result": "Team 2 won by 4 wickets"
+          "result": "West Indies won by 4 wickets"
         },
         "playersInMatch": [
           "JJROY",
@@ -41,12 +44,15 @@
     {
       "id": 2,
       "targetPlayer": "SHAHEENSHAHAFRIDI",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/icc-men-s-t20-world-cup-2021-22-1267897/india-vs-pakistan-16th-match-super-12-group-2-1273727/full-scorecard",
       "matchData": {
         "scorecard": {
           "venue": "Dubai International Cricket Stadium",
+          "team1Name": "India",
+          "team2Name": "Pakistan",
           "team1Score": "151/7 (19.5 overs)",
           "team2Score": "152/0 (17.3 overs)",
-          "result": "Team 2 won by 10 wickets"
+          "result": "Pakistan won by 10 wickets"
         },
         "playersInMatch": [
           "KLRAHUL",
@@ -79,12 +85,15 @@
     {
       "id": 3,
       "targetPlayer": "VKOHLI",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/icc-men-s-t20-world-cup-2022-23-1298134/india-vs-pakistan-16th-match-group-2-1298161/full-scorecard",
       "matchData": {
         "scorecard": {
           "venue": "Melbourne Cricket Ground",
+          "team1Name": "Pakistan",
+          "team2Name": "India",
           "team1Score": "159/8 (20 overs)",
           "team2Score": "160/6 (19.5 overs)",
-          "result": "Team 2 won by 4 wickets"
+          "result": "India won by 4 wickets"
         },
         "playersInMatch": [
           "MOHAMMADRIZWAN",
@@ -420,51 +429,16 @@
     },
     {
       "id": 12,
-      "targetPlayer": "QDEKOCK",
-      "matchData": {
-        "scorecard": {
-          "venue": "Daren Sammy National Cricket Stadium, Gros Islet, St Lucia",
-          "team1Score": "163/6 (20 overs)",
-          "team2Score": "156/6 (19.4 overs)",
-          "result": "Team 1 won by 7 runs"
-        },
-        "playersInMatch": [
-          "RRHENDRICKS",
-          "QDEKOCK",
-          "HKLAASEN",
-          "DAMILLER",
-          "AKMARKRAM",
-          "TSTUBBS",
-          "MJANSEN",
-          "KAMAHARAJ",
-          "KRABADA",
-          "ANORTJE",
-          "OEGBAARTMAN",
-          "PDSALT",
-          "JCBUTTLER",
-          "JMBAIRSTOW",
-          "MMALI",
-          "HCBROOK",
-          "LSLIVINGSTONE",
-          "SMCURRAN",
-          "JCARCHER",
-          "AURASHID",
-          "MAWOOD",
-          "RJWTOPLEY"
-        ],
-        "targetPlayerTeam": "South Africa",
-        "targetPlayerRole": "Wicketkeeper"
-      }
-    },
-    {
-      "id": 13,
       "targetPlayer": "JEROOT",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/world-t20-2015-16-901359/south-africa-vs-england-18th-match-group-1-951349/full-scorecard",
       "matchData": {
         "scorecard": {
           "venue": "Wankhede Stadium",
+          "team1Name": "South Africa",
+          "team2Name": "England",
           "team1Score": "229/4 (19.2 overs)",
           "team2Score": "230/8 (19.2 overs)",
-          "result": "Team 2 won by 2 wickets"
+          "result": "England won by 2 wickets"
         },
         "playersInMatch": [
           "JJROY",
@@ -495,14 +469,58 @@
       }
     },
     {
+      "id": 13,
+      "targetPlayer": "QDEKOCK",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/icc-men-s-t20-world-cup-2024-1411166/south-africa-vs-england-super-8-group-2-1415766/full-scorecard",
+      "matchData": {
+        "scorecard": {
+          "venue": "Daren Sammy National Cricket Stadium, Gros Islet, St Lucia",
+          "team1Name": "South Africa",
+          "team2Name": "England",
+          "team1Score": "163/6 (20 overs)",
+          "team2Score": "156/6 (19.4 overs)",
+          "result": "South Africa won by 7 runs"
+        },
+        "playersInMatch": [
+          "RRHENDRICKS",
+          "QDEKOCK",
+          "HKLAASEN",
+          "DAMILLER",
+          "AKMARKRAM",
+          "TSTUBBS",
+          "MJANSEN",
+          "KAMAHARAJ",
+          "KRABADA",
+          "ANORTJE",
+          "OEGBAARTMAN",
+          "PDSALT",
+          "JCBUTTLER",
+          "JMBAIRSTOW",
+          "MMALI",
+          "HCBROOK",
+          "LSLIVINGSTONE",
+          "SMCURRAN",
+          "JCARCHER",
+          "AURASHID",
+          "MAWOOD",
+          "RJWTOPLEY"
+        ],
+        "targetPlayerTeam": "South Africa",
+        "targetPlayerRole": "Wicketkeeper"
+      }
+    },
+    {
       "id": 14,
       "targetPlayer": "MNSAMUELS",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/world-t20-2015-16-901359/south-africa-vs-west-indies-27th-match-group-1-951361/full-scorecard",
       "matchData": {
         "scorecard": {
           "venue": "Vidarbha Cricket Association Stadium, Jamtha",
+          "team1Name": "South Africa",
+          "team2Name": "West Indies",
           "team1Score": "122/8 (19.2 overs)",
           "team2Score": "123/7 (20 overs)",
-          "result": "Team 2 won by 3 wickets"
+          "result": "West Indies won by 3 wickets"
         },
         "playersInMatch": [
           "HMAMLA",
@@ -535,12 +553,15 @@
     {
       "id": 15,
       "targetPlayer": "MMALI",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/icc-men-s-t20-world-cup-2021-22-1267897/england-vs-west-indies-14th-match-super-12-group-1-1273723/full-scorecard",
       "matchData": {
         "scorecard": {
           "venue": "Dubai International Cricket Stadium",
+          "team1Name": "West Indies",
+          "team2Name": "England",
           "team1Score": "55/10 (14.5 overs)",
           "team2Score": "56/4 (8.3 overs)",
-          "result": "Team 2 won by 6 wickets"
+          "result": "England won by 6 wickets"
         },
         "playersInMatch": [
           "LMPSIMMONS",
@@ -573,12 +594,15 @@
     {
       "id": 16,
       "targetPlayer": "ANORTJE",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/icc-men-s-t20-world-cup-2021-22-1267897/west-indies-vs-south-africa-18th-match-super-12-group-1-1273731/full-scorecard",
       "matchData": {
         "scorecard": {
           "venue": "Dubai International Cricket Stadium",
+          "team1Name": "West Indies",
+          "team2Name": "South Africa",
           "team1Score": "143/8 (19.5 overs)",
           "team2Score": "144/2 (18.1 overs)",
-          "result": "Team 2 won by 8 wickets"
+          "result": "South Africa won by 8 wickets"
         },
         "playersInMatch": [
           "LMPSIMMONS",
@@ -611,12 +635,15 @@
     {
       "id": 17,
       "targetPlayer": "TSHAMSI",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/icc-men-s-t20-world-cup-2024-1411166/west-indies-vs-south-africa-super-8-group-2-1415764/full-scorecard",
       "matchData": {
         "scorecard": {
           "venue": "Sir Vivian Richards Stadium, North Sound, Antigua",
+          "team1Name": "West Indies",
+          "team2Name": "South Africa",
           "team1Score": "135/8 (19.2 overs)",
           "team2Score": "124/7 (17 overs)",
-          "result": "Team 2 won by 3 wickets"
+          "result": "South Africa won by 3 wickets"
         },
         "playersInMatch": [
           "KRMAYERS",
