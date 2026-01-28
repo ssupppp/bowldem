@@ -17,8 +17,8 @@ export const STORAGE_KEYS = {
   DEBUG_OFFSET: 'bowldem_debug_offset'
 };
 
-// Maximum attempts per puzzle (increased from 3 to 4 for knowledge-based format)
-export const MAX_GUESSES = 4;
+// Maximum attempts per puzzle (increased from 4 to 5 for knowledge-based format)
+export const MAX_GUESSES = 5;
 
 // ============================================================================
 // DATE UTILITIES
@@ -233,7 +233,7 @@ function getDefaultStats() {
     gamesWon: 0,
     currentStreak: 0,
     maxStreak: 0,
-    guessDistribution: [0, 0, 0, 0], // Index = guesses-1 (for 1, 2, 3, 4 guesses)
+    guessDistribution: [0, 0, 0, 0, 0], // Index = guesses-1 (for 1, 2, 3, 4, 5 guesses)
     lastWinDate: null
   };
 }

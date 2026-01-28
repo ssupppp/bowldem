@@ -352,12 +352,12 @@ export function CompletedStateBanner({
         />
       )}
 
-      {/* Nostalgia Card - shown on LOSS (simpler version) */}
+      {/* Nostalgia Card - shown on LOSS (simpler version, NO playerHighlight to avoid revealing answer) */}
       {!won && matchHighlight && (
         <NostalgiaCard
           matchContext={matchHighlight.matchContext}
           triviaFact={matchHighlight.triviaFact}
-          playerHighlight={matchHighlight.playerHighlight}
+          playerHighlight={null}
         />
       )}
 
@@ -761,12 +761,12 @@ export function CompletedMobileView({
         />
       )}
 
-      {/* Nostalgia Card - shown on LOSS */}
+      {/* Nostalgia Card - shown on LOSS (NO playerHighlight to avoid revealing answer) */}
       {!won && matchHighlight && (
         <NostalgiaCard
           matchContext={matchHighlight.matchContext}
           triviaFact={matchHighlight.triviaFact}
-          playerHighlight={matchHighlight.playerHighlight}
+          playerHighlight={null}
         />
       )}
 

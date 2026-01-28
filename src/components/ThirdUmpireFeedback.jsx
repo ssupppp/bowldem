@@ -10,6 +10,36 @@ import './ThirdUmpireFeedback.css';
  * - Visual tension as slots fill up
  */
 
+// 3-letter country code mapping
+const COUNTRY_CODES = {
+  'India': 'IND',
+  'Australia': 'AUS',
+  'England': 'ENG',
+  'Pakistan': 'PAK',
+  'South Africa': 'RSA',
+  'New Zealand': 'NZL',
+  'Sri Lanka': 'SRL',
+  'Bangladesh': 'BAN',
+  'West Indies': 'WIN',
+  'Afghanistan': 'AFG',
+  'Ireland': 'IRE',
+  'Zimbabwe': 'ZIM',
+  'Scotland': 'SCO',
+  'Netherlands': 'NED',
+  'Namibia': 'NAM',
+  'UAE': 'UAE',
+  'USA': 'USA',
+  'Oman': 'OMA',
+  'Nepal': 'NEP',
+  'Canada': 'CAN',
+  'Uganda': 'UGA',
+  'Papua New Guinea': 'PNG',
+};
+
+function getCountryCode(country) {
+  return COUNTRY_CODES[country] || country?.slice(0, 3).toUpperCase() || '';
+}
+
 // Filled feedback row with sequential reveal
 function FilledRow({ feedback, isNew, rowNumber }) {
   const [revealedCount, setRevealedCount] = useState(isNew ? 0 : 4);
@@ -35,10 +65,15 @@ function FilledRow({ feedback, isNew, rowNumber }) {
 
   const isWinner = feedback.isMVP;
 
+  const countryCode = getCountryCode(feedback.country);
+
   return (
     <div className={`guess-row filled ${isWinner ? 'winner' : ''}`}>
       <div className="row-number">{rowNumber}</div>
-      <div className="row-player">{feedback.playerName}</div>
+      <div className="row-player">
+        {feedback.playerName}
+        {countryCode && <span className="player-country-code">({countryCode})</span>}
+      </div>
       <div className="row-boxes">
         {attributes.map((attr, index) => {
           const isRevealed = index < revealedCount;

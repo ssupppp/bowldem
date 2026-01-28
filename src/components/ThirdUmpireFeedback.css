@@ -50,9 +50,9 @@
 
 .feedback-grid .header-boxes span {
   text-align: center !important;
-  font-size: 0.7rem !important;
-  font-weight: 700 !important;
-  color: #64748b !important;
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  color: #1e293b !important;
 }
 
 /* P/T/R/M Tooltip Labels */
@@ -189,6 +189,14 @@
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
+}
+
+/* Country code after player name */
+.feedback-grid .player-country-code {
+  font-size: 0.7rem !important;
+  font-weight: 500 !important;
+  color: #64748b !important;
+  margin-left: 0.25rem !important;
 }
 
 /* Boxes container */

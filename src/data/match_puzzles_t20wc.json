@@ -6,7 +6,7 @@
       "cricinfoUrl": "https://www.espncricinfo.com/series/world-t20-2015-16-901359/england-vs-west-indies-final-951373/full-scorecard",
       "matchData": {
         "scorecard": {
-          "venue": "Eden Gardens",
+          "venue": "Eden Gardens, Kolkata, India",
           "team1Name": "England",
           "team2Name": "West Indies",
           "team1Score": "155/9 (19.1 overs)",
@@ -47,7 +47,7 @@
       "cricinfoUrl": "https://www.espncricinfo.com/series/icc-men-s-t20-world-cup-2021-22-1267897/india-vs-pakistan-16th-match-super-12-group-2-1273727/full-scorecard",
       "matchData": {
         "scorecard": {
-          "venue": "Dubai International Cricket Stadium",
+          "venue": "Dubai International Cricket Stadium, Dubai, UAE",
           "team1Name": "India",
           "team2Name": "Pakistan",
           "team1Score": "151/7 (19.5 overs)",
@@ -88,7 +88,7 @@
       "cricinfoUrl": "https://www.espncricinfo.com/series/icc-men-s-t20-world-cup-2022-23-1298134/india-vs-pakistan-16th-match-group-2-1298161/full-scorecard",
       "matchData": {
         "scorecard": {
-          "venue": "Melbourne Cricket Ground",
+          "venue": "Melbourne Cricket Ground, Melbourne, Australia",
           "team1Name": "Pakistan",
           "team2Name": "India",
           "team1Score": "159/8 (20 overs)",
@@ -128,7 +128,7 @@
       "targetPlayer": "ADHALES",
       "matchData": {
         "scorecard": {
-          "venue": "Adelaide Oval",
+          "venue": "Adelaide Oval, Adelaide, Australia",
           "team1Score": "168/6 (19.3 overs)",
           "team2Score": "170/0 (15.3 overs)",
           "result": "Team 2 won by 10 wickets"
@@ -166,7 +166,7 @@
       "targetPlayer": "SMCURRAN",
       "matchData": {
         "scorecard": {
-          "venue": "Melbourne Cricket Ground",
+          "venue": "Melbourne Cricket Ground, Melbourne, Australia",
           "team1Score": "137/8 (19.1 overs)",
           "team2Score": "138/5 (18.4 overs)",
           "result": "Team 2 won by 5 wickets"
@@ -242,7 +242,7 @@
       "targetPlayer": "CHGAYLE",
       "matchData": {
         "scorecard": {
-          "venue": "Wankhede Stadium",
+          "venue": "Wankhede Stadium, Mumbai, India",
           "team1Score": "182/6 (20 overs)",
           "team2Score": "183/4 (18.1 overs)",
           "result": "Team 2 won by 6 wickets"
@@ -280,7 +280,7 @@
       "targetPlayer": "JJBUMRAH",
       "matchData": {
         "scorecard": {
-          "venue": "Nassau County International Cricket Stadium, New York",
+          "venue": "Nassau County International Cricket Stadium, New York, USA",
           "team1Score": "119/10 (18.5 overs)",
           "team2Score": "113/7 (19.4 overs)",
           "result": "Team 1 won by 6 runs"
@@ -318,7 +318,7 @@
       "targetPlayer": "ARPATEL",
       "matchData": {
         "scorecard": {
-          "venue": "Providence Stadium, Guyana",
+          "venue": "Providence Stadium, Georgetown, Guyana",
           "team1Score": "171/7 (19.1 overs)",
           "team2Score": "103/10 (16.4 overs)",
           "result": "Team 1 won by 68 runs"
@@ -356,7 +356,7 @@
       "targetPlayer": "SHADABKHAN",
       "matchData": {
         "scorecard": {
-          "venue": "Sydney Cricket Ground",
+          "venue": "Sydney Cricket Ground, Sydney, Australia",
           "team1Score": "185/9 (19.5 overs)",
           "team2Score": "108/9 (13.2 overs)",
           "result": "Team 1 won by 33 runs"
@@ -394,7 +394,7 @@
       "targetPlayer": "LMPSIMMONS",
       "matchData": {
         "scorecard": {
-          "venue": "Wankhede Stadium",
+          "venue": "Wankhede Stadium, Mumbai, India",
           "team1Score": "192/2 (19.4 overs)",
           "team2Score": "196/3 (20 overs)",
           "result": "Team 2 won by 7 wickets"
@@ -433,7 +433,7 @@
       "cricinfoUrl": "https://www.espncricinfo.com/series/world-t20-2015-16-901359/south-africa-vs-england-18th-match-group-1-951349/full-scorecard",
       "matchData": {
         "scorecard": {
-          "venue": "Wankhede Stadium",
+          "venue": "Wankhede Stadium, Mumbai, India",
           "team1Name": "South Africa",
           "team2Name": "England",
           "team1Score": "229/4 (19.2 overs)",
@@ -515,7 +515,7 @@
       "cricinfoUrl": "https://www.espncricinfo.com/series/world-t20-2015-16-901359/south-africa-vs-west-indies-27th-match-group-1-951361/full-scorecard",
       "matchData": {
         "scorecard": {
-          "venue": "Vidarbha Cricket Association Stadium, Jamtha",
+          "venue": "Vidarbha Cricket Association Stadium, Nagpur, India",
           "team1Name": "South Africa",
           "team2Name": "West Indies",
           "team1Score": "122/8 (19.2 overs)",
@@ -556,7 +556,7 @@
       "cricinfoUrl": "https://www.espncricinfo.com/series/icc-men-s-t20-world-cup-2021-22-1267897/england-vs-west-indies-14th-match-super-12-group-1-1273723/full-scorecard",
       "matchData": {
         "scorecard": {
-          "venue": "Dubai International Cricket Stadium",
+          "venue": "Dubai International Cricket Stadium, Dubai, UAE",
           "team1Name": "West Indies",
           "team2Name": "England",
           "team1Score": "55/10 (14.5 overs)",
@@ -597,7 +597,7 @@
       "cricinfoUrl": "https://www.espncricinfo.com/series/icc-men-s-t20-world-cup-2021-22-1267897/west-indies-vs-south-africa-18th-match-super-12-group-1-1273731/full-scorecard",
       "matchData": {
         "scorecard": {
-          "venue": "Dubai International Cricket Stadium",
+          "venue": "Dubai International Cricket Stadium, Dubai, UAE",
           "team1Name": "West Indies",
           "team2Name": "South Africa",
           "team1Score": "143/8 (19.5 overs)",
@@ -678,7 +678,7 @@
       "targetPlayer": "JCBUTTLER",
       "matchData": {
         "scorecard": {
-          "venue": "Feroz Shah Kotla",
+          "venue": "Feroz Shah Kotla, Delhi, India",
           "team1Score": "171/4 (19.4 overs)",
           "team2Score": "161/8 (19.1 overs)",
           "result": "Team 1 won by 10 runs"
@@ -716,7 +716,7 @@
       "targetPlayer": "JJROY",
       "matchData": {
         "scorecard": {
-          "venue": "Feroz Shah Kotla",
+          "venue": "Feroz Shah Kotla, Delhi, India",
           "team1Score": "153/8 (20 overs)",
           "team2Score": "159/3 (17.2 overs)",
           "result": "Team 2 won by 7 wickets"
@@ -754,7 +754,7 @@
       "targetPlayer": "HARISRAUF",
       "matchData": {
         "scorecard": {
-          "venue": "Sharjah Cricket Stadium",
+          "venue": "Sharjah Cricket Stadium, Sharjah, UAE",
           "team1Score": "134/8 (19.2 overs)",
           "team2Score": "135/5 (18.2 overs)",
           "result": "Team 2 won by 5 wickets"
@@ -792,7 +792,7 @@
       "targetPlayer": "VKOHLI",
       "matchData": {
         "scorecard": {
-          "venue": "Adelaide Oval",
+          "venue": "Adelaide Oval, Adelaide, Australia",
           "team1Score": "184/6 (19.5 overs)",
           "team2Score": "145/6 (15.1 overs)",
           "result": "Team 1 won by 5 runs"
@@ -830,7 +830,7 @@
       "targetPlayer": "SHAHEENSHAHAFRIDI",
       "matchData": {
         "scorecard": {
-          "venue": "Adelaide Oval",
+          "venue": "Adelaide Oval, Adelaide, Australia",
           "team1Score": "127/8 (19.1 overs)",
           "team2Score": "128/5 (18.5 overs)",
           "result": "Team 2 won by 5 wickets"
@@ -868,7 +868,7 @@
       "targetPlayer": "MOHAMMADRIZWAN",
       "matchData": {
         "scorecard": {
-          "venue": "Sydney Cricket Ground",
+          "venue": "Sydney Cricket Ground, Sydney, Australia",
           "team1Score": "152/4 (20 overs)",
           "team2Score": "153/3 (19.4 overs)",
           "result": "Team 2 won by 7 wickets"
@@ -982,7 +982,7 @@
       "targetPlayer": "DJBRAVO",
       "matchData": {
         "scorecard": {
-          "venue": "Shere Bangla National Stadium",
+          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
           "team1Score": "166/6 (19.5 overs)",
           "team2Score": "82/10 (17.1 overs)",
           "result": "Team 1 won by 84 runs"
@@ -1020,7 +1020,7 @@
       "targetPlayer": "ANORTJE",
       "matchData": {
         "scorecard": {
-          "venue": "Nassau County International Cricket Stadium, New York",
+          "venue": "Nassau County International Cricket Stadium, New York, USA",
           "team1Score": "77/10 (19.4 overs)",
           "team2Score": "80/4 (16.5 overs)",
           "result": "Team 2 won by 6 wickets"
@@ -1058,7 +1058,7 @@
       "targetPlayer": "HKLAASEN",
       "matchData": {
         "scorecard": {
-          "venue": "Nassau County International Cricket Stadium, New York",
+          "venue": "Nassau County International Cricket Stadium, New York, USA",
           "team1Score": "113/6 (19.3 overs)",
           "team2Score": "109/7 (20 overs)",
           "result": "Team 1 won by 4 runs"
@@ -1096,7 +1096,7 @@
       "targetPlayer": "JCBUTTLER",
       "matchData": {
         "scorecard": {
-          "venue": "Brisbane Cricket Ground, Woolloongabba, Brisbane",
+          "venue": "Brisbane Cricket Ground, Brisbane, Australia",
           "team1Score": "179/6 (19.2 overs)",
           "team2Score": "159/6 (19.4 overs)",
           "result": "Team 1 won by 20 runs"
@@ -1134,7 +1134,7 @@
       "targetPlayer": "AURASHID",
       "matchData": {
         "scorecard": {
-          "venue": "Sydney Cricket Ground",
+          "venue": "Sydney Cricket Ground, Sydney, Australia",
           "team1Score": "141/8 (19.2 overs)",
           "team2Score": "144/6 (19.2 overs)",
           "result": "Team 2 won by 4 wickets"
@@ -1210,7 +1210,7 @@
       "targetPlayer": "DJGSAMMY",
       "matchData": {
         "scorecard": {
-          "venue": "Shere Bangla National Stadium",
+          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
           "team1Score": "178/8 (19.2 overs)",
           "team2Score": "179/4 (20 overs)",
           "result": "Team 2 won by 6 wickets"
@@ -1248,7 +1248,7 @@
       "targetPlayer": "VKOHLI",
       "matchData": {
         "scorecard": {
-          "venue": "Eden Gardens",
+          "venue": "Eden Gardens, Kolkata, India",
           "team1Score": "118/5 (17.2 overs)",
           "team2Score": "119/4 (16 overs)",
           "result": "Team 2 won by 6 wickets"
@@ -1286,7 +1286,7 @@
       "targetPlayer": "JJROY",
       "matchData": {
         "scorecard": {
-          "venue": "Zayed Cricket Stadium, Abu Dhabi",
+          "venue": "Zayed Cricket Stadium, Abu Dhabi, UAE",
           "team1Score": "124/9 (19.4 overs)",
           "team2Score": "126/2 (15 overs)",
           "result": "Team 2 won by 8 wickets"
@@ -1324,7 +1324,7 @@
       "targetPlayer": "TSHAMSI",
       "matchData": {
         "scorecard": {
-          "venue": "Sharjah Cricket Stadium",
+          "venue": "Sharjah Cricket Stadium, Sharjah, UAE",
           "team1Score": "142/10 (19.2 overs)",
           "team2Score": "146/6 (19.2 overs)",
           "result": "Team 2 won by 4 wickets"
@@ -1362,7 +1362,7 @@
       "targetPlayer": "CJJORDAN",
       "matchData": {
         "scorecard": {
-          "venue": "Dubai International Cricket Stadium",
+          "venue": "Dubai International Cricket Stadium, Dubai, UAE",
           "team1Score": "125/10 (19.3 overs)",
           "team2Score": "126/2 (11.2 overs)",
           "result": "Team 2 won by 8 wickets"
@@ -1400,7 +1400,7 @@
       "targetPlayer": "JCBUTTLER",
       "matchData": {
         "scorecard": {
-          "venue": "Sharjah Cricket Stadium",
+          "venue": "Sharjah Cricket Stadium, Sharjah, UAE",
           "team1Score": "163/4 (19.5 overs)",
           "team2Score": "137/10 (18.1 overs)",
           "result": "Team 1 won by 26 runs"
@@ -1438,7 +1438,7 @@
       "targetPlayer": "KRABADA",
       "matchData": {
         "scorecard": {
-          "venue": "Zayed Cricket Stadium, Abu Dhabi",
+          "venue": "Zayed Cricket Stadium, Abu Dhabi, UAE",
           "team1Score": "84/10 (18.2 overs)",
           "team2Score": "86/4 (14 overs)",
           "result": "Team 2 won by 6 wickets"
@@ -1476,7 +1476,7 @@
       "targetPlayer": "VKOHLI",
       "matchData": {
         "scorecard": {
-          "venue": "Shere Bangla National Stadium",
+          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
           "team1Score": "172/4 (19.4 overs)",
           "team2Score": "176/4 (19.4 overs)",
           "result": "Team 2 won by 6 wickets"
@@ -1514,7 +1514,7 @@
       "targetPlayer": "RASHWIN",
       "matchData": {
         "scorecard": {
-          "venue": "Shere Bangla National Stadium",
+          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
           "team1Score": "138/7 (19.2 overs)",
           "team2Score": "141/2 (18.2 overs)",
           "result": "Team 2 won by 8 wickets"
@@ -1552,7 +1552,7 @@
       "targetPlayer": "RASHWIN",
       "matchData": {
         "scorecard": {
-          "venue": "M Chinnaswamy Stadium",
+          "venue": "M Chinnaswamy Stadium, Bengaluru, India",
           "team1Score": "146/7 (19.1 overs)",
           "team2Score": "145/9 (19.1 overs)",
           "result": "Team 1 won by 1 runs"
@@ -1590,7 +1590,7 @@
       "targetPlayer": "VKOHLI",
       "matchData": {
         "scorecard": {
-          "venue": "Punjab Cricket Association IS Bindra Stadium, Mohali",
+          "venue": "Punjab Cricket Association IS Bindra Stadium, Mohali, India",
           "team1Score": "160/6 (19.2 overs)",
           "team2Score": "161/4 (19.3 overs)",
           "result": "Team 2 won by 6 wickets"
@@ -1628,7 +1628,7 @@
       "targetPlayer": "ADHALES",
       "matchData": {
         "scorecard": {
-          "venue": "Zahur Ahmed Chowdhury Stadium",
+          "venue": "Zahur Ahmed Chowdhury Stadium, Chittagong, Bangladesh",
           "team1Score": "189/4 (20 overs)",
           "team2Score": "190/4 (20 overs)",
           "result": "Team 2 won by 6 wickets"
@@ -1666,7 +1666,7 @@
       "targetPlayer": "RASHWIN",
       "matchData": {
         "scorecard": {
-          "venue": "Shere Bangla National Stadium",
+          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
           "team1Score": "159/7 (19.3 overs)",
           "team2Score": "86/10 (16.3 overs)",
           "result": "Team 1 won by 73 runs"
@@ -1704,7 +1704,7 @@
       "targetPlayer": "MOHAMMADRIZWAN",
       "matchData": {
         "scorecard": {
-          "venue": "Zayed Cricket Stadium, Abu Dhabi",
+          "venue": "Zayed Cricket Stadium, Abu Dhabi, UAE",
           "team1Score": "189/2 (20 overs)",
           "team2Score": "144/5 (19.2 overs)",
           "result": "Team 1 won by 45 runs"
@@ -1742,7 +1742,7 @@
       "targetPlayer": "RAJADEJA",
       "matchData": {
         "scorecard": {
-          "venue": "Dubai International Cricket Stadium",
+          "venue": "Dubai International Cricket Stadium, Dubai, UAE",
           "team1Score": "85/10 (18 overs)",
           "team2Score": "89/2 (6.4 overs)",
           "result": "Team 2 won by 8 wickets"
@@ -1780,7 +1780,7 @@
       "targetPlayer": "SHOAIBMALIK",
       "matchData": {
         "scorecard": {
-          "venue": "Sharjah Cricket Stadium",
+          "venue": "Sharjah Cricket Stadium, Sharjah, UAE",
           "team1Score": "189/4 (19.1 overs)",
           "team2Score": "117/6 (19.4 overs)",
           "result": "Team 1 won by 72 runs"
@@ -1818,7 +1818,7 @@
       "targetPlayer": "SAYADAV",
       "matchData": {
         "scorecard": {
-          "venue": "Sydney Cricket Ground",
+          "venue": "Sydney Cricket Ground, Sydney, Australia",
           "team1Score": "179/2 (19.3 overs)",
           "team2Score": "123/9 (19.4 overs)",
           "result": "Team 1 won by 56 runs"
@@ -1856,7 +1856,7 @@
       "targetPlayer": "SAYADAV",
       "matchData": {
         "scorecard": {
-          "venue": "Melbourne Cricket Ground",
+          "venue": "Melbourne Cricket Ground, Melbourne, Australia",
           "team1Score": "186/5 (20 overs)",
           "team2Score": "115/10 (17.3 overs)",
           "result": "Team 1 won by 71 runs"
@@ -1932,7 +1932,7 @@
       "targetPlayer": "SHADABKHAN",
       "matchData": {
         "scorecard": {
-          "venue": "Perth Stadium",
+          "venue": "Perth Stadium, Perth, Australia",
           "team1Score": "91/10 (19.2 overs)",
           "team2Score": "95/4 (13.5 overs)",
           "result": "Team 2 won by 6 wickets"
@@ -1971,7 +1971,7 @@
       "targetPlayer": "RAJADEJA",
       "matchData": {
         "scorecard": {
-          "venue": "Dubai International Cricket Stadium",
+          "venue": "Dubai International Cricket Stadium, Dubai, UAE",
           "team1Score": "132/8 (19.5 overs)",
           "team2Score": "136/1 (15.2 overs)",
           "result": "Team 2 won by 9 wickets"
@@ -2009,7 +2009,7 @@
       "targetPlayer": "JJBUMRAH",
       "matchData": {
         "scorecard": {
-          "venue": "Nassau County International Cricket Stadium, New York",
+          "venue": "Nassau County International Cricket Stadium, New York, USA",
           "team1Score": "96/10 (16 overs)",
           "team2Score": "97/3 (12.2 overs)",
           "result": "Team 2 won by 8 wickets"
@@ -2047,7 +2047,7 @@
       "targetPlayer": "DAMILLER",
       "matchData": {
         "scorecard": {
-          "venue": "Nassau County International Cricket Stadium, New York",
+          "venue": "Nassau County International Cricket Stadium, New York, USA",
           "team1Score": "103/9 (19.1 overs)",
           "team2Score": "106/6 (18.2 overs)",
           "result": "Team 2 won by 4 wickets"
@@ -2085,7 +2085,7 @@
       "targetPlayer": "ARSHDEEPSINGH",
       "matchData": {
         "scorecard": {
-          "venue": "Nassau County International Cricket Stadium, New York",
+          "venue": "Nassau County International Cricket Stadium, New York, USA",
           "team1Score": "110/8 (19.3 overs)",
           "team2Score": "111/3 (18.5 overs)",
           "result": "Team 2 won by 7 wickets"
@@ -2123,7 +2123,7 @@
       "targetPlayer": "TSHAMSI",
       "matchData": {
         "scorecard": {
-          "venue": "Arnos Vale Ground, Kingstown, St Vincent",
+          "venue": "Arnos Vale Ground, St Vincent, West Indies",
           "team1Score": "115/7 (19.3 overs)",
           "team2Score": "114/7 (19.4 overs)",
           "result": "Team 1 won by 1 runs"
@@ -2237,7 +2237,7 @@
       "targetPlayer": "SHAHEENSHAHAFRIDI",
       "matchData": {
         "scorecard": {
-          "venue": "Central Broward Regional Park Stadium Turf Ground, Lauderhill",
+          "venue": "Central Broward Regional Park Stadium, Lauderhill, USA",
           "team1Score": "106/9 (19.3 overs)",
           "team2Score": "111/7 (18.2 overs)",
           "result": "Team 2 won by 3 wickets"

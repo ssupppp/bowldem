@@ -47,6 +47,13 @@ export function resetTutorialSeen() {
   }
 }
 
+// Check URL for reset parameter (for testing)
+if (typeof window !== 'undefined' && window.location.search.includes('reset_tutorial')) {
+  resetTutorialSeen();
+  // Remove the parameter from URL
+  window.history.replaceState({}, '', window.location.pathname);
+}
+
 export function TutorialOverlay({ onComplete, useVideoIfAvailable = false }) {
   const videoRef = useRef(null);
   // Default to static tutorial (videoError = true) unless video mode is explicitly requested
@@ -136,7 +143,7 @@ export function TutorialOverlay({ onComplete, useVideoIfAvailable = false }) {
             </div>
           </div>
 
-          <p className="tutorial-footer">4 guesses to find the Man of the Match!</p>
+          <p className="tutorial-footer">5 guesses to find the Man of the Match!</p>
 
           <button className="tutorial-start-btn" onClick={handleSkip}>
             Start Playing

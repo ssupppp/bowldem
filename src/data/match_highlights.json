@@ -8,13 +8,13 @@
     },
     {
       "puzzleId": 2,
-      "matchContext": "T20 World Cup 2021 - India vs Pakistan",
+      "matchContext": "T20 World Cup 2021",
       "triviaFact": "Pakistan's historic first win against India in T20 World Cup history",
       "playerHighlight": "Shaheen Afridi's stunning spell of 3/31 including early Sharma and Rahul wickets"
     },
     {
       "puzzleId": 3,
-      "matchContext": "T20 World Cup 2022 - India vs Pakistan",
+      "matchContext": "T20 World Cup 2022",
       "triviaFact": "One of the greatest T20 chases ever witnessed at the MCG",
       "playerHighlight": "Virat Kohli's legendary 82*(53) - considered the best T20I innings ever"
     },
@@ -68,37 +68,37 @@
     },
     {
       "puzzleId": 12,
-      "matchContext": "T20 World Cup 2016 - SA vs ENG",
+      "matchContext": "T20 World Cup 2016",
       "triviaFact": "One of the greatest T20 chases - England needed 229 and won with 2 balls to spare",
       "playerHighlight": "Joe Root's masterful 83(44) anchored the impossible chase"
     },
     {
       "puzzleId": 13,
-      "matchContext": "T20 World Cup 2024 Super 8s - SA vs ENG",
+      "matchContext": "T20 World Cup 2024 Super 8s",
       "triviaFact": "South Africa's bowlers restricted England to defend 163, securing a crucial Super 8 win",
       "playerHighlight": "Quinton de Kock's explosive 65(38) set up South Africa's competitive total"
     },
     {
       "puzzleId": 14,
-      "matchContext": "T20 World Cup 2016 - SA vs WI",
+      "matchContext": "T20 World Cup 2016",
       "triviaFact": "West Indies continued their march to the title with a gritty chase",
       "playerHighlight": "Marlon Samuels guided West Indies home with an unbeaten 44*(31)"
     },
     {
       "puzzleId": 15,
-      "matchContext": "T20 World Cup 2021 - WI vs ENG",
+      "matchContext": "T20 World Cup 2021",
       "triviaFact": "Defending champions West Indies were demolished for just 55 - their lowest T20I score",
       "playerHighlight": "Moeen Ali's 2/17 helped England bowl out West Indies in 14.2 overs"
     },
     {
       "puzzleId": 16,
-      "matchContext": "T20 World Cup 2021 - WI vs SA",
+      "matchContext": "T20 World Cup 2021",
       "triviaFact": "South Africa kept their semi-final hopes alive with a comprehensive win",
       "playerHighlight": "Anrich Nortje's pace was unplayable - 3/7 in 4 overs"
     },
     {
       "puzzleId": 17,
-      "matchContext": "T20 World Cup 2024 Super 8s - WI vs SA",
+      "matchContext": "T20 World Cup 2024 Super 8s",
       "triviaFact": "South Africa survived a scare to book their semi-final spot",
       "playerHighlight": "Tabraiz Shamsi's leg-spin troubled the West Indies batters - 3/27"
     }
