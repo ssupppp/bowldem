@@ -226,9 +226,9 @@ export function HistoricalEntries({ entries = [], onClose, loading = false }) {
             <div className="entry-puzzle">#{entry.puzzle_number}</div>
             <div className="entry-result">
               {entry.won ? (
-                <span className="result-win">{entry.guesses_used}/4 🏆</span>
+                <span className="result-win">{entry.guesses_used}/5 🏆</span>
               ) : (
-                <span className="result-loss">X/4</span>
+                <span className="result-loss">X/5</span>
               )}
             </div>
           </div>

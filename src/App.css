@@ -4566,18 +4566,22 @@ body {
   flex-shrink: 0;
 }
 
-/* Notify Me Section - Clear Button Style */
+/* Notify Me Section - Input with Button */
 .notify-section {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.75rem;
   background: linear-gradient(135deg, #fef3c7, #fef9c3);
   border: 2px solid #fbbf24;
   border-radius: 0.75rem;
   padding: 1rem;
 }
 
-.notify-content {
+.notify-section-subscribed {
+  padding: 0.875rem 1rem;
+}
+
+.notify-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -4593,6 +4597,60 @@ body {
   font-weight: 500;
 }
 
+.notify-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.notify-input {
+  flex: 1;
+  padding: 0.625rem 0.875rem;
+  border: 2px solid #fbbf24;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background: white;
+  color: #1f2937;
+  transition: border-color 0.2s ease;
+}
+
+.notify-input:focus {
+  outline: none;
+  border-color: #f59e0b;
+}
+
+.notify-input.has-error {
+  border-color: #ef4444;
+}
+
+.notify-input::placeholder {
+  color: #9ca3af;
+}
+
+.notify-error {
+  font-size: 0.75rem;
+  color: #dc2626;
+  margin-top: -0.25rem;
+}
+
+.notify-success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.notify-check {
+  color: #16a34a;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.notify-success-text {
+  color: #166534;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 .btn-notify {
   background: linear-gradient(135deg, #f59e0b, #d97706);
   color: white;
@@ -4604,16 +4662,22 @@ body {
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
-.btn-notify:hover {
+.btn-notify:hover:not(:disabled) {
   background: linear-gradient(135deg, #d97706, #b45309);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
 }
 
-.btn-notify:active {
+.btn-notify:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.btn-notify:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Inline Leaderboard Preview */
@@ -5033,13 +5097,19 @@ body {
   }
 
   .notify-section {
+    padding: 0.875rem;
+  }
+
+  .notify-form {
     flex-direction: column;
-    gap: 0.75rem;
-    text-align: center;
   }
 
   .btn-notify {
     width: 100%;
+  }
+
+  .notify-header {
+    justify-content: center;
   }
 
   .preview-entry {

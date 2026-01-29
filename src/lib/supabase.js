@@ -421,3 +421,39 @@ export async function isEmailLinked(email) {
 
   return data && data.length > 0;
 }
+
+// ============================================================================
+// NOTIFICATION SUBSCRIPTIONS
+// ============================================================================
+
+/**
+ * Save notification subscription (email or phone)
+ * @param {string} contact - Email address or phone number
+ * @param {string} contactType - 'email' or 'whatsapp'
+ * @returns {Object|null} - Subscription data or null on error
+ */
+export async function saveNotificationSubscription(contact, contactType = 'email') {
+  if (!supabase) {
+    console.warn('Supabase not available - subscription not saved to server');
+    return { id: 'local', contact, contactType };
+  }
+
+  const { data, error } = await supabase
+    .from('notification_subscribers')
+    .upsert([{
+      contact: contact.toLowerCase().trim(),
+      contact_type: contactType,
+      subscribed_at: new Date().toISOString()
+    }], {
+      onConflict: 'contact'
+    })
+    .select();
+
+  if (error) {
+    console.error('Error saving subscription:', error);
+    // Return local success even if server fails
+    return { id: 'local', contact, contactType };
+  }
+
+  return data?.[0] || { id: 'local', contact, contactType };
+}

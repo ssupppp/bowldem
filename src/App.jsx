@@ -13,7 +13,7 @@
  *    - Team: Is this player on the same team as the MVP?
  *    - Role: Does this player have the same role (Batsman/Bowler/etc)?
  *    - MVP: Is this the Man of the Match? (Win condition)
- * 4. Player has 4 guesses to find the MVP
+ * 4. Player has 5 guesses to find the MVP
  *
  * Data Structure:
  * - all_players.json: Comprehensive player database (id, fullName, country, role)
@@ -40,7 +40,7 @@ import { NotificationOptIn, hasHandledNotifications } from "./components/communi
 import { CompletedStateBanner, LiveLeaderboard, CompletedMobileView } from "./components/home/WinStateBanner.jsx";
 import { TutorialOverlay, hasTutorialBeenSeen } from "./components/onboarding/TutorialOverlay.jsx";
 import { Icon } from "./components/ui/Icon.jsx";
-import { validateGuess } from "./lib/supabase.js";
+import { validateGuess, saveNotificationSubscription } from "./lib/supabase.js";
 import { getPuzzleIndex } from "./utils/dailyPuzzle.js";
 import { initAnalytics, trackGame, trackFeature, trackFunnel, trackButtonTap } from "./lib/analytics.js";
 import { Confetti } from "./components/effects/Confetti.jsx";
@@ -419,10 +419,42 @@ function App() {
 
     const gridPattern = feedbackLines.join('\n');
 
-    // Streak indicator (only shown if > 1)
-    const streakText = stats.currentStreak > 1 ? '🔥' + stats.currentStreak : '';
+    // Get match context from current puzzle
+    const scorecard = currentPuzzle?.matchData?.scorecard || {};
+    const team1Name = scorecard.team1Name || 'Team 1';
+    const team2Name = scorecard.team2Name || 'Team 2';
 
-    return '🏏 Bowldem #' + puzzleNumber + '\n\n' + gridPattern + (streakText ? '\n\n' + streakText : '') + '\n\nbowldem.com';
+    // Parse scores to show just runs/wickets (strip overs)
+    const parseScore = (score) => {
+      if (!score) return '?';
+      // "155/9 (19.1 overs)" -> "155/9"
+      const match = score.match(/^(\d+\/\d+)/);
+      return match ? match[1] : score.split(' ')[0];
+    };
+    const team1Score = parseScore(scorecard.team1Score);
+    const team2Score = parseScore(scorecard.team2Score);
+
+    // Get venue (strip country if too long)
+    const venue = scorecard.venue || '';
+    const shortVenue = venue.split(',').slice(0, 2).join(',').trim();
+
+    // Result indicator
+    const won = feedbackList.some(f => f.isMVP);
+    const resultEmoji = won ? '✅' : '❌';
+    const resultText = `${resultEmoji} ${feedbackList.length}/${maxGuesses}`;
+
+    // Build share text
+    let shareText = `🏏 Bowldem #${puzzleNumber}\n\n`;
+    shareText += `${team1Name} ${team1Score}\n`;
+    shareText += `${team2Name} ${team2Score}\n`;
+    if (shortVenue) {
+      shareText += `📍 ${shortVenue}\n`;
+    }
+    shareText += `\n${gridPattern}\n\n`;
+    shareText += `${resultText}\n\n`;
+    shareText += `bowldem.com`;
+
+    return shareText;
   };
 
   // GameRadar component - renders emoji feedback grid in modals
@@ -481,6 +513,12 @@ function App() {
     const shareText = generateShareText();
     const url = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
     window.open(url, '_blank');
+  };
+
+  // Handle notification subscription
+  const handleNotificationSubscribe = async (contact, contactType) => {
+    trackFeature.notificationSubscribed?.();
+    await saveNotificationSubscription(contact, contactType);
   };
 
   const renderSimplifiedScorecard = () => {
@@ -919,7 +957,7 @@ function App() {
               playerName={findPlayer(currentPuzzle?.targetPlayer)?.fullName}
               displayName={displayName}
               hasSubmitted={hasLeaderboardSubmitted}
-              onNotifyMe={null} // Removed auto-show notification opt-in
+              onSubscribe={handleNotificationSubscribe}
               onShareX={handleShareX}
               onShareWhatsApp={handleShareWhatsApp}
               onCopy={handleShare}
@@ -978,7 +1016,7 @@ function App() {
                   onShareWhatsApp={handleShareWhatsApp}
                   onCopy={handleShare}
                   copyState={copyButtonState}
-                  onNotifyMe={null} // Removed auto-show notification opt-in
+                  onSubscribe={handleNotificationSubscribe}
                   onOpenArchive={() => setShowArchiveModal(true)}
                   matchHighlight={matchHighlight}
                   // New props for rich match reveal

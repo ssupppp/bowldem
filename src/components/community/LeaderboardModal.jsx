@@ -100,7 +100,7 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose, guessesUse
             </span>
           </div>
           <div className="success-details">
-            as "{displayName}" ({guessesUsed}/4)
+            as "{displayName}" ({guessesUsed}/5)
           </div>
         </div>
       )}
@@ -158,7 +158,7 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose, guessesUse
                       <span className="entry-name">{entry.display_name}</span>
                       <span className="entry-result">
                         <span className="guesses-badge win">
-                          {entry.guesses_used}/4
+                          {entry.guesses_used}/5
                         </span>
                       </span>
                       <span className="entry-time">{formatTime(entry.created_at)}</span>
@@ -260,7 +260,7 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose, guessesUse
           </div>
           {submitError && <div className="submit-error">{submitError}</div>}
           <div className="submit-result-preview">
-            Your result: <strong>{guessesUsed}/4</strong>
+            Your result: <strong>{guessesUsed}/5</strong>
           </div>
         </div>
       )}
@@ -347,7 +347,7 @@ export function LeaderboardPreview({ entries = [], userRanking, totalPlayers, di
           >
             <span className="preview-rank">{getRankEmoji(index)}</span>
             <span className="preview-name">{entry.display_name}</span>
-            <span className="preview-result">{entry.guesses_used}/4</span>
+            <span className="preview-result">{entry.guesses_used}/5</span>
           </div>
         ))}
 
@@ -363,7 +363,7 @@ export function LeaderboardPreview({ entries = [], userRanking, totalPlayers, di
                 >
                   <span className="preview-rank">{actualRank + 1}.</span>
                   <span className="preview-name">{entry.display_name}</span>
-                  <span className="preview-result">{entry.guesses_used}/4</span>
+                  <span className="preview-result">{entry.guesses_used}/5</span>
                 </div>
               );
             })}

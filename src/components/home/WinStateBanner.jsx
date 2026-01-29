@@ -159,7 +159,7 @@ function LeaderboardPreviewInline({
           >
             <span className="preview-rank">{getRankEmoji(index)}</span>
             <span className="preview-name">{entry.display_name}</span>
-            <span className="preview-result">{entry.guesses_used}/4</span>
+            <span className="preview-result">{entry.guesses_used}/5</span>
           </div>
         ))}
 
@@ -175,7 +175,7 @@ function LeaderboardPreviewInline({
                 >
                   <span className="preview-rank">{actualRank + 1}.</span>
                   <span className="preview-name">{entry.display_name}</span>
-                  <span className="preview-result">{entry.guesses_used}/4</span>
+                  <span className="preview-result">{entry.guesses_used}/5</span>
                 </div>
               );
             })}
@@ -195,7 +195,7 @@ function LeaderboardPreviewInline({
 /**
  * ResultBanner - Compact result banner for completed state
  */
-function ResultBanner({ won, guessesUsed, maxGuesses = 4, streak = 0 }) {
+function ResultBanner({ won, guessesUsed, maxGuesses = 5, streak = 0 }) {
   if (won) {
     return (
       <div className="result-banner result-banner-win">
@@ -227,20 +227,110 @@ function ResultBanner({ won, guessesUsed, maxGuesses = 4, streak = 0 }) {
 }
 
 /**
- * NotifySection - Clear notify me button
+ * NotifySection - Email/WhatsApp subscription input
+ * Allows users to subscribe for daily puzzle notifications
  */
-function NotifySection({ onNotifyMe }) {
-  if (!onNotifyMe) return null;
+function NotifySection({ onSubscribe }) {
+  const [contact, setContact] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(() => {
+    return localStorage.getItem('bowldem_notification_subscribed') === 'true';
+  });
+  const [error, setError] = useState('');
+
+  // If already subscribed, show success state
+  if (isSubscribed) {
+    return (
+      <div className="notify-section notify-section-subscribed">
+        <div className="notify-success">
+          <span className="notify-check">✓</span>
+          <span className="notify-success-text">You're subscribed!</span>
+        </div>
+      </div>
+    );
+  }
+
+  const validateContact = (value) => {
+    const trimmed = value.trim();
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(trimmed)) {
+      return { valid: true, type: 'email' };
+    }
+    // Phone validation (starts with + and has 10-15 digits)
+    const phoneRegex = /^\+?[1-9]\d{9,14}$/;
+    const cleanPhone = trimmed.replace(/[\s\-()]/g, '');
+    if (phoneRegex.test(cleanPhone)) {
+      return { valid: true, type: 'whatsapp' };
+    }
+    return { valid: false, type: null };
+  };
+
+  const handleSubmit = async () => {
+    const trimmed = contact.trim();
+    if (!trimmed) {
+      setError('Please enter email or phone');
+      return;
+    }
+
+    const validation = validateContact(trimmed);
+    if (!validation.valid) {
+      setError('Enter valid email or phone (+country code)');
+      return;
+    }
+
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      if (onSubscribe) {
+        await onSubscribe(trimmed, validation.type);
+      }
+      // Save to localStorage
+      localStorage.setItem('bowldem_notification_subscribed', 'true');
+      localStorage.setItem('bowldem_notification_contact', trimmed);
+      setIsSubscribed(true);
+    } catch (err) {
+      setError('Failed to subscribe. Try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !isSubmitting) {
+      handleSubmit();
+    }
+  };
 
   return (
     <div className="notify-section">
-      <div className="notify-content">
+      <div className="notify-header">
         <span className="notify-bell">🔔</span>
-        <span className="notify-label">Get daily reminders</span>
+        <span className="notify-label">Get notified for new puzzles</span>
       </div>
-      <button className="btn-notify" onClick={onNotifyMe}>
-        Notify Me
-      </button>
+      <div className="notify-form">
+        <input
+          type="text"
+          className={`notify-input ${error ? 'has-error' : ''}`}
+          placeholder="Email or WhatsApp number"
+          value={contact}
+          onChange={(e) => {
+            setContact(e.target.value);
+            setError('');
+          }}
+          onKeyDown={handleKeyDown}
+          disabled={isSubmitting}
+        />
+        <button
+          className="btn-notify"
+          onClick={handleSubmit}
+          disabled={isSubmitting || !contact.trim()}
+        >
+          {isSubmitting ? '...' : 'Notify Me'}
+        </button>
+      </div>
+      {error && <div className="notify-error">{error}</div>}
     </div>
   );
 }
@@ -299,12 +389,12 @@ function NostalgiaCard({ matchContext, triviaFact, playerHighlight }) {
 export function CompletedStateBanner({
   won,
   guessesUsed,
-  maxGuesses = 4,
+  maxGuesses = 5,
   streak = 0,
   playerName,
   displayName,
   hasSubmitted,
-  onNotifyMe,
+  onSubscribe,
   onShareX,
   onShareWhatsApp,
   onCopy,
@@ -383,7 +473,7 @@ export function CompletedStateBanner({
       />
 
       {/* Notify Me Section */}
-      <NotifySection onNotifyMe={onNotifyMe} />
+      <NotifySection onSubscribe={onSubscribe} />
 
       {/* Archive Button */}
       {onOpenArchive && (
@@ -543,7 +633,7 @@ function LiveLeaderboard({
             >
               <span className="live-entry-rank">{getRankEmoji(index)}</span>
               <span className="live-entry-name">{entry.display_name}</span>
-              <span className="live-entry-result">{entry.guesses_used}/4</span>
+              <span className="live-entry-result">{entry.guesses_used}/5</span>
             </div>
           ))
         )}
@@ -573,7 +663,7 @@ function LiveLeaderboard({
 export function CompletedMobileView({
   won,
   guessesUsed,
-  maxGuesses = 4,
+  maxGuesses = 5,
   streak = 0,
   displayName,
   hasSubmitted,
@@ -587,7 +677,7 @@ export function CompletedMobileView({
   onShareWhatsApp,
   onCopy,
   copyState,
-  onNotifyMe,
+  onSubscribe,
   onOpenArchive,
   matchHighlight = null,
   children, // Puzzle content (scorecard + feedback) as children
@@ -724,7 +814,7 @@ export function CompletedMobileView({
                 >
                   <span className="entry-rank">{getRankEmoji(index)}</span>
                   <span className="entry-name">{entry.display_name}</span>
-                  <span className="entry-result">{entry.guesses_used}/4</span>
+                  <span className="entry-result">{entry.guesses_used}/5</span>
                 </div>
               ))
             )}
@@ -781,7 +871,7 @@ export function CompletedMobileView({
       )}
 
       {/* Notify Me */}
-      <NotifySection onNotifyMe={onNotifyMe} />
+      <NotifySection onSubscribe={onSubscribe} />
 
       {/* Collapsible Puzzle Details */}
       <div className="mobile-puzzle-details">

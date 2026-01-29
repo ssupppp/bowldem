@@ -4,7 +4,7 @@ import './ThirdUmpireFeedback.css';
 /**
  * ThirdUmpireFeedback - Wordle-inspired Feedback Display
  *
- * Key design: All 4 guess slots visible from start
+ * Key design: All 5 guess slots visible from start
  * - Filled rows show player name + colored boxes
  * - Empty rows show placeholder with empty boxes
  * - Visual tension as slots fill up
@@ -42,7 +42,7 @@ function getCountryCode(country) {
 
 // Filled feedback row with sequential reveal
 function FilledRow({ feedback, isNew, rowNumber }) {
-  const [revealedCount, setRevealedCount] = useState(isNew ? 0 : 4);
+  const [revealedCount, setRevealedCount] = useState(isNew ? 0 : 5);
 
   useEffect(() => {
     if (!isNew) return;
@@ -190,7 +190,7 @@ function LegendPopup({ isOpen, onClose }) {
 export function ThirdUmpireFeedback({
   feedbackList = [],
   guessesRemaining,
-  maxGuesses = 4,
+  maxGuesses = 5,
   isChecking = false,
   newFeedbackIndex = -1
 }) {
