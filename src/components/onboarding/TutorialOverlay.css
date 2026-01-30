@@ -180,7 +180,7 @@
   background: #8b5cf6;
 }
 
-.ptrm-legend .legend-item .legend-label {
+.tutorial-content-fallback .ptrm-legend .legend-item .legend-label {
   font-size: 0.85rem !important;
   font-weight: 700 !important;
   color: #ffffff !important;
@@ -245,7 +245,7 @@
     font-size: 0.8rem;
   }
 
-  .ptrm-legend .legend-item .legend-label {
+  .tutorial-content-fallback .ptrm-legend .legend-item .legend-label {
     font-size: 0.75rem !important;
   }
 }
