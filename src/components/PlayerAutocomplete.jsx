@@ -1,5 +1,35 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 
+// 3-letter country code mapping
+const COUNTRY_CODES = {
+  'India': 'IND',
+  'Australia': 'AUS',
+  'England': 'ENG',
+  'Pakistan': 'PAK',
+  'South Africa': 'RSA',
+  'New Zealand': 'NZL',
+  'Sri Lanka': 'SRL',
+  'Bangladesh': 'BAN',
+  'West Indies': 'WIN',
+  'Afghanistan': 'AFG',
+  'Ireland': 'IRE',
+  'Zimbabwe': 'ZIM',
+  'Scotland': 'SCO',
+  'Netherlands': 'NED',
+  'Namibia': 'NAM',
+  'UAE': 'UAE',
+  'USA': 'USA',
+  'Oman': 'OMA',
+  'Nepal': 'NEP',
+  'Canada': 'CAN',
+  'Uganda': 'UGA',
+  'Papua New Guinea': 'PNG',
+};
+
+function getCountryCode(country) {
+  return COUNTRY_CODES[country] || country?.slice(0, 3).toUpperCase() || '';
+}
+
 /**
  * PlayerAutocomplete - Text input with autocomplete for player selection
  *
@@ -181,9 +211,8 @@ export function PlayerAutocomplete({
             >
               <div className="player-info">
                 <span className="player-name">{player.fullName}</span>
-                <span className="player-role">{player.role}</span>
+                <span className="player-role">{getCountryCode(player.country)}•{player.role}</span>
               </div>
-              <span className="player-country">{player.country}</span>
             </li>
           ))}
         </ul>

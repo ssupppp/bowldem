@@ -1,5 +1,35 @@
 import React from 'react';
 
+// 3-letter country code mapping
+const COUNTRY_CODES = {
+  'India': 'IND',
+  'Australia': 'AUS',
+  'England': 'ENG',
+  'Pakistan': 'PAK',
+  'South Africa': 'RSA',
+  'New Zealand': 'NZL',
+  'Sri Lanka': 'SRL',
+  'Bangladesh': 'BAN',
+  'West Indies': 'WIN',
+  'Afghanistan': 'AFG',
+  'Ireland': 'IRE',
+  'Zimbabwe': 'ZIM',
+  'Scotland': 'SCO',
+  'Netherlands': 'NED',
+  'Namibia': 'NAM',
+  'UAE': 'UAE',
+  'USA': 'USA',
+  'Oman': 'OMA',
+  'Nepal': 'NEP',
+  'Canada': 'CAN',
+  'Uganda': 'UGA',
+  'Papua New Guinea': 'PNG',
+};
+
+function getCountryCode(country) {
+  return COUNTRY_CODES[country] || country?.slice(0, 3).toUpperCase() || '';
+}
+
 /**
  * FeedbackDisplay - Wordle-Style Grid
  *
@@ -56,7 +86,12 @@ export function FeedbackDisplay({
       <div className="wordle-grid">
         {feedbackList.map((feedback, index) => (
           <div key={index} className={`wordle-row ${feedback.isMVP ? 'winner' : ''}`}>
-            <div className="wordle-player">{feedback.playerName}</div>
+            <div className="wordle-player">
+              {feedback.playerName}
+              {feedback.country && (
+                <span className="player-country-code"> ({getCountryCode(feedback.country)})</span>
+              )}
+            </div>
             <div className="wordle-boxes">
               <div
                 className={`wordle-box has-tooltip ${feedback.playedInGame ? 'correct' : 'incorrect'}`}

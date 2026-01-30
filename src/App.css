@@ -2162,6 +2162,14 @@ body {
   text-overflow: ellipsis;
 }
 
+/* Country code next to player name */
+.player-country-code {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-left: 0.25rem;
+}
+
 /* Boxes */
 .wordle-boxes {
   display: flex;

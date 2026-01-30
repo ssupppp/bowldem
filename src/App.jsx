@@ -422,8 +422,9 @@ function App() {
 
     // Get match context from current puzzle
     const scorecard = currentPuzzle?.matchData?.scorecard || {};
-    const team1Name = scorecard.team1Name || 'Team 1';
-    const team2Name = scorecard.team2Name || 'Team 2';
+    // IMPORTANT: Always use "Team 1" and "Team 2" to avoid spoilers
+    const team1Name = 'Team 1';
+    const team2Name = 'Team 2';
 
     // Parse scores to show just runs/wickets (strip overs)
     const parseScore = (score) => {
