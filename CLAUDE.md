@@ -2,10 +2,64 @@
 
 ## Important: Branch & Location
 - **Working Directory:** `C:\Users\Vikas\Documents\Projects\bowldem-work`
-- **Branch:** `feature/feedback-system-update` (NOT main)
+- **Branch:** `main` (production)
 - **Remote:** https://github.com/ssupppp/bowldem
+- **Deployment:** Vercel (bowldem-work project) → bowldem.com
 
-Always work on the `feature/feedback-system-update` branch. Do NOT switch to main or other branches.
+---
+
+## CRITICAL: Styling Rules (NO TAILWIND!)
+
+⚠️ **This project uses PLAIN CSS only. Tailwind is NOT installed.**
+
+### DO NOT USE:
+```jsx
+// ❌ WRONG - Tailwind classes don't exist here
+<div className="w-full pl-12 pr-12 py-4 bg-white rounded-xl border-2">
+<div className="flex items-center gap-2 text-sm text-slate-600">
+```
+
+### USE INSTEAD:
+```jsx
+// ✅ CORRECT - Use CSS classes defined in App.css
+<div className="autocomplete-container">
+<div className="wordle-feedback">
+<div className="live-leaderboard">
+```
+
+### Key CSS Class Patterns (defined in App.css):
+- **Autocomplete:** `autocomplete-container`, `autocomplete-input`, `autocomplete-dropdown`, `autocomplete-item`
+- **Feedback Grid:** `wordle-feedback`, `wordle-grid`, `wordle-row`, `wordle-box`, `correct`, `incorrect`
+- **Leaderboard:** `live-leaderboard`, `live-entry`, `preview-entry`
+- **Modals:** `stats-modal`, `archive-modal`, `leaderboard-modal`
+- **Buttons:** `share-btn`, `btn-notify`, `archive-button`
+
+### Before Writing Component JSX:
+1. Check `src/App.css` for existing class names
+2. Use those classes, don't invent Tailwind-style utilities
+3. If new styles needed, ADD them to App.css first
+
+---
+
+## CRITICAL: Testing Before Push
+
+⚠️ **ALWAYS test locally before pushing to main.**
+
+```bash
+# 1. Run build to catch errors
+npm run build
+
+# 2. Preview the production build
+npm run preview
+
+# 3. Test in browser - check:
+#    - All components render with correct styling
+#    - Autocomplete dropdown appears styled
+#    - Feedback boxes have colors
+#    - Modals open correctly
+```
+
+**If build fails or UI looks unstyled, DO NOT PUSH.**
 
 ---
 
@@ -73,13 +127,14 @@ Bowldem is a **Wordle-style daily cricket puzzle game** where players guess the 
    - **Team:** Is this player on the same team as the MVP?
    - **Role:** Does this player have the same role (Batsman/Bowler/All-rounder/WK)?
    - **MVP:** Is this the Man of the Match? (Win condition)
-4. Player has 4 guesses to find the MVP
+4. Player has **5 guesses** to find the MVP
 
 ## Tech Stack
 - **Frontend:** React 18 + Vite
-- **Styling:** CSS (App.css)
-- **Data:** Static JSON files (no backend)
-- **Deployment:** Replit-ready
+- **Styling:** Plain CSS (App.css) - **NO TAILWIND!**
+- **Data:** Static JSON files + Supabase (leaderboard)
+- **Deployment:** Vercel (auto-deploys from GitHub main branch)
+- **Domain:** bowldem.com
 
 ## Key Files
 ```
@@ -141,13 +196,21 @@ npm run dev          # Start dev server (Vite)
 npm run build        # Production build
 ```
 
-## Current State (as of Jan 2025)
+## Current State (as of Jan 2026)
 - **569 players** in database (all with proper roles)
 - 60 T20 World Cup puzzles loaded
+- **5 guesses** per puzzle (changed from 4)
 - Y/N feedback system working
 - Daily puzzle rotation working (EPOCH: 2026-01-15)
 - Stats tracking (localStorage)
 - Share functionality working
+- Leaderboard via Supabase
+- Confetti celebration on win
+
+### Recent Bug Fixes (Jan 30, 2026)
+- Fixed missing `import "./App.css"` in App.jsx
+- Reverted components from Tailwind to plain CSS classes
+- Fixed broken HistoricalEntries import in WinStateBanner
 
 ## Priority Tasks
 1. **Expand player database** - See `PLAYER_DATABASE_PLAN.md`
