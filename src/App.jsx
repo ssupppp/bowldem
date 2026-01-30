@@ -44,6 +44,7 @@ import { validateGuess, saveNotificationSubscription } from "./lib/supabase.js";
 import { getPuzzleIndex } from "./utils/dailyPuzzle.js";
 import { initAnalytics, trackGame, trackFeature, trackFunnel, trackButtonTap } from "./lib/analytics.js";
 import { Confetti } from "./components/effects/Confetti.jsx";
+import "./App.css";
 
 // Initialize analytics on app load
 initAnalytics();
