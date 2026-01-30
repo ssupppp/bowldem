@@ -5,8 +5,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { getMillisecondsUntilNextPuzzle, formatCountdown } from '../../utils/dailyPuzzle.js';
-import { MatchRevealCard } from './MatchRevealCard.jsx';
-import { EmailPersistence, HistoricalEntries } from '../community/EmailPersistence.jsx';
 
 /**
  * ProminentCountdown - Large countdown timer for next puzzle
@@ -106,7 +104,8 @@ function LeaderboardPreviewInline({
   entries = [],
   userRanking,
   displayName,
-  onViewFull
+  onViewFull,
+  maxGuesses = 5
 }) {
   if (entries.length === 0) {
     return null;
@@ -159,7 +158,7 @@ function LeaderboardPreviewInline({
           >
             <span className="preview-rank">{getRankEmoji(index)}</span>
             <span className="preview-name">{entry.display_name}</span>
-            <span className="preview-result">{entry.guesses_used}/5</span>
+            <span className="preview-result">{entry.guesses_used}/{maxGuesses}</span>
           </div>
         ))}
 
@@ -175,7 +174,7 @@ function LeaderboardPreviewInline({
                 >
                   <span className="preview-rank">{actualRank + 1}.</span>
                   <span className="preview-name">{entry.display_name}</span>
-                  <span className="preview-result">{entry.guesses_used}/5</span>
+                  <span className="preview-result">{entry.guesses_used}/{maxGuesses}</span>
                 </div>
               );
             })}
@@ -227,110 +226,20 @@ function ResultBanner({ won, guessesUsed, maxGuesses = 5, streak = 0 }) {
 }
 
 /**
- * NotifySection - Email/WhatsApp subscription input
- * Allows users to subscribe for daily puzzle notifications
+ * NotifySection - Clear notify me button
  */
-function NotifySection({ onSubscribe }) {
-  const [contact, setContact] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(() => {
-    return localStorage.getItem('bowldem_notification_subscribed') === 'true';
-  });
-  const [error, setError] = useState('');
-
-  // If already subscribed, show success state
-  if (isSubscribed) {
-    return (
-      <div className="notify-section notify-section-subscribed">
-        <div className="notify-success">
-          <span className="notify-check">✓</span>
-          <span className="notify-success-text">You're subscribed!</span>
-        </div>
-      </div>
-    );
-  }
-
-  const validateContact = (value) => {
-    const trimmed = value.trim();
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(trimmed)) {
-      return { valid: true, type: 'email' };
-    }
-    // Phone validation (starts with + and has 10-15 digits)
-    const phoneRegex = /^\+?[1-9]\d{9,14}$/;
-    const cleanPhone = trimmed.replace(/[\s\-()]/g, '');
-    if (phoneRegex.test(cleanPhone)) {
-      return { valid: true, type: 'whatsapp' };
-    }
-    return { valid: false, type: null };
-  };
-
-  const handleSubmit = async () => {
-    const trimmed = contact.trim();
-    if (!trimmed) {
-      setError('Please enter email or phone');
-      return;
-    }
-
-    const validation = validateContact(trimmed);
-    if (!validation.valid) {
-      setError('Enter valid email or phone (+country code)');
-      return;
-    }
-
-    setError('');
-    setIsSubmitting(true);
-
-    try {
-      if (onSubscribe) {
-        await onSubscribe(trimmed, validation.type);
-      }
-      // Save to localStorage
-      localStorage.setItem('bowldem_notification_subscribed', 'true');
-      localStorage.setItem('bowldem_notification_contact', trimmed);
-      setIsSubscribed(true);
-    } catch (err) {
-      setError('Failed to subscribe. Try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !isSubmitting) {
-      handleSubmit();
-    }
-  };
+function NotifySection({ onNotifyMe }) {
+  if (!onNotifyMe) return null;
 
   return (
     <div className="notify-section">
-      <div className="notify-header">
+      <div className="notify-content">
         <span className="notify-bell">🔔</span>
-        <span className="notify-label">Get notified for new puzzles</span>
+        <span className="notify-label">Get daily reminders</span>
       </div>
-      <div className="notify-form">
-        <input
-          type="text"
-          className={`notify-input ${error ? 'has-error' : ''}`}
-          placeholder="Email or WhatsApp number"
-          value={contact}
-          onChange={(e) => {
-            setContact(e.target.value);
-            setError('');
-          }}
-          onKeyDown={handleKeyDown}
-          disabled={isSubmitting}
-        />
-        <button
-          className="btn-notify"
-          onClick={handleSubmit}
-          disabled={isSubmitting || !contact.trim()}
-        >
-          {isSubmitting ? '...' : 'Notify Me'}
-        </button>
-      </div>
-      {error && <div className="notify-error">{error}</div>}
+      <button className="btn-notify" onClick={onNotifyMe}>
+        Notify Me
+      </button>
     </div>
   );
 }
@@ -394,7 +303,7 @@ export function CompletedStateBanner({
   playerName,
   displayName,
   hasSubmitted,
-  onSubscribe,
+  onNotifyMe,
   onShareX,
   onShareWhatsApp,
   onCopy,
@@ -403,22 +312,8 @@ export function CompletedStateBanner({
   userRanking,
   onViewLeaderboard,
   onOpenArchive,
-  matchHighlight = null,
-  // New props for rich match reveal
-  scorecard = null,
-  targetPlayerTeam = null,
-  cricinfoUrl = null,
-  // Email persistence props
-  email = null,
-  onLinkEmail = null,
-  onSkipEmail = null,
-  isLinkingEmail = false,
-  historicalEntries = [],
-  onViewHistory = null,
-  showEmailPrompt = false
+  matchHighlight = null
 }) {
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
-
   return (
     <div className="completed-home-redesign">
       {/* Result Banner */}
@@ -429,25 +324,12 @@ export function CompletedStateBanner({
         streak={streak}
       />
 
-      {/* Match Reveal Card - shown on WIN with full match details */}
-      {won && matchHighlight && (
-        <MatchRevealCard
-          scorecard={scorecard}
-          matchContext={matchHighlight.matchContext}
-          triviaFact={matchHighlight.triviaFact}
-          playerHighlight={matchHighlight.playerHighlight}
-          targetPlayerTeam={targetPlayerTeam}
-          mvpName={playerName}
-          cricinfoUrl={cricinfoUrl}
-        />
-      )}
-
-      {/* Nostalgia Card - shown on LOSS (simpler version, NO playerHighlight to avoid revealing answer) */}
-      {!won && matchHighlight && (
+      {/* Nostalgia Card - Match trivia and highlights */}
+      {matchHighlight && (
         <NostalgiaCard
           matchContext={matchHighlight.matchContext}
           triviaFact={matchHighlight.triviaFact}
-          playerHighlight={null}
+          playerHighlight={matchHighlight.playerHighlight}
         />
       )}
 
@@ -461,6 +343,7 @@ export function CompletedStateBanner({
           userRanking={userRanking}
           displayName={displayName}
           onViewFull={onViewLeaderboard}
+          maxGuesses={maxGuesses}
         />
       )}
 
@@ -473,23 +356,11 @@ export function CompletedStateBanner({
       />
 
       {/* Notify Me Section */}
-      <NotifySection onSubscribe={onSubscribe} />
+      <NotifySection onNotifyMe={onNotifyMe} />
 
       {/* Archive Button */}
       {onOpenArchive && (
         <ArchiveButton onClick={onOpenArchive} />
-      )}
-
-      {/* Historical Entries Modal */}
-      {showHistoryModal && (
-        <div className="history-modal-overlay" onClick={() => setShowHistoryModal(false)}>
-          <div onClick={e => e.stopPropagation()}>
-            <HistoricalEntries
-              entries={historicalEntries}
-              onClose={() => setShowHistoryModal(false)}
-            />
-          </div>
-        </div>
       )}
     </div>
   );
@@ -508,15 +379,10 @@ function LiveLeaderboard({
   displayName = '',
   userRanking,
   guessesUsed,
+  maxGuesses = 5,
   onSubmit,
   isSubmitting = false,
-  onViewFull,
-  // Email persistence props
-  email = null,
-  onLinkEmail = null,
-  onSkipEmail = null,
-  isLinkingEmail = false,
-  showEmailPrompt = false
+  onViewFull
 }) {
   const [name, setName] = React.useState(displayName);
   const [submitError, setSubmitError] = React.useState('');
@@ -607,16 +473,6 @@ function LiveLeaderboard({
         </div>
       )}
 
-      {/* Email Persistence - show in sidebar after submission */}
-      {gameCompleted && won && hasSubmitted && showEmailPrompt && (
-        <EmailPersistence
-          onLinkEmail={onLinkEmail}
-          onSkip={onSkipEmail}
-          existingEmail={email}
-          isLinking={isLinkingEmail}
-        />
-      )}
-
       {/* Leaderboard entries */}
       <div className="live-leaderboard-list">
         {loading ? (
@@ -633,7 +489,7 @@ function LiveLeaderboard({
             >
               <span className="live-entry-rank">{getRankEmoji(index)}</span>
               <span className="live-entry-name">{entry.display_name}</span>
-              <span className="live-entry-result">{entry.guesses_used}/5</span>
+              <span className="live-entry-result">{entry.guesses_used}/{maxGuesses}</span>
             </div>
           ))
         )}
@@ -677,22 +533,10 @@ export function CompletedMobileView({
   onShareWhatsApp,
   onCopy,
   copyState,
-  onSubscribe,
+  onNotifyMe,
   onOpenArchive,
   matchHighlight = null,
-  children, // Puzzle content (scorecard + feedback) as children
-  // New props for rich match reveal
-  scorecard = null,
-  targetPlayerTeam = null,
-  playerName = null,
-  cricinfoUrl = null,
-  // Email persistence props
-  email = null,
-  onLinkEmail = null,
-  onSkipEmail = null,
-  isLinkingEmail = false,
-  historicalEntries = [],
-  showEmailPrompt = false
+  children // Puzzle content (scorecard + feedback) as children
 }) {
   const [showPuzzleDetails, setShowPuzzleDetails] = React.useState(false);
   const [name, setName] = React.useState(displayName || '');
@@ -814,7 +658,7 @@ export function CompletedMobileView({
                 >
                   <span className="entry-rank">{getRankEmoji(index)}</span>
                   <span className="entry-name">{entry.display_name}</span>
-                  <span className="entry-result">{entry.guesses_used}/5</span>
+                  <span className="entry-result">{entry.guesses_used}/{maxGuesses}</span>
                 </div>
               ))
             )}
@@ -838,40 +682,17 @@ export function CompletedMobileView({
         copyState={copyState}
       />
 
-      {/* Match Reveal Card - shown on WIN */}
-      {won && matchHighlight && (
-        <MatchRevealCard
-          scorecard={scorecard}
-          matchContext={matchHighlight.matchContext}
-          triviaFact={matchHighlight.triviaFact}
-          playerHighlight={matchHighlight.playerHighlight}
-          targetPlayerTeam={targetPlayerTeam}
-          mvpName={playerName}
-          cricinfoUrl={cricinfoUrl}
-        />
-      )}
-
-      {/* Nostalgia Card - shown on LOSS (NO playerHighlight to avoid revealing answer) */}
-      {!won && matchHighlight && (
+      {/* Nostalgia Card */}
+      {matchHighlight && (
         <NostalgiaCard
           matchContext={matchHighlight.matchContext}
           triviaFact={matchHighlight.triviaFact}
-          playerHighlight={null}
-        />
-      )}
-
-      {/* Email Persistence - show after leaderboard submission */}
-      {won && hasSubmitted && showEmailPrompt && (
-        <EmailPersistence
-          onLinkEmail={onLinkEmail}
-          onSkip={onSkipEmail}
-          existingEmail={email}
-          isLinking={isLinkingEmail}
+          playerHighlight={matchHighlight.playerHighlight}
         />
       )}
 
       {/* Notify Me */}
-      <NotifySection onSubscribe={onSubscribe} />
+      <NotifySection onNotifyMe={onNotifyMe} />
 
       {/* Collapsible Puzzle Details */}
       <div className="mobile-puzzle-details">
