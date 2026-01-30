@@ -183,12 +183,11 @@
 .tutorial-content-fallback .ptrm-legend .legend-item .legend-label {
   font-size: 0.85rem !important;
   font-weight: 700 !important;
-  color: #ffffff !important;
+  color: #1e293b !important;
   text-transform: uppercase !important;
   letter-spacing: 0.03em !important;
   line-height: 1.3 !important;
   text-align: left !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
 }
 
 .tutorial-footer {
