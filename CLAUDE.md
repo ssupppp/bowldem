@@ -1,7 +1,7 @@
 # Bowldem - Claude Context
 
 ## Important: Branch & Location
-- **Working Directory:** `C:\Users\Vikas\Documents\Projects\bowldem-work`
+- **Working Directory:** `C:\Users\vikas\bowldem`
 - **Branch:** `main` (production)
 - **Remote:** https://github.com/ssupppp/bowldem
 - **Deployment:** Vercel (bowldem-work project) → bowldem.com
@@ -63,21 +63,39 @@ npm run preview
 
 ---
 
+## Deployment
+
+- **Platform:** Vercel
+- **GitHub Repo:** https://github.com/ssupppp/bowldem
+- **Domain:** bowldem.com
+- **Auto-deploy:** Yes - pushes to GitHub trigger Vercel builds
+  - `main` branch → Production
+  - Feature branches → Preview deployments
+- **Build command:** `npm run build`
+- **Output directory:** `dist`
+
+### Deploy Process
+1. Push changes to GitHub `main` branch
+2. Vercel auto-detects and builds
+3. Check Vercel dashboard for deployment status
+4. Preview URLs are created for feature branches
+
+**Note:** The `.replit` file in the repo is legacy - ignore it. Deployment is on Vercel, NOT Replit.
+
+---
+
 ## DEPRECATED - Do Not Use
 
 ### Old Branches (on GitHub)
 These branches are outdated and should be ignored:
-- `feature/role-runs-wickets-matches-feedback` - OLD, superseded by current branch
+- `feature/role-runs-wickets-matches-feedback` - OLD, superseded
 - `claude/update-mvp-todos-mWtrA` - OLD, auto-generated branch
-- `main` - Not actively used, current work is on feature branch
 
 ### Old Local Folders
 These folders contain outdated versions of the project:
-- `C:\Users\Vikas\Documents\Projects\CricGuessV2` - OLD (rename to `_OLD_CricGuessV2`)
+- `C:\Users\Vikas\Documents\Projects\CricGuessV2` - OLD
   - Contains `cricguess-mvp` - older MVP with T20I data
   - Contains `bowldemv2` - older version with Express backend + SQLite (abandoned)
-
-**Only use `C:\Users\Vikas\Documents\Projects\bowldem-work`**
 
 ---
 
@@ -113,6 +131,78 @@ These folders contain outdated versions of the project:
 ## Bugs / Data Fixes
 
 - [ ] **Abhishek Sharma** - Role should be "Batsman" not "All-rounder" (he's primarily an opening batsman for SRH, occasional spin is not primary skill)
+
+### Puzzle Data Issues (Audited Jan 2025)
+
+**match_highlights.json - Wrong matchContext (6 errors):** ✅ FIXED (Jan 2025)
+| Puzzle | Was (WRONG) | Fixed To |
+|--------|-------------|----------|
+| #6 | "T20 WC 2024 Group Stage" | "T20 WC 2024 Final" |
+| #7 | "T20 WC 2024 Final" | "T20 WC 2016" |
+| #8 | "T20 WC 2024 Semi-Final" | "T20 WC 2024 Group Stage" |
+| #9 | "T20 WC 2024 Super 8s" | "T20 WC 2024 Semi-Final" |
+| #10 | "T20 WC 2024" | "T20 WC 2022" |
+| #11 | "T20 WC 2021" | "T20 WC 2016 Semi-Final" |
+
+**match_highlights.json - Missing highlights:**
+- Puzzles 18-60 have NO highlights (43 missing entries)
+
+**Root Cause:** Puzzles 4-11 were added without `cricinfoUrl` source links. Highlights were written from memory with wrong years/matches.
+
+---
+
+## Data Validation Guidelines
+
+### MANDATORY for All New Puzzle Data
+
+1. **Always include cricinfoUrl** - Every puzzle MUST have an ESPNcricinfo URL as the authoritative source
+   ```json
+   {
+     "id": 99,
+     "cricinfoUrl": "https://www.espncricinfo.com/series/...",
+     ...
+   }
+   ```
+
+2. **Cross-verify these fields against cricinfoUrl:**
+   - `targetPlayer` - Must match official Man of the Match
+   - `venue` - Exact venue name from Cricinfo
+   - `team1Score`, `team2Score` - Exact scores
+   - `result` - Exact result text
+   - `matchContext` (in highlights) - Correct tournament + year + stage
+
+3. **Venue → Tournament Year mapping** (for T20 World Cups):
+   | Venues | Tournament |
+   |--------|------------|
+   | India (Mumbai, Kolkata, Delhi, Bengaluru, Mohali, Nagpur) | 2016 |
+   | UAE (Dubai, Sharjah, Abu Dhabi) | 2021 |
+   | Australia (Melbourne, Sydney, Adelaide, Brisbane, Perth) | 2022 |
+   | West Indies/USA (Barbados, Guyana, St Lucia, Antigua, NY, Florida) | 2024 |
+   | Bangladesh (Dhaka, Chittagong) | 2014 |
+
+### Test Cases for Validation
+
+Before committing new puzzle data, verify:
+
+```
+□ cricinfoUrl present and accessible
+□ targetPlayer matches MOTM on Cricinfo page
+□ Venue matches Cricinfo (exact spelling)
+□ Scores match Cricinfo (format: "XXX/X (YY.Y overs)")
+□ Result matches Cricinfo
+□ matchContext year matches venue location (see mapping above)
+□ triviaFact is factually accurate
+□ All players in playersInMatch actually played (check Cricinfo scorecard)
+```
+
+### Data Quality Checklist for Bulk Additions
+
+When adding multiple puzzles:
+1. Create a spreadsheet with all fields + cricinfoUrl
+2. Verify each row against the Cricinfo link
+3. Run venue→year sanity check (Australian venue should NOT say 2024)
+4. Spot-check 20% of MOTM awards manually
+5. Document any exceptions or edge cases
 
 ---
 
@@ -211,6 +301,7 @@ npm run build        # Production build
 - Fixed missing `import "./App.css"` in App.jsx
 - Reverted components from Tailwind to plain CSS classes
 - Fixed broken HistoricalEntries import in WinStateBanner
+- Fixed wrong matchContext for puzzles 6-11
 
 ## Priority Tasks
 1. **Expand player database** - See `PLAYER_DATABASE_PLAN.md`
