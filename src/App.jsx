@@ -36,7 +36,7 @@ import { CountdownTimer } from "./components/CountdownTimer.jsx";
 import { ArchiveModal, saveArchiveCompletion } from "./components/ArchiveModal.jsx";
 import { LeaderboardModal, LeaderboardPreview } from "./components/community/LeaderboardModal.jsx";
 import { NameEntryPrompt } from "./components/community/NameEntryPrompt.jsx";
-import { NotificationOptIn, hasHandledNotifications } from "./components/community/NotificationOptIn.jsx";
+import { EmailCapture, shouldShowEmailPrompt, incrementGamesPlayed, hasProvidedEmail } from "./components/community/EmailCapture.jsx";
 import { CompletedStateBanner, LiveLeaderboard, CompletedMobileView } from "./components/home/WinStateBanner.jsx";
 import { TutorialOverlay, hasTutorialBeenSeen } from "./components/onboarding/TutorialOverlay.jsx";
 import { Icon } from "./components/ui/Icon.jsx";
@@ -91,7 +91,7 @@ function App() {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
-  const [showNotificationOptIn, setShowNotificationOptIn] = useState(false);
+  const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [showTutorial, setShowTutorial] = useState(() => !hasTutorialBeenSeen());
   const [isChecking, setIsChecking] = useState(false);
   const [pendingFeedback, setPendingFeedback] = useState(null);
@@ -393,12 +393,22 @@ function App() {
         setGameWon(true);
         trackGame.win(puzzleNumber, newFeedbackList.length);
         trackFunnel.gameCompleted(true);
+        incrementGamesPlayed(); // Track for email timing
         setTimeout(() => setShowSuccessModal(true), 2500);
+        // Show email capture after success modal if conditions met
+        if (shouldShowEmailPrompt()) {
+          setTimeout(() => setShowEmailCapture(true), 6000);
+        }
       } else if (newFeedbackList.length >= maxGuesses) {
         setGameOver(true);
         trackGame.lose(puzzleNumber, newFeedbackList.length);
         trackFunnel.gameCompleted(false);
-        setTimeout(() => setShowGameOverModal(true), 3000); // Increased from 2500ms to give user time to process final feedback
+        incrementGamesPlayed(); // Track for email timing
+        setTimeout(() => setShowGameOverModal(true), 3000);
+        // Show email capture after game over modal if conditions met
+        if (shouldShowEmailPrompt()) {
+          setTimeout(() => setShowEmailCapture(true), 7000);
+        }
       }
     }, 300); // Shorter delay since server call adds latency
   };
@@ -1161,12 +1171,18 @@ function App() {
         </div>
       )}
 
-      {showNotificationOptIn && (
-        <div className="game-overlay" onClick={() => setShowNotificationOptIn(false)}>
+      {showEmailCapture && (
+        <div className="game-overlay" onClick={() => setShowEmailCapture(false)}>
           <div onClick={e => e.stopPropagation()}>
-            <NotificationOptIn
-              onClose={() => setShowNotificationOptIn(false)}
-              onSuccess={() => setShowNotificationOptIn(false)}
+            <EmailCapture
+              variant="modal"
+              onClose={() => setShowEmailCapture(false)}
+              onSuccess={(email) => {
+                setShowEmailCapture(false);
+                // Refresh leaderboard to show linked stats
+                fetchPuzzleLeaderboard();
+              }}
+              linkEmail={linkEmail}
             />
           </div>
         </div>

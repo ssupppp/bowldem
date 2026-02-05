@@ -1,6 +1,10 @@
 /**
  * useDailyPuzzle Hook
  * Manages daily puzzle state with localStorage persistence
+ *
+ * Puzzle selection priority:
+ * 1. Check Supabase puzzle_schedule table for manual override
+ * 2. Fall back to default modulo-based rotation
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
@@ -21,6 +25,17 @@ import {
   clearAllData,
   MAX_GUESSES
 } from '../utils/dailyPuzzle.js';
+import { getScheduledPuzzleId } from '../lib/supabase.js';
+
+/**
+ * Get puzzle by ID from puzzles array
+ * @param {Array} puzzles - Array of puzzle objects
+ * @param {number} puzzleId - The puzzle ID to find
+ * @returns {Object|null} - Puzzle object or null if not found
+ */
+function getPuzzleById(puzzles, puzzleId) {
+  return puzzles.find(p => p.id === puzzleId) || null;
+}
 
 /**
  * Custom hook for managing daily puzzle state
@@ -28,8 +43,11 @@ import {
  * @returns {Object} - Daily puzzle state and actions
  */
 export function useDailyPuzzle(puzzles) {
-  // Current puzzle data
+  // Current puzzle data (start with fallback, may be overridden by schedule)
   const [puzzleData, setPuzzleData] = useState(() => getPuzzleForToday(puzzles));
+
+  // Track if we're checking the schedule
+  const [isLoadingSchedule, setIsLoadingSchedule] = useState(true);
 
   // Game state (guesses, status)
   const [gameState, setGameState] = useState(() => {
@@ -45,26 +63,90 @@ export function useDailyPuzzle(puzzles) {
   const [debugMode] = useState(() => isDebugMode());
   const [debugOffset, setDebugOffset] = useState(() => getDebugDateOffset());
 
+  // Check Supabase for scheduled puzzle override on mount
+  useEffect(() => {
+    async function checkScheduledPuzzle() {
+      try {
+        const today = getEffectiveDate();
+        const scheduledId = await getScheduledPuzzleId(today);
+
+        if (scheduledId !== null) {
+          const scheduledPuzzle = getPuzzleById(puzzles, scheduledId);
+          if (scheduledPuzzle) {
+            const puzzleIndex = puzzles.indexOf(scheduledPuzzle);
+            const puzzleNumber = getPuzzleNumber(today);
+
+            // Only update if different from current puzzle
+            if (puzzleData.puzzle?.id !== scheduledId) {
+              console.log(`[useDailyPuzzle] Using scheduled puzzle #${scheduledId} for ${today}`);
+              setPuzzleData({
+                puzzle: scheduledPuzzle,
+                puzzleNumber, // Keep day-based number for state tracking
+                puzzleIndex
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('[useDailyPuzzle] Failed to check puzzle schedule:', error);
+        // Continue with fallback puzzle
+      } finally {
+        setIsLoadingSchedule(false);
+      }
+    }
+
+    checkScheduledPuzzle();
+  }, [puzzles]); // Only run on mount
+
   // Derived state
   const alreadyCompleted = gameState.gameStatus === 'won' || gameState.gameStatus === 'lost';
   const guessesRemaining = MAX_GUESSES - gameState.guesses.length;
 
   /**
    * Refresh puzzle data (used after debug date change)
+   * Checks Supabase schedule first, falls back to default rotation
    */
-  const refreshPuzzle = useCallback(() => {
-    const newPuzzleData = getPuzzleForToday(puzzles);
-    setPuzzleData(newPuzzleData);
+  const refreshPuzzle = useCallback(async () => {
+    setIsLoadingSchedule(true);
 
-    // Check if this is a different puzzle than current state
-    const { canPlay, existingState } = canPlayToday();
-    if (existingState && existingState.lastPuzzleNumber === newPuzzleData.puzzleNumber) {
-      setGameState(existingState);
-    } else {
-      setGameState(initializeTodayGame());
+    try {
+      const today = getEffectiveDate();
+      let newPuzzleData = getPuzzleForToday(puzzles);
+
+      // Check for scheduled override
+      const scheduledId = await getScheduledPuzzleId(today);
+      if (scheduledId !== null) {
+        const scheduledPuzzle = getPuzzleById(puzzles, scheduledId);
+        if (scheduledPuzzle) {
+          const puzzleIndex = puzzles.indexOf(scheduledPuzzle);
+          newPuzzleData = {
+            puzzle: scheduledPuzzle,
+            puzzleNumber: getPuzzleNumber(today),
+            puzzleIndex
+          };
+          console.log(`[useDailyPuzzle] Refreshed to scheduled puzzle #${scheduledId}`);
+        }
+      }
+
+      setPuzzleData(newPuzzleData);
+
+      // Check if this is a different puzzle than current state
+      const { canPlay, existingState } = canPlayToday();
+      if (existingState && existingState.lastPuzzleNumber === newPuzzleData.puzzleNumber) {
+        setGameState(existingState);
+      } else {
+        setGameState(initializeTodayGame());
+      }
+
+      setStats(loadStats());
+    } catch (error) {
+      console.warn('[useDailyPuzzle] Error refreshing puzzle:', error);
+      // Fall back to default
+      const newPuzzleData = getPuzzleForToday(puzzles);
+      setPuzzleData(newPuzzleData);
+    } finally {
+      setIsLoadingSchedule(false);
     }
-
-    setStats(loadStats());
   }, [puzzles]);
 
   /**
@@ -179,6 +261,9 @@ export function useDailyPuzzle(puzzles) {
     gameStatus: gameState.gameStatus,
     alreadyCompleted,
     modalShown: gameState.modalShown,
+
+    // Loading state (for schedule check)
+    isLoadingSchedule,
 
     // Stats
     stats,
