@@ -51,13 +51,15 @@ function getCountryCode(country) {
  * - disabled: Disables input when game is over
  * - usedPlayers: Set of already guessed player IDs to exclude
  * - priorityPlayerIds: Set of player IDs to prioritize in results (e.g., players in puzzles)
+ * - feedbackList: Array of feedback objects from previous guesses (for smart ordering)
  */
 export function PlayerAutocomplete({
   players,
   onSelectPlayer,
   disabled,
   usedPlayers = new Set(),
-  priorityPlayerIds = new Set()
+  priorityPlayerIds = new Set(),
+  feedbackList = []
 }) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -65,8 +67,23 @@ export function PlayerAutocomplete({
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
 
+  // Derive known role/country from feedback
+  const knownRole = useMemo(() => {
+    for (const fb of feedbackList) {
+      if (fb.sameRole) return fb.role;
+    }
+    return null;
+  }, [feedbackList]);
+
+  const knownCountry = useMemo(() => {
+    for (const fb of feedbackList) {
+      if (fb.sameTeam) return fb.country;
+    }
+    return null;
+  }, [feedbackList]);
+
   // Filter and sort players based on query (min 3 characters)
-  // Priority players (those in puzzles/active T20) appear first
+  // Smart ordering: role distribution + feedback-derived priorities
   const suggestions = useMemo(() => {
     if (query.length < 3) return [];
 
@@ -81,20 +98,39 @@ export function PlayerAutocomplete({
       return searchText.includes(normalizedQuery);
     });
 
-    // Sort: priority players first, then alphabetically within each group
-    return filtered
-      .sort((a, b) => {
-        const aPriority = priorityPlayerIds.has(a.id);
-        const bPriority = priorityPlayerIds.has(b.id);
+    // Score each player for smart ordering
+    const scored = filtered.map(player => {
+      let score = 0;
 
-        if (aPriority && !bPriority) return -1;
-        if (!aPriority && bPriority) return 1;
+      // Priority players (in puzzles) get top boost
+      if (priorityPlayerIds.has(player.id)) score += 1000;
 
-        // Within same priority, sort alphabetically
-        return a.fullName.localeCompare(b.fullName);
-      })
-      .slice(0, 10); // Limit to 10 suggestions for performance
-  }, [query, players, usedPlayers, priorityPlayerIds]);
+      // Known country match gets high boost
+      if (knownCountry && player.country === knownCountry) score += 500;
+
+      // Role scoring based on feedback knowledge
+      if (knownRole) {
+        // Role identified: heavily prioritize matching role
+        if (player.role === knownRole) score += 300;
+      } else {
+        // No role identified: use 50/30/20 distribution weighting
+        const role = (player.role || '').toLowerCase();
+        if (role === 'batsman') score += 50;
+        else if (role === 'bowler') score += 30;
+        else score += 20; // All-rounder, WK, etc.
+      }
+
+      return { player, score };
+    });
+
+    // Sort by score (descending), then alphabetically within same score
+    scored.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.player.fullName.localeCompare(b.player.fullName);
+    });
+
+    return scored.map(s => s.player).slice(0, 10);
+  }, [query, players, usedPlayers, priorityPlayerIds, knownRole, knownCountry]);
 
   // Reset highlighted index when suggestions change
   useEffect(() => {

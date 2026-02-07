@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { getMillisecondsUntilNextPuzzle, formatCountdown } from '../../utils/dailyPuzzle.js';
 
+
 /**
  * ProminentCountdown - Large countdown timer for next puzzle
  */
@@ -194,7 +195,7 @@ function LeaderboardPreviewInline({
 /**
  * ResultBanner - Compact result banner for completed state
  */
-function ResultBanner({ won, guessesUsed, maxGuesses = 5, streak = 0 }) {
+function ResultBanner({ won, guessesUsed, maxGuesses = 5, streak = 0, playerName }) {
   if (won) {
     return (
       <div className="result-banner result-banner-win">
@@ -220,6 +221,11 @@ function ResultBanner({ won, guessesUsed, maxGuesses = 5, streak = 0 }) {
         <span className="result-banner-text">
           Better luck tomorrow!
         </span>
+        {playerName && (
+          <span className="result-banner-answer">
+            The answer was <strong>{playerName}</strong>
+          </span>
+        )}
       </div>
     </div>
   );
@@ -292,6 +298,55 @@ function NostalgiaCard({ matchContext, triviaFact, playerHighlight }) {
 }
 
 /**
+ * MatchSummaryCard - Shows full match details after game completion
+ * Team names, scores, result, MOTM, and cricinfo link
+ */
+function MatchSummaryCard({ resolvedScorecard, playerName, targetPlayerTeam, targetPlayerRole, cricinfoUrl }) {
+  if (!resolvedScorecard) return null;
+
+  return (
+    <div className="reveal-match-card">
+      <div className="reveal-match-label">🏏 Match Summary</div>
+      <div className="reveal-scores">
+        <div className="reveal-team-line">
+          <span className="reveal-team-name">{resolvedScorecard.team1Name}</span>
+          <span className="reveal-team-score">{resolvedScorecard.team1Score}</span>
+        </div>
+        <div className="reveal-vs">vs</div>
+        <div className="reveal-team-line">
+          <span className="reveal-team-name">{resolvedScorecard.team2Name}</span>
+          <span className="reveal-team-score">{resolvedScorecard.team2Score}</span>
+        </div>
+      </div>
+      <div className="reveal-result">{resolvedScorecard.result}</div>
+      <div className="reveal-venue">📍 {resolvedScorecard.venue}</div>
+      {playerName && (
+        <div className="reveal-motm" style={{ marginTop: '0.75rem' }}>
+          <div className="reveal-motm-label">⭐ Man of the Match</div>
+          <div className="reveal-motm-name">{playerName}</div>
+          {targetPlayerTeam && (
+            <div className="reveal-motm-detail">
+              {targetPlayerTeam}{targetPlayerRole ? ` • ${targetPlayerRole}` : ''}
+            </div>
+          )}
+        </div>
+      )}
+      {cricinfoUrl && (
+        <a
+          href={cricinfoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="reveal-scorecard-link"
+          style={{ marginTop: '0.5rem' }}
+        >
+          🔗 View Full Scorecard ↗
+        </a>
+      )}
+    </div>
+  );
+}
+
+/**
  * CompletedStateBanner - Complete redesigned home screen for completed state
  * Combines all sections: Result, Countdown, Leaderboard, Share, Notify, Archive
  */
@@ -312,7 +367,18 @@ export function CompletedStateBanner({
   userRanking,
   onViewLeaderboard,
   onOpenArchive,
-  matchHighlight = null
+  matchHighlight = null,
+  // Match summary props
+  resolvedScorecard,
+  targetPlayerTeam,
+  targetPlayerRole,
+  cricinfoUrl,
+  // Email persistence props
+  email,
+  onLinkEmail,
+  onSkipEmail,
+  isLinkingEmail,
+  showEmailPrompt
 }) {
   return (
     <div className="completed-home-redesign">
@@ -322,16 +388,25 @@ export function CompletedStateBanner({
         guessesUsed={guessesUsed}
         maxGuesses={maxGuesses}
         streak={streak}
+        playerName={!won ? playerName : undefined}
       />
 
-      {/* Nostalgia Card - Match trivia and highlights */}
-      {matchHighlight && (
+      {/* Match Summary Card - replaces nostalgia for rich reveal */}
+      {resolvedScorecard ? (
+        <MatchSummaryCard
+          resolvedScorecard={resolvedScorecard}
+          playerName={playerName}
+          targetPlayerTeam={targetPlayerTeam}
+          targetPlayerRole={targetPlayerRole}
+          cricinfoUrl={cricinfoUrl}
+        />
+      ) : matchHighlight ? (
         <NostalgiaCard
           matchContext={matchHighlight.matchContext}
           triviaFact={matchHighlight.triviaFact}
           playerHighlight={matchHighlight.playerHighlight}
         />
-      )}
+      ) : null}
 
       {/* Prominent Countdown */}
       <ProminentCountdown />
@@ -382,9 +457,16 @@ function LiveLeaderboard({
   maxGuesses = 5,
   onSubmit,
   isSubmitting = false,
-  onViewFull
+  onViewFull,
+  // Email persistence props
+  email,
+  onLinkEmail,
+  onSkipEmail,
+  isLinkingEmail,
+  showEmailPrompt
 }) {
   const [name, setName] = React.useState(displayName);
+  const [emailInput, setEmailInput] = React.useState(email || '');
   const [submitError, setSubmitError] = React.useState('');
 
   // Update name when displayName changes
@@ -392,7 +474,7 @@ function LiveLeaderboard({
     if (displayName) setName(displayName);
   }, [displayName]);
 
-  const handleSubmit = () => {
+  const handleSubmitWithEmail = async () => {
     const trimmedName = name.trim();
     if (trimmedName.length < 2) {
       setSubmitError('Name must be at least 2 characters');
@@ -404,7 +486,12 @@ function LiveLeaderboard({
     }
     setSubmitError('');
     if (onSubmit) {
-      onSubmit(trimmedName);
+      await onSubmit(trimmedName);
+    }
+    // Link email if provided
+    const trimmedEmail = emailInput.trim().toLowerCase();
+    if (trimmedEmail && onLinkEmail) {
+      try { await onLinkEmail(trimmedEmail); } catch (e) { /* non-blocking */ }
     }
   };
 
@@ -453,9 +540,17 @@ function LiveLeaderboard({
               maxLength={20}
               disabled={isSubmitting}
             />
+            <input
+              type="email"
+              className="live-submit-input live-submit-email"
+              placeholder="Email (optional)"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              disabled={isSubmitting}
+            />
             <button
               className="live-submit-btn"
-              onClick={handleSubmit}
+              onClick={handleSubmitWithEmail}
               disabled={isSubmitting || !name.trim()}
             >
               {isSubmitting ? '...' : 'Submit'}
@@ -536,10 +631,23 @@ export function CompletedMobileView({
   onNotifyMe,
   onOpenArchive,
   matchHighlight = null,
-  children // Puzzle content (scorecard + feedback) as children
+  playerName,
+  children, // Puzzle content (scorecard + feedback) as children
+  // Match summary props
+  resolvedScorecard,
+  targetPlayerTeam,
+  targetPlayerRole,
+  cricinfoUrl,
+  // Email persistence props
+  email,
+  onLinkEmail,
+  onSkipEmail,
+  isLinkingEmail,
+  showEmailPrompt
 }) {
   const [showPuzzleDetails, setShowPuzzleDetails] = React.useState(false);
   const [name, setName] = React.useState(displayName || '');
+  const [emailInput, setEmailInput] = React.useState(email || '');
   const [submitError, setSubmitError] = React.useState('');
 
   // Update name when displayName changes
@@ -547,7 +655,7 @@ export function CompletedMobileView({
     if (displayName) setName(displayName);
   }, [displayName]);
 
-  const handleSubmit = () => {
+  const handleSubmitWithEmail = async () => {
     const trimmedName = name.trim();
     if (trimmedName.length < 2) {
       setSubmitError('Name must be at least 2 characters');
@@ -559,7 +667,12 @@ export function CompletedMobileView({
     }
     setSubmitError('');
     if (onSubmitToLeaderboard) {
-      onSubmitToLeaderboard(trimmedName);
+      await onSubmitToLeaderboard(trimmedName);
+    }
+    // Link email if provided
+    const trimmedEmail = emailInput.trim().toLowerCase();
+    if (trimmedEmail && onLinkEmail) {
+      try { await onLinkEmail(trimmedEmail); } catch (e) { /* non-blocking */ }
     }
   };
 
@@ -607,6 +720,11 @@ export function CompletedMobileView({
             <div className="result-hero-emoji">😔</div>
             <div className="result-hero-title">Game Over</div>
             <div className="result-hero-subtitle">Better luck tomorrow!</div>
+            {playerName && (
+              <div className="result-hero-answer">
+                The answer was <strong>{playerName}</strong>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -628,9 +746,17 @@ export function CompletedMobileView({
               maxLength={20}
               disabled={isSubmitting}
             />
+            <input
+              type="email"
+              className="mobile-submit-input mobile-submit-email"
+              placeholder="Email (optional)"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              disabled={isSubmitting}
+            />
             <button
               className="mobile-submit-btn"
-              onClick={handleSubmit}
+              onClick={handleSubmitWithEmail}
               disabled={isSubmitting || !name.trim()}
             >
               {isSubmitting ? 'Submitting...' : 'Submit'}
@@ -682,14 +808,22 @@ export function CompletedMobileView({
         copyState={copyState}
       />
 
-      {/* Nostalgia Card */}
-      {matchHighlight && (
+      {/* Match Summary Card or Nostalgia Card */}
+      {resolvedScorecard ? (
+        <MatchSummaryCard
+          resolvedScorecard={resolvedScorecard}
+          playerName={playerName}
+          targetPlayerTeam={targetPlayerTeam}
+          targetPlayerRole={targetPlayerRole}
+          cricinfoUrl={cricinfoUrl}
+        />
+      ) : matchHighlight ? (
         <NostalgiaCard
           matchContext={matchHighlight.matchContext}
           triviaFact={matchHighlight.triviaFact}
           playerHighlight={matchHighlight.playerHighlight}
         />
-      )}
+      ) : null}
 
       {/* Notify Me */}
       <NotifySection onNotifyMe={onNotifyMe} />

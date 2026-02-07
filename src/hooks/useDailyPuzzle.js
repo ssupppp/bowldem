@@ -13,6 +13,7 @@ import {
   loadStats,
   completeGame,
   markModalShown,
+  markAnswerRevealed,
   isDebugMode,
   getEffectiveDate,
   getPuzzleNumber,
@@ -161,6 +162,14 @@ export function useDailyPuzzle(puzzles) {
     setGameState(updatedState);
   }, []);
 
+  /**
+   * Mark the answer as revealed (persists for returning users)
+   */
+  const setAnswerRevealed = useCallback(() => {
+    const updatedState = markAnswerRevealed();
+    setGameState(updatedState);
+  }, []);
+
   // ============================================================================
   // RETURN VALUE
   // ============================================================================
@@ -179,6 +188,7 @@ export function useDailyPuzzle(puzzles) {
     gameStatus: gameState.gameStatus,
     alreadyCompleted,
     modalShown: gameState.modalShown,
+    answerRevealed: gameState.answerRevealed || false,
 
     // Stats
     stats,
@@ -187,6 +197,7 @@ export function useDailyPuzzle(puzzles) {
     recordGuess,
     refreshPuzzle,
     setModalShown,
+    setAnswerRevealed,
 
     // Debug
     debugMode,

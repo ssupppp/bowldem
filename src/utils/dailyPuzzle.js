@@ -92,7 +92,8 @@ function getDefaultGameState() {
     lastPuzzleNumber: null,
     guesses: [],
     gameStatus: 'not_started', // 'not_started' | 'in_progress' | 'won' | 'lost'
-    modalShown: false // Tracks if result modal has been shown (prevents re-trigger on page return)
+    modalShown: false, // Tracks if result modal has been shown (prevents re-trigger on page return)
+    answerRevealed: false // Tracks if the answer has been revealed (via email or skip) for losses
   };
 }
 
@@ -216,6 +217,16 @@ export function completeGame(won) {
 export function markModalShown() {
   const state = loadGameState();
   state.modalShown = true;
+  saveGameState(state);
+  return state;
+}
+
+/**
+ * Mark the answer as revealed (persists so returning users see it)
+ */
+export function markAnswerRevealed() {
+  const state = loadGameState();
+  state.answerRevealed = true;
   saveGameState(state);
   return state;
 }

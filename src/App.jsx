@@ -72,6 +72,8 @@ function App() {
     stats,
     recordGuess,
     setModalShown,
+    setAnswerRevealed: persistAnswerRevealed,
+    answerRevealed: answerRevealedPersisted,
     debugMode,
     debugOffset,
     effectiveDate,
@@ -99,6 +101,14 @@ function App() {
   const [newFeedbackIndex, setNewFeedbackIndex] = useState(-1);
   const [modalMinimized, setModalMinimized] = useState(false);
   const [copyButtonState, setCopyButtonState] = useState('idle'); // 'idle' | 'copied'
+  const [answerRevealedSession, setAnswerRevealedSession] = useState(false);
+  const answerRevealed = answerRevealedPersisted || answerRevealedSession;
+  const setAnswerRevealed = useCallback((val) => {
+    setAnswerRevealedSession(true);
+    persistAnswerRevealed(); // persist to localStorage
+  }, [persistAnswerRevealed]);
+  const [revealAnswerEmail, setRevealAnswerEmail] = useState('');
+  const [revealEmailError, setRevealEmailError] = useState('');
 
   // Get puzzle date for leaderboard
   const puzzleDate = getEffectiveDate();
@@ -195,6 +205,51 @@ function App() {
   const findPlayer = (playerId) => {
     return playersLookup[playerId] || null;
   };
+
+  /**
+   * Derive real team names from puzzle data when team1Name/team2Name are missing.
+   * Uses playersInMatch to determine teams from player countries.
+   * Also fixes result text that says "Team 1"/"Team 2".
+   */
+  const getResolvedScorecard = useCallback((puzzle) => {
+    if (!puzzle) return null;
+    const scorecard = puzzle.matchData?.scorecard || {};
+    let team1Name = scorecard.team1Name;
+    let team2Name = scorecard.team2Name;
+
+    if (!team1Name || !team2Name) {
+      const players = puzzle.matchData?.playersInMatch || [];
+      // First player's country = team1, find a different country = team2
+      if (players.length > 0) {
+        const firstPlayer = findPlayer(players[0]);
+        team1Name = firstPlayer?.country || 'Team 1';
+        for (let i = 1; i < players.length; i++) {
+          const p = findPlayer(players[i]);
+          if (p && p.country !== team1Name) {
+            team2Name = p.country || 'Team 2';
+            break;
+          }
+        }
+        if (!team2Name) team2Name = 'Team 2';
+      }
+    }
+
+    // Fix result text: replace "Team 1"/"Team 2" with real names
+    let result = scorecard.result || '';
+    if (team1Name && result.includes('Team 1')) {
+      result = result.replace('Team 1', team1Name);
+    }
+    if (team2Name && result.includes('Team 2')) {
+      result = result.replace('Team 2', team2Name);
+    }
+
+    return {
+      ...scorecard,
+      team1Name,
+      team2Name,
+      result
+    };
+  }, [findPlayer]);
 
   /**
    * Generate Y/N feedback for a guessed player
@@ -407,6 +462,9 @@ function App() {
   const handleCloseModal = () => {
     setShowSuccessModal(false);
     setShowGameOverModal(false);
+    // Don't reset answerRevealed — it's persisted
+    setRevealAnswerEmail('');
+    setRevealEmailError('');
   };
 
   const generateShareText = () => {
@@ -529,11 +587,20 @@ function App() {
 
     if (!puzzle) return null;
 
+    const resolved = getResolvedScorecard(puzzle);
     const scorecard = puzzle.matchData?.scorecard || {};
     const venue = scorecard.venue || "Unknown Venue";
     const team1Score = scorecard.team1Score;
     const team2Score = scorecard.team2Score;
-    const result = scorecard.result;
+
+    // Determine if we should reveal team names (won, or answer revealed after loss)
+    const shouldReveal = archiveMode
+      ? (archiveGameWon || archiveGameOver)
+      : (gameWon || (alreadyCompleted && (gameStatus === 'won' || answerRevealed)));
+
+    const team1Label = shouldReveal ? (resolved?.team1Name || 'Team 1') : 'Team 1';
+    const team2Label = shouldReveal ? (resolved?.team2Name || 'Team 2') : 'Team 2';
+    const result = shouldReveal ? resolved?.result : null;
 
     // Get match context (includes year) from highlights
     const puzzleHighlight = matchHighlightsData.highlights.find(h => h.puzzleId === puzzle.id);
@@ -556,17 +623,17 @@ function App() {
         {team1Score && team2Score && (
           <div className="match-scores">
             <div className="team-score">
-              <span className="team-label">Team 1</span>
+              <span className="team-label">{team1Label}</span>
               <span className="score-value">{team1Score}</span>
             </div>
             <div className="vs-divider">vs</div>
             <div className="team-score">
-              <span className="team-label">Team 2</span>
+              <span className="team-label">{team2Label}</span>
               <span className="score-value">{team2Score}</span>
             </div>
           </div>
         )}
-        {result && (archiveMode ? (archiveGameOver || archiveGameWon) : (gameOver || gameWon || alreadyCompleted)) && (
+        {result && (
           <div className="match-result">{result}</div>
         )}
       </div>
@@ -610,24 +677,61 @@ function App() {
       );
     }
 
-    // Daily mode - NEW compact design with game radar
+    // Daily mode - Grand Reveal with match summary
+    const resolved = getResolvedScorecard(puzzle);
+    const cricinfoUrl = puzzle?.cricinfoUrl;
+
     return (
-      <div className="result-modal result-modal-success result-modal-compact">
+      <div className="result-modal result-modal-success result-modal-reveal">
         <button className="modal-close-btn" onClick={handleCloseModal} aria-label="Close">
           <Icon name="close" size={20} />
         </button>
 
-        {/* Header with emoji and puzzle number */}
-        <div className="result-header">
-          <span className="result-emoji-inline">🏆</span>
-          <span className="result-puzzle-title">Bowldem #{displayPuzzleNumber}</span>
+        {/* Header */}
+        <div className="reveal-header">
+          <span className="reveal-trophy">🏆</span>
+          <span className="reveal-title">Bowldem #{displayPuzzleNumber}</span>
+          <span className="reveal-solved">Solved in {currentFeedbackList.length}/{maxGuesses}</span>
         </div>
 
-        {/* Game Radar - emoji feedback grid */}
-        <GameRadar feedback={currentFeedbackList} />
+        {/* Match Summary Card */}
+        <div className="reveal-match-card">
+          <div className="reveal-match-label">🏏 Match Summary</div>
+          <div className="reveal-scores">
+            <div className="reveal-team-line">
+              <span className="reveal-team-name">{resolved?.team1Name}</span>
+              <span className="reveal-team-score">{resolved?.team1Score}</span>
+            </div>
+            <div className="reveal-vs">vs</div>
+            <div className="reveal-team-line">
+              <span className="reveal-team-name">{resolved?.team2Name}</span>
+              <span className="reveal-team-score">{resolved?.team2Score}</span>
+            </div>
+          </div>
+          <div className="reveal-result">{resolved?.result}</div>
+          <div className="reveal-venue">📍 {resolved?.venue}</div>
+        </div>
 
-        {/* Result text */}
-        <p className="result-text">Solved in {currentFeedbackList.length}/{maxGuesses}!</p>
+        {/* MOTM Section */}
+        <div className="reveal-motm">
+          <div className="reveal-motm-label">⭐ Man of the Match</div>
+          <div className="reveal-motm-name">{targetPlayer?.fullName}</div>
+          <div className="reveal-motm-detail">
+            {puzzle?.matchData?.targetPlayerTeam} • {puzzle?.matchData?.targetPlayerRole}
+          </div>
+        </div>
+
+        {/* Cricinfo Link */}
+        {cricinfoUrl && (
+          <a
+            href={cricinfoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="reveal-scorecard-link"
+          >
+            🔗 View Full Scorecard ↗
+          </a>
+        )}
 
         {/* Share buttons row */}
         <div className="modal-share-buttons">
@@ -710,34 +814,121 @@ function App() {
       );
     }
 
-    // Daily mode - NEW compact design with game radar, NO answer reveal
+    // Daily mode - with reveal answer flow + match summary
+    const resolved = getResolvedScorecard(puzzle);
+    const cricinfoUrl = puzzle?.cricinfoUrl;
+
     return (
-      <div className="result-modal result-modal-failure result-modal-compact">
+      <div className={`result-modal result-modal-failure ${answerRevealed ? 'result-modal-reveal' : 'result-modal-compact'}`}>
         <button className="modal-close-btn" onClick={handleCloseModal} aria-label="Close">
           <Icon name="close" size={20} />
         </button>
 
         {/* Header with emoji and puzzle number */}
-        <div className="result-header">
-          <span className="result-emoji-inline">😔</span>
-          <span className="result-puzzle-title">Bowldem #{displayPuzzleNumber}</span>
+        <div className={answerRevealed ? "reveal-header" : "result-header"}>
+          <span className={answerRevealed ? "reveal-trophy" : "result-emoji-inline"}>😔</span>
+          <span className={answerRevealed ? "reveal-title" : "result-puzzle-title"}>Bowldem #{displayPuzzleNumber}</span>
+          {answerRevealed && (
+            <span className="reveal-solved" style={{ color: '#dc2626' }}>
+              {currentFeedbackList.length}/{maxGuesses} guesses used
+            </span>
+          )}
         </div>
 
-        {/* Game Radar - emoji feedback grid */}
-        <GameRadar feedback={currentFeedbackList} />
+        {/* Game Radar - only show before reveal */}
+        {!answerRevealed && <GameRadar feedback={currentFeedbackList} />}
 
-        {/* Result text - NO answer revealed */}
-        <p className="result-text">Better luck tomorrow!</p>
+        {/* Result text - only before reveal */}
+        {!answerRevealed && <p className="result-text">Better luck tomorrow!</p>}
 
-        {/* Primary CTA - Copy Result */}
+        {/* Reveal Answer Section */}
+        {answerRevealed ? (
+          <>
+            {/* Match Summary Card - same as win */}
+            <div className="reveal-match-card">
+              <div className="reveal-match-label">🏏 Match Summary</div>
+              <div className="reveal-scores">
+                <div className="reveal-team-line">
+                  <span className="reveal-team-name">{resolved?.team1Name}</span>
+                  <span className="reveal-team-score">{resolved?.team1Score}</span>
+                </div>
+                <div className="reveal-vs">vs</div>
+                <div className="reveal-team-line">
+                  <span className="reveal-team-name">{resolved?.team2Name}</span>
+                  <span className="reveal-team-score">{resolved?.team2Score}</span>
+                </div>
+              </div>
+              <div className="reveal-result">{resolved?.result}</div>
+              <div className="reveal-venue">📍 {resolved?.venue}</div>
+            </div>
+
+            {/* MOTM Section */}
+            <div className="reveal-motm">
+              <div className="reveal-motm-label">⭐ Man of the Match</div>
+              <div className="reveal-motm-name">{targetPlayer?.fullName || "Unknown"}</div>
+              <div className="reveal-motm-detail">
+                {puzzle?.matchData?.targetPlayerTeam} • {puzzle?.matchData?.targetPlayerRole}
+              </div>
+            </div>
+
+            {/* Cricinfo Link */}
+            {cricinfoUrl && (
+              <a
+                href={cricinfoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="reveal-scorecard-link"
+              >
+                🔗 View Full Scorecard ↗
+              </a>
+            )}
+          </>
+        ) : (
+          <div className="reveal-answer-section">
+            <div className="reveal-answer-prompt">Want to know the answer?</div>
+            <div className="reveal-answer-form">
+              <input
+                type="email"
+                className={`reveal-answer-input ${revealEmailError ? 'has-error' : ''}`}
+                placeholder="your@email.com"
+                value={revealAnswerEmail}
+                onChange={(e) => {
+                  setRevealAnswerEmail(e.target.value);
+                  setRevealEmailError('');
+                }}
+              />
+              {revealEmailError && <div className="reveal-answer-error">{revealEmailError}</div>}
+            </div>
+            <div className="reveal-answer-actions">
+              <button
+                className="btn-reveal-answer"
+                onClick={async () => {
+                  const trimmed = revealAnswerEmail.trim().toLowerCase();
+                  if (!trimmed) {
+                    setRevealEmailError('Please enter your email');
+                    return;
+                  }
+                  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+                    setRevealEmailError('Please enter a valid email');
+                    return;
+                  }
+                  try { await linkEmail(trimmed); } catch (e) { /* non-blocking */ }
+                  setAnswerRevealed(true);
+                }}
+              >
+                Reveal Answer
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Copy Result */}
         <button
           className={`btn-copy-result ${copyButtonState === 'copied' ? 'copied' : ''}`}
           onClick={handleShare}
         >
           {copyButtonState === 'copied' ? 'Copied ✓' : 'Copy Result'}
         </button>
-
-        {/* NO leaderboard link for losses - winners only */}
       </div>
     );
   };
@@ -928,6 +1119,7 @@ function App() {
                   disabled={archiveGameWon || archiveGameOver}
                   usedPlayers={archiveUsedPlayers}
                   priorityPlayerIds={priorityPlayerIds}
+                  feedbackList={archiveFeedbackList}
                 />
               </div>
             )
@@ -944,6 +1136,7 @@ function App() {
                   disabled={gameWon || gameOver}
                   usedPlayers={usedPlayers}
                   priorityPlayerIds={priorityPlayerIds}
+                  feedbackList={feedbackList}
                 />
               </div>
             )
@@ -956,7 +1149,7 @@ function App() {
               guessesUsed={feedbackList.length}
               maxGuesses={maxGuesses}
               streak={stats.currentStreak}
-              playerName={findPlayer(currentPuzzle?.targetPlayer)?.fullName}
+              playerName={(gameStatus === 'won' || answerRevealed) ? findPlayer(currentPuzzle?.targetPlayer)?.fullName : undefined}
               displayName={displayName}
               hasSubmitted={hasLeaderboardSubmitted}
               onSubscribe={handleNotificationSubscribe}
@@ -968,11 +1161,12 @@ function App() {
               userRanking={userRanking}
               onViewLeaderboard={() => setShowLeaderboardModal(true)}
               onOpenArchive={() => setShowArchiveModal(true)}
-              matchHighlight={matchHighlight}
-              // New props for rich match reveal
-              scorecard={currentPuzzle?.matchData?.scorecard}
-              targetPlayerTeam={currentPuzzle?.matchData?.targetPlayerTeam}
-              cricinfoUrl={currentPuzzle?.cricinfoUrl}
+              matchHighlight={(gameStatus === 'won' || answerRevealed) ? matchHighlight : null}
+              // Match summary reveal props
+              resolvedScorecard={(gameStatus === 'won' || answerRevealed) ? getResolvedScorecard(currentPuzzle) : null}
+              targetPlayerTeam={(gameStatus === 'won' || answerRevealed) ? currentPuzzle?.matchData?.targetPlayerTeam : undefined}
+              targetPlayerRole={(gameStatus === 'won' || answerRevealed) ? currentPuzzle?.matchData?.targetPlayerRole : undefined}
+              cricinfoUrl={(gameStatus === 'won' || answerRevealed) ? currentPuzzle?.cricinfoUrl : undefined}
               // Email persistence props
               email={savedEmail}
               onLinkEmail={linkEmail}
@@ -1020,12 +1214,13 @@ function App() {
                   copyState={copyButtonState}
                   onSubscribe={handleNotificationSubscribe}
                   onOpenArchive={() => setShowArchiveModal(true)}
-                  matchHighlight={matchHighlight}
-                  // New props for rich match reveal
-                  scorecard={currentPuzzle?.matchData?.scorecard}
-                  targetPlayerTeam={currentPuzzle?.matchData?.targetPlayerTeam}
-                  playerName={findPlayer(currentPuzzle?.targetPlayer)?.fullName}
-                  cricinfoUrl={currentPuzzle?.cricinfoUrl}
+                  matchHighlight={(gameStatus === 'won' || answerRevealed) ? matchHighlight : null}
+                  // Match summary reveal props
+                  resolvedScorecard={(gameStatus === 'won' || answerRevealed) ? getResolvedScorecard(currentPuzzle) : null}
+                  targetPlayerTeam={(gameStatus === 'won' || answerRevealed) ? currentPuzzle?.matchData?.targetPlayerTeam : undefined}
+                  targetPlayerRole={(gameStatus === 'won' || answerRevealed) ? currentPuzzle?.matchData?.targetPlayerRole : undefined}
+                  playerName={(gameStatus === 'won' || answerRevealed) ? findPlayer(currentPuzzle?.targetPlayer)?.fullName : undefined}
+                  cricinfoUrl={(gameStatus === 'won' || answerRevealed) ? currentPuzzle?.cricinfoUrl : undefined}
                   // Email persistence props
                   email={savedEmail}
                   onLinkEmail={linkEmail}

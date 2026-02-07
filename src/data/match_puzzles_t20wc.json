@@ -940,79 +940,41 @@
       }
     },
     {
-      "id": 25,
-      "targetPlayer": "RGSHARMA",
+      "id": 29,
+      "targetPlayer": "JCBUTTLER",
       "matchData": {
         "scorecard": {
-          "venue": "Daren Sammy National Cricket Stadium, Gros Islet, St Lucia",
-          "team1Score": "205/5 (19.2 overs)",
-          "team2Score": "181/7 (19.3 overs)",
-          "result": "Team 1 won by 24 runs"
+          "venue": "Brisbane Cricket Ground, Brisbane, Australia",
+          "team1Score": "179/6 (19.2 overs)",
+          "team2Score": "159/6 (19.4 overs)",
+          "result": "Team 1 won by 20 runs"
         },
         "playersInMatch": [
-          "RGSHARMA",
-          "VKOHLI",
-          "RRPANT",
-          "SAYADAV",
-          "SDUBE",
-          "HHPANDYA",
-          "RAJADEJA",
-          "ARPATEL",
-          "KULDEEPYADAV",
-          "ARSHDEEPSINGH",
-          "JJBUMRAH",
-          "DAWARNER",
-          "TMHEAD",
-          "MRMARSH",
-          "GJMAXWELL",
-          "MPSTOINIS",
-          "THDAVID",
-          "MSWADE",
-          "PJCUMMINS",
-          "MASTARC",
-          "AZAMPA",
-          "JRHAZLEWOOD"
+          "JCBUTTLER",
+          "ADHALES",
+          "MMALI",
+          "LSLIVINGSTONE",
+          "HCBROOK",
+          "BASTOKES",
+          "SMCURRAN",
+          "DJMALAN",
+          "CRWOAKES",
+          "MAWOOD",
+          "AURASHID",
+          "FHALLEN",
+          "DPCONWAY",
+          "KSWILLIAMSON",
+          "GDPHILLIPS",
+          "JDSNEESHAM",
+          "DJMITCHELL",
+          "MJSANTNER",
+          "ISSODHI",
+          "TGSOUTHEE",
+          "LHFERGUSON",
+          "TABOULT"
         ],
-        "targetPlayerTeam": "India",
-        "targetPlayerRole": "Batsman"
-      }
-    },
-    {
-      "id": 26,
-      "targetPlayer": "DJBRAVO",
-      "matchData": {
-        "scorecard": {
-          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
-          "team1Score": "166/6 (19.5 overs)",
-          "team2Score": "82/10 (17.1 overs)",
-          "result": "Team 1 won by 84 runs"
-        },
-        "playersInMatch": [
-          "AHMEDSHEHZAD",
-          "KAMRANAKMAL",
-          "MOHAMMADHAFEEZ",
-          "UMARAKMAL",
-          "SHOAIBMALIK",
-          "SOHAIBMAQSOOD",
-          "SHAHIDAFRIDI",
-          "SOHAILTANVIR",
-          "UMARGUL",
-          "SAEEDAJMAL",
-          "ZULFIQARBABAR",
-          "DRSMITH",
-          "CHGAYLE",
-          "LMPSIMMONS",
-          "MNSAMUELS",
-          "DJBRAVO",
-          "DRAMDIN",
-          "DJGSAMMY",
-          "ADRUSSELL",
-          "SPNARINE",
-          "SBADREE",
-          "KSANTOKIE"
-        ],
-        "targetPlayerTeam": "West Indies",
-        "targetPlayerRole": "All-rounder"
+        "targetPlayerTeam": "England",
+        "targetPlayerRole": "Wicketkeeper"
       }
     },
     {
@@ -1054,6 +1016,120 @@
       }
     },
     {
+      "id": 45,
+      "targetPlayer": "MOHAMMADRIZWAN",
+      "matchData": {
+        "scorecard": {
+          "venue": "Zayed Cricket Stadium, Abu Dhabi, UAE",
+          "team1Score": "189/2 (20 overs)",
+          "team2Score": "144/5 (19.2 overs)",
+          "result": "Team 1 won by 45 runs"
+        },
+        "playersInMatch": [
+          "MOHAMMADRIZWAN",
+          "BABARAZAM",
+          "FAKHARZAMAN",
+          "MOHAMMADHAFEEZ",
+          "SHOAIBMALIK",
+          "ASIFALI",
+          "SHADABKHAN",
+          "IMADWASIM",
+          "HASANALI",
+          "HARISRAUF",
+          "SHAHEENSHAHAFRIDI",
+          "SJBAARD",
+          "MVANLINGEN",
+          "CGWILLIAMS",
+          "MGERASMUS",
+          "DWIESE",
+          "JJSMIT",
+          "JNLOFTIEEATON",
+          "RTRUMPELMANN",
+          "ZEGREEN",
+          "JNFRYLINCK",
+          "BSHIKONGO"
+        ],
+        "targetPlayerTeam": "Pakistan",
+        "targetPlayerRole": "Wicketkeeper"
+      }
+    },
+    {
+      "id": 26,
+      "targetPlayer": "DJBRAVO",
+      "matchData": {
+        "scorecard": {
+          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
+          "team1Score": "166/6 (19.5 overs)",
+          "team2Score": "82/10 (17.1 overs)",
+          "result": "Team 1 won by 84 runs"
+        },
+        "playersInMatch": [
+          "AHMEDSHEHZAD",
+          "KAMRANAKMAL",
+          "MOHAMMADHAFEEZ",
+          "UMARAKMAL",
+          "SHOAIBMALIK",
+          "SOHAIBMAQSOOD",
+          "SHAHIDAFRIDI",
+          "SOHAILTANVIR",
+          "UMARGUL",
+          "SAEEDAJMAL",
+          "ZULFIQARBABAR",
+          "DRSMITH",
+          "CHGAYLE",
+          "LMPSIMMONS",
+          "MNSAMUELS",
+          "DJBRAVO",
+          "DRAMDIN",
+          "DJGSAMMY",
+          "ADRUSSELL",
+          "SPNARINE",
+          "SBADREE",
+          "KSANTOKIE"
+        ],
+        "targetPlayerTeam": "West Indies",
+        "targetPlayerRole": "All-rounder"
+      }
+    },
+    {
+      "id": 25,
+      "targetPlayer": "RGSHARMA",
+      "matchData": {
+        "scorecard": {
+          "venue": "Daren Sammy National Cricket Stadium, Gros Islet, St Lucia",
+          "team1Score": "205/5 (19.2 overs)",
+          "team2Score": "181/7 (19.3 overs)",
+          "result": "Team 1 won by 24 runs"
+        },
+        "playersInMatch": [
+          "RGSHARMA",
+          "VKOHLI",
+          "RRPANT",
+          "SAYADAV",
+          "SDUBE",
+          "HHPANDYA",
+          "RAJADEJA",
+          "ARPATEL",
+          "KULDEEPYADAV",
+          "ARSHDEEPSINGH",
+          "JJBUMRAH",
+          "DAWARNER",
+          "TMHEAD",
+          "MRMARSH",
+          "GJMAXWELL",
+          "MPSTOINIS",
+          "THDAVID",
+          "MSWADE",
+          "PJCUMMINS",
+          "MASTARC",
+          "AZAMPA",
+          "JRHAZLEWOOD"
+        ],
+        "targetPlayerTeam": "India",
+        "targetPlayerRole": "Batsman"
+      }
+    },
+    {
       "id": 28,
       "targetPlayer": "HKLAASEN",
       "matchData": {
@@ -1088,44 +1164,6 @@
           "MUSTAFIZURRAHMAN"
         ],
         "targetPlayerTeam": "South Africa",
-        "targetPlayerRole": "Wicketkeeper"
-      }
-    },
-    {
-      "id": 29,
-      "targetPlayer": "JCBUTTLER",
-      "matchData": {
-        "scorecard": {
-          "venue": "Brisbane Cricket Ground, Brisbane, Australia",
-          "team1Score": "179/6 (19.2 overs)",
-          "team2Score": "159/6 (19.4 overs)",
-          "result": "Team 1 won by 20 runs"
-        },
-        "playersInMatch": [
-          "JCBUTTLER",
-          "ADHALES",
-          "MMALI",
-          "LSLIVINGSTONE",
-          "HCBROOK",
-          "BASTOKES",
-          "SMCURRAN",
-          "DJMALAN",
-          "CRWOAKES",
-          "MAWOOD",
-          "AURASHID",
-          "FHALLEN",
-          "DPCONWAY",
-          "KSWILLIAMSON",
-          "GDPHILLIPS",
-          "JDSNEESHAM",
-          "DJMITCHELL",
-          "MJSANTNER",
-          "ISSODHI",
-          "TGSOUTHEE",
-          "LHFERGUSON",
-          "TABOULT"
-        ],
-        "targetPlayerTeam": "England",
         "targetPlayerRole": "Wicketkeeper"
       }
     },
@@ -1168,82 +1206,6 @@
       }
     },
     {
-      "id": 31,
-      "targetPlayer": "PDSALT",
-      "matchData": {
-        "scorecard": {
-          "venue": "Daren Sammy National Cricket Stadium, Gros Islet, St Lucia",
-          "team1Score": "180/5 (19.4 overs)",
-          "team2Score": "181/2 (17.3 overs)",
-          "result": "Team 2 won by 8 wickets"
-        },
-        "playersInMatch": [
-          "BAKING",
-          "JCHARLES",
-          "NPOORAN",
-          "RPOWELL",
-          "ADRUSSELL",
-          "SERUTHERFORD",
-          "RSHEPHERD",
-          "RLCHASE",
-          "AJHOSEIN",
-          "ASJOSEPH",
-          "GMOTIE",
-          "PDSALT",
-          "JCBUTTLER",
-          "MMALI",
-          "JMBAIRSTOW",
-          "HCBROOK",
-          "LSLIVINGSTONE",
-          "SMCURRAN",
-          "JCARCHER",
-          "AURASHID",
-          "MAWOOD",
-          "RJWTOPLEY"
-        ],
-        "targetPlayerTeam": "England",
-        "targetPlayerRole": "Wicketkeeper"
-      }
-    },
-    {
-      "id": 32,
-      "targetPlayer": "DJGSAMMY",
-      "matchData": {
-        "scorecard": {
-          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
-          "team1Score": "178/8 (19.2 overs)",
-          "team2Score": "179/4 (20 overs)",
-          "result": "Team 2 won by 6 wickets"
-        },
-        "playersInMatch": [
-          "AJFINCH",
-          "DAWARNER",
-          "SRWATSON",
-          "GJMAXWELL",
-          "GJBAILEY",
-          "BJHODGE",
-          "JPFAULKNER",
-          "BJHADDIN",
-          "MASTARC",
-          "JMMUIRHEAD",
-          "DEBOLLINGER",
-          "DRSMITH",
-          "CHGAYLE",
-          "LMPSIMMONS",
-          "MNSAMUELS",
-          "DJBRAVO",
-          "DJGSAMMY",
-          "DRAMDIN",
-          "ADRUSSELL",
-          "SPNARINE",
-          "SBADREE",
-          "KSANTOKIE"
-        ],
-        "targetPlayerTeam": "West Indies",
-        "targetPlayerRole": "All-rounder"
-      }
-    },
-    {
       "id": 33,
       "targetPlayer": "VKOHLI",
       "matchData": {
@@ -1279,6 +1241,44 @@
         ],
         "targetPlayerTeam": "India",
         "targetPlayerRole": "Batsman"
+      }
+    },
+    {
+      "id": 31,
+      "targetPlayer": "PDSALT",
+      "matchData": {
+        "scorecard": {
+          "venue": "Daren Sammy National Cricket Stadium, Gros Islet, St Lucia",
+          "team1Score": "180/5 (19.4 overs)",
+          "team2Score": "181/2 (17.3 overs)",
+          "result": "Team 2 won by 8 wickets"
+        },
+        "playersInMatch": [
+          "BAKING",
+          "JCHARLES",
+          "NPOORAN",
+          "RPOWELL",
+          "ADRUSSELL",
+          "SERUTHERFORD",
+          "RSHEPHERD",
+          "RLCHASE",
+          "AJHOSEIN",
+          "ASJOSEPH",
+          "GMOTIE",
+          "PDSALT",
+          "JCBUTTLER",
+          "MMALI",
+          "JMBAIRSTOW",
+          "HCBROOK",
+          "LSLIVINGSTONE",
+          "SMCURRAN",
+          "JCARCHER",
+          "AURASHID",
+          "MAWOOD",
+          "RJWTOPLEY"
+        ],
+        "targetPlayerTeam": "England",
+        "targetPlayerRole": "Wicketkeeper"
       }
     },
     {
@@ -1358,79 +1358,41 @@
       }
     },
     {
-      "id": 36,
-      "targetPlayer": "CJJORDAN",
+      "id": 32,
+      "targetPlayer": "DJGSAMMY",
       "matchData": {
         "scorecard": {
-          "venue": "Dubai International Cricket Stadium, Dubai, UAE",
-          "team1Score": "125/10 (19.3 overs)",
-          "team2Score": "126/2 (11.2 overs)",
-          "result": "Team 2 won by 8 wickets"
+          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
+          "team1Score": "178/8 (19.2 overs)",
+          "team2Score": "179/4 (20 overs)",
+          "result": "Team 2 won by 6 wickets"
         },
         "playersInMatch": [
-          "DAWARNER",
           "AJFINCH",
-          "SPDSMITH",
+          "DAWARNER",
+          "SRWATSON",
           "GJMAXWELL",
-          "MPSTOINIS",
-          "MSWADE",
-          "ACAGAR",
-          "PJCUMMINS",
+          "GJBAILEY",
+          "BJHODGE",
+          "JPFAULKNER",
+          "BJHADDIN",
           "MASTARC",
-          "AZAMPA",
-          "JRHAZLEWOOD",
-          "JJROY",
-          "JCBUTTLER",
-          "DJMALAN",
-          "JMBAIRSTOW",
-          "EJGMORGAN",
-          "LSLIVINGSTONE",
-          "MMALI",
-          "CRWOAKES",
-          "CJJORDAN",
-          "AURASHID",
-          "TSMILLS"
+          "JMMUIRHEAD",
+          "DEBOLLINGER",
+          "DRSMITH",
+          "CHGAYLE",
+          "LMPSIMMONS",
+          "MNSAMUELS",
+          "DJBRAVO",
+          "DJGSAMMY",
+          "DRAMDIN",
+          "ADRUSSELL",
+          "SPNARINE",
+          "SBADREE",
+          "KSANTOKIE"
         ],
-        "targetPlayerTeam": "England",
-        "targetPlayerRole": "Bowler"
-      }
-    },
-    {
-      "id": 37,
-      "targetPlayer": "JCBUTTLER",
-      "matchData": {
-        "scorecard": {
-          "venue": "Sharjah Cricket Stadium, Sharjah, UAE",
-          "team1Score": "163/4 (19.5 overs)",
-          "team2Score": "137/10 (18.1 overs)",
-          "result": "Team 1 won by 26 runs"
-        },
-        "playersInMatch": [
-          "JJROY",
-          "JCBUTTLER",
-          "DJMALAN",
-          "JMBAIRSTOW",
-          "EJGMORGAN",
-          "MMALI",
-          "LSLIVINGSTONE",
-          "CRWOAKES",
-          "CJJORDAN",
-          "AURASHID",
-          "TSMILLS",
-          "PNISSANKA",
-          "MDKJPERERA",
-          "KICASALANKA",
-          "WIAFERNANDO",
-          "PBBRAJAPAKSA",
-          "MDSHANAKA",
-          "PWHDESILVA",
-          "CKARUNARATNE",
-          "PVDCHAMEERA",
-          "MTHEEKSHANA",
-          "CBRLSKUMARA"
-        ],
-        "targetPlayerTeam": "England",
-        "targetPlayerRole": "Wicketkeeper"
+        "targetPlayerTeam": "West Indies",
+        "targetPlayerRole": "All-rounder"
       }
     },
     {
@@ -1510,6 +1472,120 @@
       }
     },
     {
+      "id": 36,
+      "targetPlayer": "CJJORDAN",
+      "matchData": {
+        "scorecard": {
+          "venue": "Dubai International Cricket Stadium, Dubai, UAE",
+          "team1Score": "125/10 (19.3 overs)",
+          "team2Score": "126/2 (11.2 overs)",
+          "result": "Team 2 won by 8 wickets"
+        },
+        "playersInMatch": [
+          "DAWARNER",
+          "AJFINCH",
+          "SPDSMITH",
+          "GJMAXWELL",
+          "MPSTOINIS",
+          "MSWADE",
+          "ACAGAR",
+          "PJCUMMINS",
+          "MASTARC",
+          "AZAMPA",
+          "JRHAZLEWOOD",
+          "JJROY",
+          "JCBUTTLER",
+          "DJMALAN",
+          "JMBAIRSTOW",
+          "EJGMORGAN",
+          "LSLIVINGSTONE",
+          "MMALI",
+          "CRWOAKES",
+          "CJJORDAN",
+          "AURASHID",
+          "TSMILLS"
+        ],
+        "targetPlayerTeam": "England",
+        "targetPlayerRole": "Bowler"
+      }
+    },
+    {
+      "id": 50,
+      "targetPlayer": "QDEKOCK",
+      "matchData": {
+        "scorecard": {
+          "venue": "Sir Vivian Richards Stadium, North Sound, Antigua",
+          "team1Score": "194/4 (20 overs)",
+          "team2Score": "176/6 (19.1 overs)",
+          "result": "Team 1 won by 18 runs"
+        },
+        "playersInMatch": [
+          "QDEKOCK",
+          "RRHENDRICKS",
+          "AKMARKRAM",
+          "DAMILLER",
+          "HKLAASEN",
+          "TSTUBBS",
+          "MJANSEN",
+          "KAMAHARAJ",
+          "KRABADA",
+          "ANORTJE",
+          "TSHAMSI",
+          "SRTAYLOR",
+          "AGSGOUS",
+          "NRKUMAR",
+          "AARONJONES",
+          "CJANDERSON",
+          "SHAYANJAHANGIR",
+          "HARMEETSINGH",
+          "JASDEEPSINGH",
+          "NPKENJIGE",
+          "ALIKHAN",
+          "SNNETRAVALKAR"
+        ],
+        "targetPlayerTeam": "South Africa",
+        "targetPlayerRole": "Wicketkeeper"
+      }
+    },
+    {
+      "id": 47,
+      "targetPlayer": "SHOAIBMALIK",
+      "matchData": {
+        "scorecard": {
+          "venue": "Sharjah Cricket Stadium, Sharjah, UAE",
+          "team1Score": "189/4 (19.1 overs)",
+          "team2Score": "117/6 (19.4 overs)",
+          "result": "Team 1 won by 72 runs"
+        },
+        "playersInMatch": [
+          "MOHAMMADRIZWAN",
+          "BABARAZAM",
+          "FAKHARZAMAN",
+          "MOHAMMADHAFEEZ",
+          "SHOAIBMALIK",
+          "ASIFALI",
+          "SHADABKHAN",
+          "IMADWASIM",
+          "HASANALI",
+          "HARISRAUF",
+          "SHAHEENSHAHAFRIDI",
+          "HGMUNSEY",
+          "KJCOETZER",
+          "MHCROSS",
+          "RDBERRINGTON",
+          "DEBUDGE",
+          "MALEASK",
+          "CNGREAVES",
+          "MRJWATT",
+          "SMSHARIF",
+          "BTJWHEAL",
+          "HAMZATAHIR"
+        ],
+        "targetPlayerTeam": "Pakistan",
+        "targetPlayerRole": "All-rounder"
+      }
+    },
+    {
       "id": 40,
       "targetPlayer": "RASHWIN",
       "matchData": {
@@ -1548,40 +1624,117 @@
       }
     },
     {
-      "id": 41,
-      "targetPlayer": "RASHWIN",
+      "id": 43,
+      "targetPlayer": "ADHALES",
       "matchData": {
         "scorecard": {
-          "venue": "M Chinnaswamy Stadium, Bengaluru, India",
-          "team1Score": "146/7 (19.1 overs)",
-          "team2Score": "145/9 (19.1 overs)",
-          "result": "Team 1 won by 1 runs"
+          "venue": "Zahur Ahmed Chowdhury Stadium, Chittagong, Bangladesh",
+          "team1Score": "189/4 (20 overs)",
+          "team2Score": "190/4 (20 overs)",
+          "result": "Team 2 won by 6 wickets"
         },
         "playersInMatch": [
-          "RGSHARMA",
-          "SDHAWAN",
-          "VKOHLI",
-          "SKRAINA",
-          "HHPANDYA",
-          "MSDHONI",
-          "YUVRAJSINGH",
-          "RAJADEJA",
-          "RASHWIN",
-          "ANEHRA",
-          "JJBUMRAH",
-          "TAMIMIQBAL",
-          "MOHAMMADMITHUN",
-          "SABBIRRAHMAN",
-          "SHAKIBALHASAN",
-          "MASHRAFEMORTAZA",
-          "MAHMUDULLAH",
-          "SOUMYASARKAR",
-          "MUSHFIQURRAHIM",
-          "SHUVAGATAHOM",
-          "MUSTAFIZURRAHMAN",
-          "ALAMINHOSSAIN"
+          "MJLUMB",
+          "ADHALES",
+          "MMALI",
+          "EJGMORGAN",
+          "JCBUTTLER",
+          "RSBOPARA",
+          "TTBRESNAN",
+          "CJJORDAN",
+          "SCJBROAD",
+          "JCTREDWELL",
+          "JWDERNBACH",
+          "TMDILSHAN",
+          "MDKJPERERA",
+          "DPMDJAYAWARDENE",
+          "NLTCPERERA",
+          "KCSANGAKKARA",
+          "ADMATHEWS",
+          "LDCHANDIMAL",
+          "KMDNKULASEKARA",
+          "SMSMSENANAYAKE",
+          "BAWMENDIS",
+          "SLMALINGA"
         ],
-        "targetPlayerTeam": "India",
+        "targetPlayerTeam": "England",
+        "targetPlayerRole": "Batsman"
+      }
+    },
+    {
+      "id": 54,
+      "targetPlayer": "DAMILLER",
+      "matchData": {
+        "scorecard": {
+          "venue": "Nassau County International Cricket Stadium, New York, USA",
+          "team1Score": "103/9 (19.1 overs)",
+          "team2Score": "106/6 (18.2 overs)",
+          "result": "Team 2 won by 4 wickets"
+        },
+        "playersInMatch": [
+          "MLEVITT",
+          "MPODOWD",
+          "VIKRAMJITSINGH",
+          "SAENGELBRECHT",
+          "BFWDELEEDE",
+          "SAEDWARDS",
+          "ATNIDAMANURU",
+          "LVVANBEEK",
+          "TJGPRINGLE",
+          "PAVANMEEKEREN",
+          "VJKINGMA",
+          "RRHENDRICKS",
+          "QDEKOCK",
+          "AKMARKRAM",
+          "TSTUBBS",
+          "HKLAASEN",
+          "DAMILLER",
+          "MJANSEN",
+          "KAMAHARAJ",
+          "KRABADA",
+          "ANORTJE",
+          "OEGBAARTMAN"
+        ],
+        "targetPlayerTeam": "South Africa",
+        "targetPlayerRole": "Batsman"
+      }
+    },
+    {
+      "id": 51,
+      "targetPlayer": "SHADABKHAN",
+      "matchData": {
+        "scorecard": {
+          "venue": "Perth Stadium, Perth, Australia",
+          "team1Score": "91/10 (19.2 overs)",
+          "team2Score": "95/4 (13.5 overs)",
+          "result": "Team 2 won by 6 wickets"
+        },
+        "playersInMatch": [
+          "SJMYBURGH",
+          "MPODOWD",
+          "BFWDELEEDE",
+          "TLWCOOPER",
+          "CNACKERMANN",
+          "SAEDWARDS",
+          "REVANDERMERWE",
+          "TJGPRINGLE",
+          "LVVANBEEK",
+          "FJKLAASSEN",
+          "PAVANMEEKEREN",
+          "BDGLOVER",
+          "MOHAMMADRIZWAN",
+          "BABARAZAM",
+          "FAKHARZAMAN",
+          "SHANMASOOD",
+          "IFTIKHARAHMED",
+          "SHADABKHAN",
+          "MOHAMMADNAWAZ",
+          "MOHAMMADWASIM",
+          "SHAHEENSHAHAFRIDI",
+          "HARISRAUF",
+          "NASEEMSHAH"
+        ],
+        "targetPlayerTeam": "Pakistan",
         "targetPlayerRole": "All-rounder"
       }
     },
@@ -1624,117 +1777,193 @@
       }
     },
     {
-      "id": 43,
-      "targetPlayer": "ADHALES",
+      "id": 37,
+      "targetPlayer": "JCBUTTLER",
       "matchData": {
         "scorecard": {
-          "venue": "Zahur Ahmed Chowdhury Stadium, Chittagong, Bangladesh",
-          "team1Score": "189/4 (20 overs)",
-          "team2Score": "190/4 (20 overs)",
-          "result": "Team 2 won by 6 wickets"
+          "venue": "Sharjah Cricket Stadium, Sharjah, UAE",
+          "team1Score": "163/4 (19.5 overs)",
+          "team2Score": "137/10 (18.1 overs)",
+          "result": "Team 1 won by 26 runs"
         },
         "playersInMatch": [
-          "MJLUMB",
-          "ADHALES",
-          "MMALI",
-          "EJGMORGAN",
+          "JJROY",
           "JCBUTTLER",
-          "RSBOPARA",
-          "TTBRESNAN",
+          "DJMALAN",
+          "JMBAIRSTOW",
+          "EJGMORGAN",
+          "MMALI",
+          "LSLIVINGSTONE",
+          "CRWOAKES",
           "CJJORDAN",
-          "SCJBROAD",
-          "JCTREDWELL",
-          "JWDERNBACH",
-          "TMDILSHAN",
+          "AURASHID",
+          "TSMILLS",
+          "PNISSANKA",
           "MDKJPERERA",
-          "DPMDJAYAWARDENE",
-          "NLTCPERERA",
-          "KCSANGAKKARA",
-          "ADMATHEWS",
-          "LDCHANDIMAL",
-          "KMDNKULASEKARA",
-          "SMSMSENANAYAKE",
-          "BAWMENDIS",
-          "SLMALINGA"
+          "KICASALANKA",
+          "WIAFERNANDO",
+          "PBBRAJAPAKSA",
+          "MDSHANAKA",
+          "PWHDESILVA",
+          "CKARUNARATNE",
+          "PVDCHAMEERA",
+          "MTHEEKSHANA",
+          "CBRLSKUMARA"
         ],
         "targetPlayerTeam": "England",
-        "targetPlayerRole": "Batsman"
+        "targetPlayerRole": "Wicketkeeper"
       }
     },
     {
-      "id": 44,
+      "id": 56,
+      "targetPlayer": "TSHAMSI",
+      "matchData": {
+        "scorecard": {
+          "venue": "Arnos Vale Ground, St Vincent, West Indies",
+          "team1Score": "115/7 (19.3 overs)",
+          "team2Score": "114/7 (19.4 overs)",
+          "result": "Team 1 won by 1 runs"
+        },
+        "playersInMatch": [
+          "RRHENDRICKS",
+          "QDEKOCK",
+          "AKMARKRAM",
+          "HKLAASEN",
+          "DAMILLER",
+          "TSTUBBS",
+          "MJANSEN",
+          "KRABADA",
+          "ANORTJE",
+          "OEGBAARTMAN",
+          "TSHAMSI",
+          "KBHURTEL",
+          "AASIFSHEIKH",
+          "RKPAUDEL",
+          "AKSAH",
+          "DSAIREE",
+          "KUSHALMALLA",
+          "GULSANJHA",
+          "SOMPALKAMI",
+          "KARANKC",
+          "SLAMICHHANE",
+          "ABOHARA"
+        ],
+        "targetPlayerTeam": "South Africa",
+        "targetPlayerRole": "Bowler"
+      }
+    },
+    {
+      "id": 59,
+      "targetPlayer": "SHAHEENSHAHAFRIDI",
+      "matchData": {
+        "scorecard": {
+          "venue": "Central Broward Regional Park Stadium, Lauderhill, USA",
+          "team1Score": "106/9 (19.3 overs)",
+          "team2Score": "111/7 (18.2 overs)",
+          "result": "Team 2 won by 3 wickets"
+        },
+        "playersInMatch": [
+          "ABALBIRNIE",
+          "PRSTIRLING",
+          "LTUCKER",
+          "HTTECTOR",
+          "CCAMPHER",
+          "GHDOCKRELL",
+          "GJDELANY",
+          "MRADAIR",
+          "BJMCCARTHY",
+          "JLITTLE",
+          "BWHITE",
+          "MOHAMMADRIZWAN",
+          "SAIMAYUB",
+          "BABARAZAM",
+          "FAKHARZAMAN",
+          "USMANKHAN",
+          "SHADABKHAN",
+          "IMADWASIM",
+          "ABBASAFRIDI",
+          "SHAHEENSHAHAFRIDI",
+          "HARISRAUF",
+          "MOHAMMADAMIR"
+        ],
+        "targetPlayerTeam": "Pakistan",
+        "targetPlayerRole": "Bowler"
+      }
+    },
+    {
+      "id": 41,
       "targetPlayer": "RASHWIN",
       "matchData": {
         "scorecard": {
-          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
-          "team1Score": "159/7 (19.3 overs)",
-          "team2Score": "86/10 (16.3 overs)",
-          "result": "Team 1 won by 73 runs"
+          "venue": "M Chinnaswamy Stadium, Bengaluru, India",
+          "team1Score": "146/7 (19.1 overs)",
+          "team2Score": "145/9 (19.1 overs)",
+          "result": "Team 1 won by 1 runs"
         },
         "playersInMatch": [
-          "AJFINCH",
-          "DAWARNER",
-          "CLWHITE",
-          "SRWATSON",
-          "GJMAXWELL",
-          "GJBAILEY",
-          "BJHODGE",
-          "BJHADDIN",
-          "MASTARC",
-          "JMMUIRHEAD",
-          "DEBOLLINGER",
           "RGSHARMA",
-          "AMRAHANE",
+          "SDHAWAN",
           "VKOHLI",
-          "YUVRAJSINGH",
           "SKRAINA",
+          "HHPANDYA",
           "MSDHONI",
+          "YUVRAJSINGH",
           "RAJADEJA",
           "RASHWIN",
-          "BKUMAR",
-          "AMISHRA",
-          "MMSHARMA"
+          "ANEHRA",
+          "JJBUMRAH",
+          "TAMIMIQBAL",
+          "MOHAMMADMITHUN",
+          "SABBIRRAHMAN",
+          "SHAKIBALHASAN",
+          "MASHRAFEMORTAZA",
+          "MAHMUDULLAH",
+          "SOUMYASARKAR",
+          "MUSHFIQURRAHIM",
+          "SHUVAGATAHOM",
+          "MUSTAFIZURRAHMAN",
+          "ALAMINHOSSAIN"
         ],
         "targetPlayerTeam": "India",
         "targetPlayerRole": "All-rounder"
       }
     },
     {
-      "id": 45,
-      "targetPlayer": "MOHAMMADRIZWAN",
+      "id": 57,
+      "targetPlayer": "HCBROOK",
       "matchData": {
         "scorecard": {
-          "venue": "Zayed Cricket Stadium, Abu Dhabi, UAE",
-          "team1Score": "189/2 (20 overs)",
-          "team2Score": "144/5 (19.2 overs)",
-          "result": "Team 1 won by 45 runs"
+          "venue": "Sir Vivian Richards Stadium, North Sound, Antigua",
+          "team1Score": "122/5 (9.1 overs)",
+          "team2Score": "84/3 (9.3 overs)",
+          "result": "Team 1 won by 41 runs"
         },
         "playersInMatch": [
-          "MOHAMMADRIZWAN",
-          "BABARAZAM",
-          "FAKHARZAMAN",
-          "MOHAMMADHAFEEZ",
-          "SHOAIBMALIK",
-          "ASIFALI",
-          "SHADABKHAN",
-          "IMADWASIM",
-          "HASANALI",
-          "HARISRAUF",
-          "SHAHEENSHAHAFRIDI",
-          "SJBAARD",
+          "PDSALT",
+          "JCBUTTLER",
+          "JMBAIRSTOW",
+          "HCBROOK",
+          "MMALI",
+          "LSLIVINGSTONE",
+          "SMCURRAN",
+          "JCARCHER",
+          "AURASHID",
+          "CJJORDAN",
+          "RJWTOPLEY",
           "MVANLINGEN",
-          "CGWILLIAMS",
-          "MGERASMUS",
+          "NDAVIN",
           "DWIESE",
+          "MGERASMUS",
           "JJSMIT",
-          "JNLOFTIEEATON",
-          "RTRUMPELMANN",
-          "ZEGREEN",
           "JNFRYLINCK",
-          "BSHIKONGO"
+          "ZEGREEN",
+          "RTRUMPELMANN",
+          "BMSCHOLTZ",
+          "JTBRASSELL",
+          "JPKOTZE"
         ],
-        "targetPlayerTeam": "Pakistan",
-        "targetPlayerRole": "Wicketkeeper"
+        "targetPlayerTeam": "England",
+        "targetPlayerRole": "Batsman"
       }
     },
     {
@@ -1776,40 +2005,78 @@
       }
     },
     {
-      "id": 47,
-      "targetPlayer": "SHOAIBMALIK",
+      "id": 58,
+      "targetPlayer": "AURASHID",
       "matchData": {
         "scorecard": {
-          "venue": "Sharjah Cricket Stadium, Sharjah, UAE",
-          "team1Score": "189/4 (19.1 overs)",
-          "team2Score": "117/6 (19.4 overs)",
-          "result": "Team 1 won by 72 runs"
+          "venue": "Kensington Oval, Bridgetown, Barbados",
+          "team1Score": "115/10 (19 overs)",
+          "team2Score": "117/0 (9.3 overs)",
+          "result": "Team 2 won by 10 wickets"
         },
         "playersInMatch": [
-          "MOHAMMADRIZWAN",
-          "BABARAZAM",
-          "FAKHARZAMAN",
-          "MOHAMMADHAFEEZ",
-          "SHOAIBMALIK",
-          "ASIFALI",
-          "SHADABKHAN",
-          "IMADWASIM",
-          "HASANALI",
-          "HARISRAUF",
-          "SHAHEENSHAHAFRIDI",
-          "HGMUNSEY",
-          "KJCOETZER",
-          "MHCROSS",
-          "RDBERRINGTON",
-          "DEBUDGE",
-          "MALEASK",
-          "CNGREAVES",
-          "MRJWATT",
-          "SMSHARIF",
-          "BTJWHEAL",
-          "HAMZATAHIR"
+          "SRTAYLOR",
+          "AGSGOUS",
+          "NRKUMAR",
+          "AARONJONES",
+          "CJANDERSON",
+          "MILINDKUMAR",
+          "HARMEETSINGH",
+          "SCVANSCHALKWYK",
+          "ALIKHAN",
+          "NPKENJIGE",
+          "SNNETRAVALKAR",
+          "PDSALT",
+          "JCBUTTLER",
+          "JMBAIRSTOW",
+          "HCBROOK",
+          "MMALI",
+          "LSLIVINGSTONE",
+          "SMCURRAN",
+          "CJJORDAN",
+          "JCARCHER",
+          "AURASHID",
+          "RJWTOPLEY"
         ],
-        "targetPlayerTeam": "Pakistan",
+        "targetPlayerTeam": "England",
+        "targetPlayerRole": "Bowler"
+      }
+    },
+    {
+      "id": 44,
+      "targetPlayer": "RASHWIN",
+      "matchData": {
+        "scorecard": {
+          "venue": "Shere Bangla National Stadium, Dhaka, Bangladesh",
+          "team1Score": "159/7 (19.3 overs)",
+          "team2Score": "86/10 (16.3 overs)",
+          "result": "Team 1 won by 73 runs"
+        },
+        "playersInMatch": [
+          "AJFINCH",
+          "DAWARNER",
+          "CLWHITE",
+          "SRWATSON",
+          "GJMAXWELL",
+          "GJBAILEY",
+          "BJHODGE",
+          "BJHADDIN",
+          "MASTARC",
+          "JMMUIRHEAD",
+          "DEBOLLINGER",
+          "RGSHARMA",
+          "AMRAHANE",
+          "VKOHLI",
+          "YUVRAJSINGH",
+          "SKRAINA",
+          "MSDHONI",
+          "RAJADEJA",
+          "RASHWIN",
+          "BKUMAR",
+          "AMISHRA",
+          "MMSHARMA"
+        ],
+        "targetPlayerTeam": "India",
         "targetPlayerRole": "All-rounder"
       }
     },
@@ -1852,6 +2119,44 @@
       }
     },
     {
+      "id": 60,
+      "targetPlayer": "AURASHID",
+      "matchData": {
+        "scorecard": {
+          "venue": "Sir Vivian Richards Stadium, North Sound, Antigua",
+          "team1Score": "47/10 (14 overs)",
+          "team2Score": "50/2 (3.2 overs)",
+          "result": "Team 2 won by 8 wickets"
+        },
+        "playersInMatch": [
+          "PSATHAVALE",
+          "KHPRAJAPATI",
+          "AQIBILYAS",
+          "ZEESHANMAQSOOD",
+          "KHALIDKAIL",
+          "AYANKHAN",
+          "SHOAIBKHAN",
+          "MEHRANKHAN",
+          "FAYYAZBUTT",
+          "KALEEMULLAH",
+          "BILALKHAN",
+          "PDSALT",
+          "JCBUTTLER",
+          "WGJACKS",
+          "JMBAIRSTOW",
+          "HCBROOK",
+          "MMALI",
+          "LSLIVINGSTONE",
+          "JCARCHER",
+          "AURASHID",
+          "MAWOOD",
+          "RJWTOPLEY"
+        ],
+        "targetPlayerTeam": "England",
+        "targetPlayerRole": "Bowler"
+      }
+    },
+    {
       "id": 49,
       "targetPlayer": "SAYADAV",
       "matchData": {
@@ -1887,83 +2192,6 @@
         ],
         "targetPlayerTeam": "India",
         "targetPlayerRole": "Batsman"
-      }
-    },
-    {
-      "id": 50,
-      "targetPlayer": "QDEKOCK",
-      "matchData": {
-        "scorecard": {
-          "venue": "Sir Vivian Richards Stadium, North Sound, Antigua",
-          "team1Score": "194/4 (20 overs)",
-          "team2Score": "176/6 (19.1 overs)",
-          "result": "Team 1 won by 18 runs"
-        },
-        "playersInMatch": [
-          "QDEKOCK",
-          "RRHENDRICKS",
-          "AKMARKRAM",
-          "DAMILLER",
-          "HKLAASEN",
-          "TSTUBBS",
-          "MJANSEN",
-          "KAMAHARAJ",
-          "KRABADA",
-          "ANORTJE",
-          "TSHAMSI",
-          "SRTAYLOR",
-          "AGSGOUS",
-          "NRKUMAR",
-          "AARONJONES",
-          "CJANDERSON",
-          "SHAYANJAHANGIR",
-          "HARMEETSINGH",
-          "JASDEEPSINGH",
-          "NPKENJIGE",
-          "ALIKHAN",
-          "SNNETRAVALKAR"
-        ],
-        "targetPlayerTeam": "South Africa",
-        "targetPlayerRole": "Wicketkeeper"
-      }
-    },
-    {
-      "id": 51,
-      "targetPlayer": "SHADABKHAN",
-      "matchData": {
-        "scorecard": {
-          "venue": "Perth Stadium, Perth, Australia",
-          "team1Score": "91/10 (19.2 overs)",
-          "team2Score": "95/4 (13.5 overs)",
-          "result": "Team 2 won by 6 wickets"
-        },
-        "playersInMatch": [
-          "SJMYBURGH",
-          "MPODOWD",
-          "BFWDELEEDE",
-          "TLWCOOPER",
-          "CNACKERMANN",
-          "SAEDWARDS",
-          "REVANDERMERWE",
-          "TJGPRINGLE",
-          "LVVANBEEK",
-          "FJKLAASSEN",
-          "PAVANMEEKEREN",
-          "BDGLOVER",
-          "MOHAMMADRIZWAN",
-          "BABARAZAM",
-          "FAKHARZAMAN",
-          "SHANMASOOD",
-          "IFTIKHARAHMED",
-          "SHADABKHAN",
-          "MOHAMMADNAWAZ",
-          "MOHAMMADWASIM",
-          "SHAHEENSHAHAFRIDI",
-          "HARISRAUF",
-          "NASEEMSHAH"
-        ],
-        "targetPlayerTeam": "Pakistan",
-        "targetPlayerRole": "All-rounder"
       }
     },
     {
@@ -2043,44 +2271,6 @@
       }
     },
     {
-      "id": 54,
-      "targetPlayer": "DAMILLER",
-      "matchData": {
-        "scorecard": {
-          "venue": "Nassau County International Cricket Stadium, New York, USA",
-          "team1Score": "103/9 (19.1 overs)",
-          "team2Score": "106/6 (18.2 overs)",
-          "result": "Team 2 won by 4 wickets"
-        },
-        "playersInMatch": [
-          "MLEVITT",
-          "MPODOWD",
-          "VIKRAMJITSINGH",
-          "SAENGELBRECHT",
-          "BFWDELEEDE",
-          "SAEDWARDS",
-          "ATNIDAMANURU",
-          "LVVANBEEK",
-          "TJGPRINGLE",
-          "PAVANMEEKEREN",
-          "VJKINGMA",
-          "RRHENDRICKS",
-          "QDEKOCK",
-          "AKMARKRAM",
-          "TSTUBBS",
-          "HKLAASEN",
-          "DAMILLER",
-          "MJANSEN",
-          "KAMAHARAJ",
-          "KRABADA",
-          "ANORTJE",
-          "OEGBAARTMAN"
-        ],
-        "targetPlayerTeam": "South Africa",
-        "targetPlayerRole": "Batsman"
-      }
-    },
-    {
       "id": 55,
       "targetPlayer": "ARSHDEEPSINGH",
       "matchData": {
@@ -2115,196 +2305,6 @@
           "MOHAMMEDSIRAJ"
         ],
         "targetPlayerTeam": "India",
-        "targetPlayerRole": "Bowler"
-      }
-    },
-    {
-      "id": 56,
-      "targetPlayer": "TSHAMSI",
-      "matchData": {
-        "scorecard": {
-          "venue": "Arnos Vale Ground, St Vincent, West Indies",
-          "team1Score": "115/7 (19.3 overs)",
-          "team2Score": "114/7 (19.4 overs)",
-          "result": "Team 1 won by 1 runs"
-        },
-        "playersInMatch": [
-          "RRHENDRICKS",
-          "QDEKOCK",
-          "AKMARKRAM",
-          "HKLAASEN",
-          "DAMILLER",
-          "TSTUBBS",
-          "MJANSEN",
-          "KRABADA",
-          "ANORTJE",
-          "OEGBAARTMAN",
-          "TSHAMSI",
-          "KBHURTEL",
-          "AASIFSHEIKH",
-          "RKPAUDEL",
-          "AKSAH",
-          "DSAIREE",
-          "KUSHALMALLA",
-          "GULSANJHA",
-          "SOMPALKAMI",
-          "KARANKC",
-          "SLAMICHHANE",
-          "ABOHARA"
-        ],
-        "targetPlayerTeam": "South Africa",
-        "targetPlayerRole": "Bowler"
-      }
-    },
-    {
-      "id": 57,
-      "targetPlayer": "HCBROOK",
-      "matchData": {
-        "scorecard": {
-          "venue": "Sir Vivian Richards Stadium, North Sound, Antigua",
-          "team1Score": "122/5 (9.1 overs)",
-          "team2Score": "84/3 (9.3 overs)",
-          "result": "Team 1 won by 41 runs"
-        },
-        "playersInMatch": [
-          "PDSALT",
-          "JCBUTTLER",
-          "JMBAIRSTOW",
-          "HCBROOK",
-          "MMALI",
-          "LSLIVINGSTONE",
-          "SMCURRAN",
-          "JCARCHER",
-          "AURASHID",
-          "CJJORDAN",
-          "RJWTOPLEY",
-          "MVANLINGEN",
-          "NDAVIN",
-          "DWIESE",
-          "MGERASMUS",
-          "JJSMIT",
-          "JNFRYLINCK",
-          "ZEGREEN",
-          "RTRUMPELMANN",
-          "BMSCHOLTZ",
-          "JTBRASSELL",
-          "JPKOTZE"
-        ],
-        "targetPlayerTeam": "England",
-        "targetPlayerRole": "Batsman"
-      }
-    },
-    {
-      "id": 58,
-      "targetPlayer": "AURASHID",
-      "matchData": {
-        "scorecard": {
-          "venue": "Kensington Oval, Bridgetown, Barbados",
-          "team1Score": "115/10 (19 overs)",
-          "team2Score": "117/0 (9.3 overs)",
-          "result": "Team 2 won by 10 wickets"
-        },
-        "playersInMatch": [
-          "SRTAYLOR",
-          "AGSGOUS",
-          "NRKUMAR",
-          "AARONJONES",
-          "CJANDERSON",
-          "MILINDKUMAR",
-          "HARMEETSINGH",
-          "SCVANSCHALKWYK",
-          "ALIKHAN",
-          "NPKENJIGE",
-          "SNNETRAVALKAR",
-          "PDSALT",
-          "JCBUTTLER",
-          "JMBAIRSTOW",
-          "HCBROOK",
-          "MMALI",
-          "LSLIVINGSTONE",
-          "SMCURRAN",
-          "CJJORDAN",
-          "JCARCHER",
-          "AURASHID",
-          "RJWTOPLEY"
-        ],
-        "targetPlayerTeam": "England",
-        "targetPlayerRole": "Bowler"
-      }
-    },
-    {
-      "id": 59,
-      "targetPlayer": "SHAHEENSHAHAFRIDI",
-      "matchData": {
-        "scorecard": {
-          "venue": "Central Broward Regional Park Stadium, Lauderhill, USA",
-          "team1Score": "106/9 (19.3 overs)",
-          "team2Score": "111/7 (18.2 overs)",
-          "result": "Team 2 won by 3 wickets"
-        },
-        "playersInMatch": [
-          "ABALBIRNIE",
-          "PRSTIRLING",
-          "LTUCKER",
-          "HTTECTOR",
-          "CCAMPHER",
-          "GHDOCKRELL",
-          "GJDELANY",
-          "MRADAIR",
-          "BJMCCARTHY",
-          "JLITTLE",
-          "BWHITE",
-          "MOHAMMADRIZWAN",
-          "SAIMAYUB",
-          "BABARAZAM",
-          "FAKHARZAMAN",
-          "USMANKHAN",
-          "SHADABKHAN",
-          "IMADWASIM",
-          "ABBASAFRIDI",
-          "SHAHEENSHAHAFRIDI",
-          "HARISRAUF",
-          "MOHAMMADAMIR"
-        ],
-        "targetPlayerTeam": "Pakistan",
-        "targetPlayerRole": "Bowler"
-      }
-    },
-    {
-      "id": 60,
-      "targetPlayer": "AURASHID",
-      "matchData": {
-        "scorecard": {
-          "venue": "Sir Vivian Richards Stadium, North Sound, Antigua",
-          "team1Score": "47/10 (14 overs)",
-          "team2Score": "50/2 (3.2 overs)",
-          "result": "Team 2 won by 8 wickets"
-        },
-        "playersInMatch": [
-          "PSATHAVALE",
-          "KHPRAJAPATI",
-          "AQIBILYAS",
-          "ZEESHANMAQSOOD",
-          "KHALIDKAIL",
-          "AYANKHAN",
-          "SHOAIBKHAN",
-          "MEHRANKHAN",
-          "FAYYAZBUTT",
-          "KALEEMULLAH",
-          "BILALKHAN",
-          "PDSALT",
-          "JCBUTTLER",
-          "WGJACKS",
-          "JMBAIRSTOW",
-          "HCBROOK",
-          "MMALI",
-          "LSLIVINGSTONE",
-          "JCARCHER",
-          "AURASHID",
-          "MAWOOD",
-          "RJWTOPLEY"
-        ],
-        "targetPlayerTeam": "England",
         "targetPlayerRole": "Bowler"
       }
     }
