@@ -535,51 +535,67 @@
 
 @media (max-width: 480px) {
   .feedback-grid .grid-header {
-    grid-template-columns: 1.5rem 1fr 8.5rem 1.75rem !important;
+    grid-template-columns: 1.5rem 1fr auto 1.75rem !important;
     padding: 0.5rem !important;
-    gap: 0.375rem !important;
+    gap: 0.25rem !important;
   }
 
   .feedback-grid .guess-row {
-    display: flex !important;
-    flex-direction: column !important;
+    display: grid !important;
+    grid-template-columns: 1.5rem 1fr auto 1.5rem !important;
     padding: 0.5rem !important;
-    gap: 0.375rem !important;
-    align-items: stretch !important;
+    gap: 0.25rem !important;
+    align-items: center !important;
+    min-height: 2.75rem !important;
   }
 
   .feedback-grid .guess-row .row-number {
-    display: none !important;
+    font-size: 0.7rem !important;
   }
 
   .feedback-grid .guess-row .row-player {
-    font-size: 0.9rem !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: unset !important;
-    text-align: left !important;
+    font-size: 0.8rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 
-  .feedback-grid .guess-row .row-boxes {
-    justify-content: flex-start !important;
+  .feedback-grid .player-country-code {
+    font-size: 0.6rem !important;
   }
 
   .feedback-grid .header-boxes,
   .feedback-grid .row-boxes {
-    grid-template-columns: repeat(4, 2rem) !important;
-    gap: 0.25rem !important;
+    grid-template-columns: repeat(4, 1.75rem) !important;
+    gap: 0.2rem !important;
   }
 
   .feedback-grid .guess-box {
-    width: 2rem !important;
-    height: 2rem !important;
-    font-size: 0.8rem !important;
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    font-size: 0.7rem !important;
   }
 
   .feedback-grid .help-btn {
     width: 1.25rem !important;
     height: 1.25rem !important;
     font-size: 0.65rem !important;
+  }
+
+  .feedback-grid .header-num {
+    font-size: 0.6rem !important;
+  }
+
+  .feedback-grid .header-player {
+    font-size: 0.6rem !important;
+  }
+
+  .feedback-grid .header-boxes span {
+    font-size: 0.65rem !important;
+  }
+
+  .feedback-grid .next-hint {
+    font-size: 0.7rem !important;
   }
 }
 
