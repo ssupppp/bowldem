@@ -313,7 +313,8 @@ function App() {
   };
 
   // ============================================================================
-  // ENHANCED FEEDBACK SYSTEM - Format-specific statistics
+  // OLD FEEDBACK SYSTEM - Format-specific career statistics (Role, Runs, Wickets, Matches)
+  // NEW SYSTEM: P (Played in game), M (Same team), R (Same role), T (MOTM)
   // ============================================================================
   const generateEnhancedFeedback = (selectedKey, targetKey) => {
     const selectedInfo = getPlayerInfo(selectedKey);

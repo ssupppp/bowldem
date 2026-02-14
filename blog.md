@@ -32,14 +32,23 @@ The clues went through their own evolution.
 
 The first version gave you four things: whether the guessed player was from the same country, whether they played in the same match, their runs in that match, and their wickets in that match. Match-specific stats. The problem is — unless you remember the exact scorecard of CSK vs MI on April 12, 2024 — those numbers mean nothing to you.
 
-The current version uses career stats within a format. You guess a player, and the game tells you:
+The next version used career stats within a format. You guess a player, and the game tells you:
 
 - **Role** — Batsman, Bowler, or All-rounder. Same or different from the answer.
 - **Runs** — Their career runs in that format. Higher, lower, or exact.
 - **Wickets** — Same idea.
 - **Matches** — Same idea.
 
-These are numbers fans actually know. You know roughly where Kohli sits in IPL runs. You know Bumrah has a certain number of wickets. The clues become useful because they connect to knowledge you already carry around. Each guess narrows the field and drives you closer. Three guesses. That's all you get.
+These are numbers fans actually know. You know roughly where Kohli sits in IPL runs. You know Bumrah has a certain number of wickets. The clues become useful because they connect to knowledge you already carry around. But this system still wasn't quite right — the clues felt disconnected from the actual match you're looking at.
+
+The current version uses match-specific clues — **P, M, R, T**:
+
+- **P (Played)** — Did the guessed player play in this game?
+- **M (Match)** — Did the guessed player play in the same team as the answer?
+- **R (Role)** — Is the guessed player the same role as the answer?
+- **T (MOTM)** — Man of the Match indicator.
+
+This is what finally clicked. The clues are tied to the match itself. You're looking at the scorecard, and the feedback tells you things you can actually reason about from what's in front of you. Did this player even play? Were they on the same team? Same role? Each guess narrows the field and drives you closer. Three guesses. That's all you get.
 
 ## The Data Problem
 
