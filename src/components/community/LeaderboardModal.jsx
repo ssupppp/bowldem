@@ -20,6 +20,7 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose, guessesUse
   const [activeTab, setActiveTab] = useState('today'); // 'today' or 'allTime'
   const [name, setName] = useState('');
   const [submitError, setSubmitError] = useState('');
+  const [allTimeSortBy, setAllTimeSortBy] = useState('wins'); // 'wins', 'win_rate', 'streak', 'avg_guesses'
 
   const {
     puzzleLeaderboard,
@@ -33,7 +34,8 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose, guessesUse
     displayName,
     saveDisplayName,
     submitToLeaderboard,
-    isSubmitting
+    isSubmitting,
+    playerProfile
   } = useLeaderboard(puzzleNumber, puzzleDate);
 
   // Initialize name from saved displayName
@@ -192,20 +194,48 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose, guessesUse
       {/* All-Time Leaderboard */}
       {activeTab === 'allTime' && (
         <div className="leaderboard-content">
+          {/* Sort options */}
+          <div className="leaderboard-sort-options">
+            <button
+              className={`sort-btn ${allTimeSortBy === 'wins' ? 'active' : ''}`}
+              onClick={() => { setAllTimeSortBy('wins'); fetchAllTimeLeaderboard('wins'); }}
+            >
+              Wins
+            </button>
+            <button
+              className={`sort-btn ${allTimeSortBy === 'win_rate' ? 'active' : ''}`}
+              onClick={() => { setAllTimeSortBy('win_rate'); fetchAllTimeLeaderboard('win_rate'); }}
+            >
+              Win %
+            </button>
+            <button
+              className={`sort-btn ${allTimeSortBy === 'streak' ? 'active' : ''}`}
+              onClick={() => { setAllTimeSortBy('streak'); fetchAllTimeLeaderboard('streak'); }}
+            >
+              Streak
+            </button>
+            <button
+              className={`sort-btn ${allTimeSortBy === 'avg_guesses' ? 'active' : ''}`}
+              onClick={() => { setAllTimeSortBy('avg_guesses'); fetchAllTimeLeaderboard('avg_guesses'); }}
+            >
+              Avg
+            </button>
+          </div>
+
           {allTimeLoading ? (
             <div className="leaderboard-loading">Loading...</div>
           ) : allTimeLeaderboard.length === 0 ? (
             <div className="leaderboard-empty">
               <div className="empty-icon">🌟</div>
               <p>No all-time stats yet!</p>
-              <p className="empty-hint">Play more puzzles to see rankings</p>
+              <p className="empty-hint">Link your email to track your stats</p>
             </div>
           ) : (
             <div className="leaderboard-list">
               {allTimeLeaderboard.slice(0, 20).map((entry, index) => (
                 <div
-                  key={entry.display_name || index}
-                  className={`leaderboard-entry ${index < 3 ? 'top-three' : ''}`}
+                  key={entry.email || entry.display_name || index}
+                  className={`leaderboard-entry ${index < 3 ? 'top-three' : ''} ${entry.email === playerProfile?.email ? 'is-user' : ''}`}
                 >
                   <span className="entry-rank">
                     {index === 0 && '🥇'}
@@ -215,16 +245,60 @@ export function LeaderboardModal({ puzzleNumber, puzzleDate, onClose, guessesUse
                   </span>
                   <span className="entry-name">{entry.display_name}</span>
                   <span className="entry-stats">
-                    <span className="wins-badge">{entry.total_wins}W</span>
-                    <span className="games-badge">{entry.games_played}G</span>
+                    {allTimeSortBy === 'wins' && (
+                      <>
+                        <span className="wins-badge">{entry.total_wins}W</span>
+                        <span className="games-badge">{entry.games_played}G</span>
+                      </>
+                    )}
+                    {allTimeSortBy === 'win_rate' && (
+                      <span className="winrate-badge">{Math.round(entry.win_rate || 0)}%</span>
+                    )}
+                    {allTimeSortBy === 'streak' && (
+                      <>
+                        <span className="streak-badge">🔥{entry.best_streak}</span>
+                        {entry.current_streak > 0 && (
+                          <span className="current-streak">(now: {entry.current_streak})</span>
+                        )}
+                      </>
+                    )}
+                    {allTimeSortBy === 'avg_guesses' && (
+                      <span className="avg-badge">{(entry.avg_guesses || 0).toFixed(1)} avg</span>
+                    )}
                   </span>
-                  <span className="entry-winrate">
-                    {entry.games_played > 0
-                      ? Math.round((entry.total_wins / entry.games_played) * 100)
-                      : 0}%
+                  <span className="entry-secondary">
+                    {allTimeSortBy === 'wins' && `${Math.round(entry.win_rate || 0)}%`}
+                    {allTimeSortBy === 'win_rate' && `${entry.total_wins}W`}
+                    {allTimeSortBy === 'streak' && `${entry.total_wins}W`}
+                    {allTimeSortBy === 'avg_guesses' && `${entry.total_wins}W`}
                   </span>
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Player's own stats if they have a profile */}
+          {playerProfile && (
+            <div className="player-stats-summary">
+              <div className="stats-header">Your Stats</div>
+              <div className="stats-row">
+                <div className="stat">
+                  <span className="stat-value">{playerProfile.total_wins}</span>
+                  <span className="stat-label">Wins</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-value">{playerProfile.total_games}</span>
+                  <span className="stat-label">Played</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-value">{Math.round(playerProfile.win_rate || 0)}%</span>
+                  <span className="stat-label">Win Rate</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-value">🔥{playerProfile.best_streak}</span>
+                  <span className="stat-label">Best Streak</span>
+                </div>
+              </div>
             </div>
           )}
         </div>

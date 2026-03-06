@@ -14,6 +14,56 @@ if (supabaseUrl && supabaseAnonKey) {
 
 export { supabase };
 
+// ============================================================================
+// PUZZLE SCHEDULE FUNCTIONS
+// ============================================================================
+
+/**
+ * Get scheduled puzzle ID for a specific date
+ * Returns the puzzle_id if a manual override exists, null otherwise
+ * @param {string} date - Date in YYYY-MM-DD format
+ * @returns {number|null} - Puzzle ID or null if no schedule
+ */
+export async function getScheduledPuzzleId(date) {
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from('puzzle_schedule')
+    .select('puzzle_id')
+    .eq('schedule_date', date)
+    .single();
+
+  if (error) {
+    // PGRST116 = no rows found (expected when no schedule exists)
+    if (error.code !== 'PGRST116') {
+      console.error('Error fetching scheduled puzzle:', error);
+    }
+    return null;
+  }
+
+  return data?.puzzle_id || null;
+}
+
+/**
+ * Get all scheduled puzzles (for admin/debugging)
+ * @returns {Array} - Array of schedule entries
+ */
+export async function getAllScheduledPuzzles() {
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from('puzzle_schedule')
+    .select('*')
+    .order('schedule_date', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching puzzle schedule:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
 /**
  * Get today's puzzle (safe - doesn't expose answer)
  */
@@ -164,13 +214,60 @@ export async function getLeaderboardForPuzzle(puzzleDate) {
 }
 
 /**
- * Get all-time leaderboard (aggregated stats per player)
- * @returns {Array} - Players with total wins and games played
+ * Get all-time leaderboard from player_profiles (persistent stats)
+ * @param {string} sortBy - Sort field: 'wins', 'win_rate', 'streak', 'avg_guesses'
+ * @param {number} limit - Max results to return
+ * @returns {Array} - Players with aggregated stats
  */
-export async function getAllTimeLeaderboard() {
+export async function getAllTimeLeaderboard(sortBy = 'wins', limit = 50) {
   if (!supabase) return [];
 
-  // Use RPC for aggregated query, or fallback to client-side aggregation
+  // Map sort options to column names
+  const sortColumn = {
+    wins: 'total_wins',
+    win_rate: 'win_rate',
+    streak: 'best_streak',
+    avg_guesses: 'avg_guesses'
+  }[sortBy] || 'total_wins';
+
+  // For avg_guesses, lower is better (ascending)
+  const ascending = sortBy === 'avg_guesses';
+
+  const { data, error } = await supabase
+    .from('player_profiles')
+    .select('*')
+    .gt('total_games', 0)  // Only players who have played
+    .order(sortColumn, { ascending })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching all-time leaderboard:', error);
+    return [];
+  }
+
+  // Transform to match expected format
+  return (data || []).map(profile => ({
+    display_name: profile.display_name,
+    email: profile.email,
+    total_wins: profile.total_wins,
+    games_played: profile.total_games,
+    win_rate: profile.win_rate,
+    avg_guesses: profile.avg_guesses,
+    current_streak: profile.current_streak,
+    best_streak: profile.best_streak,
+    last_played_date: profile.last_played_date
+  }));
+}
+
+/**
+ * Get all-time leaderboard (legacy - client-side aggregation)
+ * Fallback for when player_profiles is empty
+ * @returns {Array} - Players with total wins and games played
+ * @deprecated Use getAllTimeLeaderboard() which reads from player_profiles
+ */
+export async function getAllTimeLeaderboardLegacy() {
+  if (!supabase) return [];
+
   const { data, error } = await supabase
     .from('leaderboard_entries')
     .select('display_name, won, guesses_used')
@@ -269,56 +366,90 @@ export async function getUserRanking(puzzleDate, deviceId) {
 }
 
 // ============================================================================
-// NOTIFICATION/CONTACT FUNCTIONS
+// EMAIL SUBSCRIPTION FUNCTIONS
 // ============================================================================
 
 /**
- * Subscribe for notifications
- * @param {Object} contact - Contact info { email?, phone_number?, preferred_channel }
- * @returns {Object} - { success: boolean, error?: string }
+ * Subscribe an email to Bowldem emails (daily reminders, weekly digest)
+ * Upserts into email_subscribers and triggers welcome email Edge Function
+ * @param {string} email - Email address
+ * @param {Object} options - { displayName?, deviceId?, source? }
+ * @returns {Object} - { success: boolean, alreadySubscribed?: boolean, error?: string }
  */
-export async function subscribeForNotifications(contact) {
+export async function subscribeToEmails(email, options = {}) {
   if (!supabase) return { success: false, error: 'Supabase not configured' };
 
-  if (!contact.email && !contact.phone_number) {
-    return { success: false, error: 'Email or phone number required' };
+  const normalizedEmail = email.toLowerCase().trim();
+  if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+    return { success: false, error: 'Invalid email address' };
   }
 
+  const { displayName, deviceId, source = 'leaderboard' } = options;
+
+  // Check if already subscribed
+  const { data: existing } = await supabase
+    .from('email_subscribers')
+    .select('id, is_active, welcome_sent_at')
+    .eq('email', normalizedEmail)
+    .single();
+
+  if (existing?.is_active) {
+    return { success: true, alreadySubscribed: true };
+  }
+
+  // Upsert: reactivate if previously unsubscribed, or create new
   const { data, error } = await supabase
-    .from('contact_subscriptions')
-    .insert([{
-      email: contact.email || null,
-      phone_number: contact.phone_number || null,
-      preferred_channel: contact.preferred_channel || (contact.email ? 'email' : 'sms'),
-      is_active: true
-    }])
+    .from('email_subscribers')
+    .upsert([{
+      email: normalizedEmail,
+      display_name: displayName || null,
+      device_id: deviceId || null,
+      source,
+      is_active: true,
+      unsubscribed_at: null,
+      subscribed_at: new Date().toISOString()
+    }], {
+      onConflict: 'email'
+    })
     .select()
     .single();
 
   if (error) {
-    // Check if already subscribed
-    if (error.code === '23505') {
-      return { success: false, error: 'Already subscribed' };
-    }
-    console.error('Error subscribing for notifications:', error);
+    console.error('Error subscribing email:', error);
     return { success: false, error: error.message };
+  }
+
+  // Trigger welcome email (non-blocking)
+  if (!existing?.welcome_sent_at) {
+    try {
+      await supabase.functions.invoke('send-welcome-email', {
+        body: { email: normalizedEmail, displayName: displayName || null }
+      });
+    } catch (e) {
+      console.warn('Welcome email trigger failed (non-blocking):', e);
+    }
   }
 
   return { success: true, data };
 }
 
 /**
- * Unsubscribe from notifications
+ * Unsubscribe from all Bowldem emails
  * @param {string} email - Email to unsubscribe
  * @returns {Object} - { success: boolean }
  */
-export async function unsubscribeFromNotifications(email) {
+export async function unsubscribeFromEmails(email) {
   if (!supabase) return { success: false, error: 'Supabase not configured' };
 
+  const normalizedEmail = email.toLowerCase().trim();
+
   const { error } = await supabase
-    .from('contact_subscriptions')
-    .update({ is_active: false })
-    .eq('email', email);
+    .from('email_subscribers')
+    .update({
+      is_active: false,
+      unsubscribed_at: new Date().toISOString()
+    })
+    .eq('email', normalizedEmail);
 
   if (error) {
     console.error('Error unsubscribing:', error);
@@ -326,6 +457,24 @@ export async function unsubscribeFromNotifications(email) {
   }
 
   return { success: true };
+}
+
+/**
+ * Check if an email is already subscribed
+ * @param {string} email - Email to check
+ * @returns {boolean}
+ */
+export async function isEmailSubscribed(email) {
+  if (!supabase || !email) return false;
+
+  const { data } = await supabase
+    .from('email_subscribers')
+    .select('id')
+    .eq('email', email.toLowerCase().trim())
+    .eq('is_active', true)
+    .single();
+
+  return !!data;
 }
 
 // ============================================================================
@@ -357,6 +506,7 @@ export async function linkEmailToEntry(entryId, email) {
 /**
  * Link email to all entries for a device ID
  * This allows users to claim all their past entries with one email
+ * Also triggers backfill of player_profiles stats
  * @param {string} deviceId - The device ID
  * @param {string} email - Email to link
  * @returns {Object} - { success: boolean, count: number, error?: string }
@@ -364,9 +514,11 @@ export async function linkEmailToEntry(entryId, email) {
 export async function linkEmailToDevice(deviceId, email) {
   if (!supabase) return { success: false, error: 'Supabase not configured' };
 
+  const normalizedEmail = email.toLowerCase().trim();
+
   const { data, error } = await supabase
     .from('leaderboard_entries')
-    .update({ email: email.toLowerCase().trim() })
+    .update({ email: normalizedEmail })
     .eq('device_id', deviceId)
     .is('email', null)
     .select('id');
@@ -374,6 +526,15 @@ export async function linkEmailToDevice(deviceId, email) {
   if (error) {
     console.error('Error linking email to device entries:', error);
     return { success: false, error: error.message };
+  }
+
+  // Backfill player_profiles with aggregated stats
+  // This runs the backfill_player_stats function in Postgres
+  try {
+    await supabase.rpc('backfill_player_stats', { p_email: normalizedEmail });
+  } catch (backfillError) {
+    console.warn('Warning: Failed to backfill player stats:', backfillError);
+    // Don't fail the whole operation - the trigger will handle future entries
   }
 
   return { success: true, count: data?.length || 0 };
@@ -422,38 +583,107 @@ export async function isEmailLinked(email) {
   return data && data.length > 0;
 }
 
+
 // ============================================================================
-// NOTIFICATION SUBSCRIPTIONS
+// PLAYER PROFILE FUNCTIONS
 // ============================================================================
 
 /**
- * Save notification subscription (email or phone)
- * @param {string} contact - Email address or phone number
- * @param {string} contactType - 'email' or 'whatsapp'
- * @returns {Object|null} - Subscription data or null on error
+ * Get player profile by email
+ * @param {string} email - Player's email
+ * @returns {Object|null} - Player profile or null
  */
-export async function saveNotificationSubscription(contact, contactType = 'email') {
-  if (!supabase) {
-    console.warn('Supabase not available - subscription not saved to server');
-    return { id: 'local', contact, contactType };
-  }
+export async function getPlayerProfile(email) {
+  if (!supabase || !email) return null;
 
   const { data, error } = await supabase
-    .from('notification_subscribers')
-    .upsert([{
-      contact: contact.toLowerCase().trim(),
-      contact_type: contactType,
-      subscribed_at: new Date().toISOString()
-    }], {
-      onConflict: 'contact'
-    })
-    .select();
+    .from('player_profiles')
+    .select('*')
+    .eq('email', email.toLowerCase().trim())
+    .single();
 
   if (error) {
-    console.error('Error saving subscription:', error);
-    // Return local success even if server fails
-    return { id: 'local', contact, contactType };
+    // PGRST116 = not found (expected for new players)
+    if (error.code !== 'PGRST116') {
+      console.error('Error fetching player profile:', error);
+    }
+    return null;
   }
 
-  return data?.[0] || { id: 'local', contact, contactType };
+  return data;
+}
+
+/**
+ * Backfill player stats from existing leaderboard entries
+ * Call this after linking email to device to populate player_profiles
+ * @param {string} email - Player's email
+ * @returns {Object} - { success: boolean, error?: string }
+ */
+export async function backfillPlayerStats(email) {
+  if (!supabase || !email) return { success: false, error: 'Invalid email' };
+
+  const { error } = await supabase.rpc('backfill_player_stats', {
+    p_email: email.toLowerCase().trim()
+  });
+
+  if (error) {
+    console.error('Error backfilling player stats:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+/**
+ * Get player's game history (all their entries)
+ * @param {string} email - Player's email
+ * @param {number} limit - Max entries to return
+ * @returns {Array} - Array of game entries with puzzle details
+ */
+export async function getPlayerHistory(email, limit = 30) {
+  if (!supabase || !email) return [];
+
+  const { data, error } = await supabase
+    .from('leaderboard_entries')
+    .select('*')
+    .eq('email', email.toLowerCase().trim())
+    .order('puzzle_date', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching player history:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/**
+ * Get player's ranking position in all-time leaderboard
+ * @param {string} email - Player's email
+ * @param {string} sortBy - Sort criteria: 'wins', 'win_rate', 'streak'
+ * @returns {number|null} - Ranking position (1-indexed) or null
+ */
+export async function getPlayerRanking(email, sortBy = 'wins') {
+  if (!supabase || !email) return null;
+
+  const sortColumn = {
+    wins: 'total_wins',
+    win_rate: 'win_rate',
+    streak: 'best_streak'
+  }[sortBy] || 'total_wins';
+
+  // Get all profiles sorted, find player's position
+  const { data, error } = await supabase
+    .from('player_profiles')
+    .select('email, ' + sortColumn)
+    .gt('total_games', 0)
+    .order(sortColumn, { ascending: false });
+
+  if (error || !data) {
+    return null;
+  }
+
+  const index = data.findIndex(p => p.email === email.toLowerCase().trim());
+  return index >= 0 ? index + 1 : null;
 }
