@@ -99,38 +99,55 @@ These folders contain outdated versions of the project:
 
 ---
 
-## TODO - Current Tasks
+## TODO - Current Tasks (March 2026)
 
-### In Progress
-- [ ] **Expand player database** - Adding T20 World Cup nation players
+Full plan: `docs/PLAN_ODI_AND_EMAILS.md`
 
-### Next Up (Phase 1.1 - Missing Nations)
-- [ ] Add Afghanistan players (~25) - Rashid Khan, Nabi, Zadran brothers, etc.
-- [ ] Add Canada players (~20)
-- [ ] Add UAE players (~18)
-- [ ] Add Uganda players (~18)
-- [ ] Add Papua New Guinea players (~18)
+### 1. ODI Match Puzzles (Target: 30)
+- [ ] Pick 30 iconic ODI matches (WC finals/semis, classic rivalries, famous knocks)
+- [ ] Download Cricsheet JSON files for each match
+- [ ] Verify every MOTM against ESPNcricinfo scorecard
+- [ ] Create `scripts/process_odi.js` (fork of `process_cricsheet.js`)
+- [ ] Generate `src/data/match_puzzles_odi.json`
+- [ ] Add ODI-era retired legends to `all_players.json`
+- [ ] Add match highlights for each ODI puzzle
+- [ ] Integrate into puzzle rotation or separate mode
+- [ ] Test full flow
 
-### Backlog
-- [ ] Phase 1.2: Expand associate nation squads (NED, SCO, NAM, etc.)
-- [ ] Phase 1.3: Fill gaps in full member rosters
-- [ ] Phase 2: Add domestic T20 league players (IPL, BBL, PSL, etc.)
-- [ ] Phase 3: Add retired legends
-- [ ] UI/UX improvements to feedback display
-- [ ] Mobile responsiveness
-- [ ] Add more puzzle content (ODI, IPL matches)
+### 2. Email Capture & Registration (Autopilot)
+- [ ] Finish & commit email capture refactor (WinStateBanner inline form)
+- [ ] Set up email sending service (Resend / SendGrid / Postmark)
+- [ ] Add email verification flow (confirmation email on signup)
+- [ ] Create Supabase Edge Function for verification email
+- [ ] Add `verified_at`, `unsubscribed_at` to `email_subscriptions`
+- [ ] Create `email_log` table for deduplication
+- [ ] Add one-click unsubscribe link (legal requirement)
+
+### 3. Personalized Email Notifications
+- [ ] **Welcome email** — immediate on registration (today's result, how-to-play)
+- [ ] **Daily reminder** — at puzzle drop (yesterday's answer, "you got it in N guesses", percentile vs. world, streak)
+- [ ] **Weekly recap** — Sunday (games played X/7, win rate, best guess, weekly percentile)
+- [ ] Create 3 Supabase Edge Functions (one per email type)
+- [ ] Set up cron triggers for daily/weekly sends
+- [ ] Design HTML email templates
+- [ ] Pull personalization from `leaderboard_entries` + `player_profiles`
+- [ ] Test all 3 flows end-to-end
 
 ### Completed
-- [x] Add roles to all 370 existing players
-- [x] Add ~200 more professional cricketers (now 569 total)
-- [x] Create PLAYER_DATABASE_PLAN.md
-- [x] Add puzzle archive feature
+- [x] 898 players across 22 countries (Phase 1.1 done, most of 1.3 done)
+- [x] 60 T20 World Cup puzzles with scheduling
+- [x] Puzzle archive (replay past puzzles)
+- [x] Leaderboard via Supabase (daily + all-time)
+- [x] Team name resolution
+- [x] Answer reveal flow
+- [x] Tutorial overlay
+- [x] SEO + Open Graph
+- [x] Confetti celebration
+- [x] Match highlights fix (puzzles 6-11)
 
 ---
 
 ## Bugs / Data Fixes
-
-- [ ] **Abhishek Sharma** - Role should be "Batsman" not "All-rounder" (he's primarily an opening batsman for SRH, occasional spin is not primary skill)
 
 ### Puzzle Data Issues (Audited Jan 2025)
 
@@ -286,45 +303,19 @@ npm run dev          # Start dev server (Vite)
 npm run build        # Production build
 ```
 
-## Current State (as of Jan 2026)
-- **569 players** in database (all with proper roles)
+## Current State (as of March 2026)
+- **898 players** in database across 22 countries
 - 60 T20 World Cup puzzles loaded
-- **5 guesses** per puzzle (changed from 4)
-- Y/N feedback system working
-- Daily puzzle rotation working (EPOCH: 2026-01-15)
-- Stats tracking (localStorage)
-- Share functionality working
-- Leaderboard via Supabase
-- Confetti celebration on win
-
-### Recent Bug Fixes (Jan 30, 2026)
-- Fixed missing `import "./App.css"` in App.jsx
-- Reverted components from Tailwind to plain CSS classes
-- Fixed broken HistoricalEntries import in WinStateBanner
-- Fixed wrong matchContext for puzzles 6-11
+- **5 guesses** per puzzle, 4 feedback params (Played/Team/Role/MOTM)
+- Daily puzzle rotation (EPOCH: 2026-01-15) + Supabase schedule override
+- Leaderboard (daily + all-time via `player_profiles`)
+- Email capture (inline in WinStateBanner — refactor in progress)
+- Archive mode, stats tracking, share functionality, confetti
 
 ## Priority Tasks
-1. **Expand player database** - See `PLAYER_DATABASE_PLAN.md`
-2. UI/UX improvements to feedback display
-3. Mobile responsiveness
-4. Add more puzzle content (ODI, IPL matches)
-
-## Player Database Expansion
-See `PLAYER_DATABASE_PLAN.md` for the full plan. Summary:
-
-### Phase 1: T20 World Cup Nations (Current)
-- Add missing nations: Afghanistan, Canada, UAE, Uganda, PNG
-- Expand associate nation squads
-- Fill gaps in full member rosters
-- Target: +300 players
-
-### Phase 2: Domestic T20 Leagues
-- IPL uncapped players, BBL, PSL, CPL, etc.
-- Target: +150 players
-
-### Phase 3: Retired Legends
-- Historical players from 1980s-2010s
-- Target: +200 players
+1. **Add ODI match puzzles** (30 target) — see `docs/PLAN_ODI_AND_EMAILS.md`
+2. **Email capture & registration** — verification, cross-device persistence
+3. **Personalized email notifications** — welcome, daily reminder, weekly recap
 
 ### Quick Commands
 ```bash
