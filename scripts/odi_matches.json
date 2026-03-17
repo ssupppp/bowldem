@@ -1,453 +1,460 @@
 {
-  "highlights": [
+  "matches": [
     {
-      "puzzleId": 1,
-      "matchContext": "T20 World Cup 2016 Final",
-      "triviaFact": "Carlos Brathwaite hit 4 sixes off the final over to win the title",
-      "playerHighlight": "Marlon Samuels scored a crucial 85*(66) in a pressure-packed final"
-    },
-    {
-      "puzzleId": 2,
-      "matchContext": "T20 World Cup 2021",
-      "triviaFact": "Pakistan's historic first win against India in T20 World Cup history",
-      "playerHighlight": "Shaheen Afridi's stunning spell of 3/31 including early Sharma and Rahul wickets"
-    },
-    {
-      "puzzleId": 3,
-      "matchContext": "T20 World Cup 2022",
-      "triviaFact": "One of the greatest T20 chases ever witnessed at the MCG",
-      "playerHighlight": "Virat Kohli's legendary 82*(53) - considered the best T20I innings ever"
-    },
-    {
-      "puzzleId": 4,
-      "matchContext": "T20 World Cup 2022 Semi-Final",
-      "triviaFact": "England demolished India's batting to reach the final",
-      "playerHighlight": null
-    },
-    {
-      "puzzleId": 5,
-      "matchContext": "T20 World Cup 2022 Final",
-      "triviaFact": "England won their second T20 World Cup title in dominant fashion",
-      "playerHighlight": null
-    },
-    {
-      "puzzleId": 6,
-      "matchContext": "T20 World Cup 2024 Final",
-      "triviaFact": "India won their second T20 World Cup, Kohli's 76 sealed victory against South Africa",
-      "playerHighlight": null
-    },
-    {
-      "puzzleId": 7,
-      "matchContext": "T20 World Cup 2016",
-      "triviaFact": "Chris Gayle smashed 100 off just 48 balls against England at Wankhede",
-      "playerHighlight": "Virat Kohli's composed 76 in his T20I farewell"
-    },
-    {
-      "puzzleId": 8,
-      "matchContext": "T20 World Cup 2024 Group Stage",
-      "triviaFact": "A low-scoring thriller in New York where India edged Pakistan by 6 runs",
-      "playerHighlight": "Rohit Sharma's explosive 57(39) set the foundation"
-    },
-    {
-      "puzzleId": 9,
-      "matchContext": "T20 World Cup 2024 Semi-Final",
-      "triviaFact": "India dominated England in Guyana, Axar Patel starring with bat and ball",
-      "playerHighlight": null
-    },
-    {
-      "puzzleId": 10,
-      "matchContext": "T20 World Cup 2022",
-      "triviaFact": "Pakistan's spinners dominated South Africa at the SCG, Shadab Khan with 3/22 and 52",
-      "playerHighlight": null
-    },
-    {
-      "puzzleId": 11,
-      "matchContext": "T20 World Cup 2016 Semi-Final",
-      "triviaFact": "Lendl Simmons' unbeaten 82 off 51 balls knocked India out at Wankhede",
-      "playerHighlight": null
-    },
-    {
-      "puzzleId": 12,
-      "matchContext": "T20 World Cup 2016",
-      "triviaFact": "One of the greatest T20 chases - England needed 229 and won with 2 balls to spare",
-      "playerHighlight": "Joe Root's masterful 83(44) anchored the impossible chase"
-    },
-    {
-      "puzzleId": 13,
-      "matchContext": "T20 World Cup 2024 Super 8s",
-      "triviaFact": "South Africa's bowlers restricted England to defend 163, securing a crucial Super 8 win",
-      "playerHighlight": "Quinton de Kock's explosive 65(38) set up South Africa's competitive total"
-    },
-    {
-      "puzzleId": 14,
-      "matchContext": "T20 World Cup 2016",
-      "triviaFact": "West Indies continued their march to the title with a gritty chase",
-      "playerHighlight": "Marlon Samuels guided West Indies home with an unbeaten 44*(31)"
-    },
-    {
-      "puzzleId": 15,
-      "matchContext": "T20 World Cup 2021",
-      "triviaFact": "Defending champions West Indies were demolished for just 55 - their lowest T20I score",
-      "playerHighlight": "Moeen Ali's 2/17 helped England bowl out West Indies in 14.2 overs"
-    },
-    {
-      "puzzleId": 16,
-      "matchContext": "T20 World Cup 2021",
-      "triviaFact": "South Africa kept their semi-final hopes alive with a comprehensive win",
-      "playerHighlight": "Anrich Nortje's pace was unplayable - 3/7 in 4 overs"
-    },
-    {
-      "puzzleId": 17,
-      "matchContext": "T20 World Cup 2024 Super 8s",
-      "triviaFact": "South Africa survived a scare to book their semi-final spot",
-      "playerHighlight": "Tabraiz Shamsi's leg-spin troubled the West Indies batters - 3/27"
-    },
-    {
-      "puzzleId": 61,
+      "file": "64814.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/64814.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "India tour of New Zealand 2003",
       "triviaFact": "Sehwag smashed a blistering century to set up India's series-levelling win",
       "playerHighlight": "Virender Sehwag's explosive innings at the top set the tone"
     },
     {
-      "puzzleId": 62,
+      "file": "64817.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/64817.html",
+      "targetPlayerRole": "Bowler",
       "matchContext": "India tour of New Zealand 2003",
       "triviaFact": "Zaheer Khan's devastating spell with the new ball dismantled New Zealand's batting lineup",
       "playerHighlight": "Zaheer Khan picked up crucial wickets to seal the series for India"
     },
     {
-      "puzzleId": 63,
+      "file": "64830.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/64830.html",
+      "targetPlayerRole": "Bowler",
       "matchContext": "Bangladesh tour of Australia 2003",
       "triviaFact": "Brett Lee's fiery pace was too much for Bangladesh as Australia dominated at home",
       "playerHighlight": "Brett Lee terrorized the Bangladesh batsmen with raw pace"
     },
     {
-      "puzzleId": 64,
+      "file": "64844.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/64844.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "England tour of Bangladesh 2003",
       "triviaFact": "Flintoff showed his all-round prowess in testing conditions in Dhaka",
       "playerHighlight": "Andrew Flintoff delivered with both bat and ball to earn Man of the Match"
     },
     {
-      "puzzleId": 65,
+      "file": "64852.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/64852.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "West Indies tour of Zimbabwe 2003",
       "triviaFact": "Chris Gayle lit up Harare with a commanding all-round display",
       "playerHighlight": "Chris Gayle dominated with bat and ball against Zimbabwe"
     },
     {
-      "puzzleId": 66,
+      "file": "65279.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/65279.html",
+      "targetPlayerRole": "Bowler",
       "matchContext": "ICC Cricket World Cup 2003 Super Six",
       "triviaFact": "Shane Bond took 6/23 — the best figures in a WC match against Australia — but it wasn't enough as Brett Lee's 5/42 helped Australia win",
       "playerHighlight": "An extraordinary bowling duel between Bond and Lee at Port Elizabeth"
     },
     {
-      "puzzleId": 67,
+      "file": "65284.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/65284.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Cricket World Cup 2003 Semi-Final",
       "triviaFact": "Andrew Symonds scored 91* and took a crucial run-out as Australia beat Sri Lanka to reach yet another World Cup Final",
       "playerHighlight": "Symonds anchored Australia's chase with an aggressive unbeaten knock at Port Elizabeth"
     },
     {
-      "puzzleId": 68,
+      "file": "65285.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/65285.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2003 Semi-Final",
       "triviaFact": "Sourav Ganguly led from the front with 111* as India demolished Kenya by 91 runs to reach the World Cup Final for the first time since 1983",
       "playerHighlight": "Ganguly's captain's knock set up a huge total as India booked their ticket to the Final at Durban"
     },
     {
-      "puzzleId": 69,
+      "file": "65286.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/65286.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2003 Final",
       "triviaFact": "Ricky Ponting hammered an unbeaten 140 off 121 balls as Australia demolished India by 125 runs at the Wanderers to win their third consecutive World Cup",
       "playerHighlight": "Ponting's aggressive century was the cornerstone of Australia's dominant 359/2, the highest World Cup Final total at the time"
     },
     {
-      "puzzleId": 70,
+      "file": "66210.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/66210.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Champions Trophy 2004 Final",
       "triviaFact": "Ian Bradshaw's dramatic 34* off 36 balls from 147/8 guided West Indies to a 2-wicket win over England in one of the greatest CT Final finishes",
       "playerHighlight": "Bradshaw and Browne's last-wicket stand of 71 pulled off the impossible at The Oval"
     },
     {
-      "puzzleId": 71,
+      "file": "66380.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/66380.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "Paktel Cup 2003",
       "triviaFact": "Shoaib Malik's all-round display powered Pakistan to a win in the Paktel Cup",
       "playerHighlight": "Shoaib Malik contributed with both bat and ball in a polished all-round performance"
     },
     {
-      "puzzleId": 72,
+      "file": "236358.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/236358.html",
+      "targetPlayerRole": "Wicketkeeper",
       "matchContext": "VB Series Final 2006",
       "triviaFact": "Sangakkara's brilliant 89* steered Sri Lanka to a comfortable win in the VB Series Final",
       "playerHighlight": "KC Sangakkara anchored the chase with an unbeaten 89 off 93 balls"
     },
     {
-      "puzzleId": 73,
+      "file": "238169.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/238169.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "Sri Lanka in Bangladesh ODI Series 2006",
       "triviaFact": "Aftab Ahmed's explosive batting powered Bangladesh to a memorable 4-wicket victory over Sri Lanka in Bogra",
       "playerHighlight": "Aftab Ahmed's aggressive knock turned the chase in Bangladesh's favor"
     },
     {
-      "puzzleId": 74,
+      "file": "238200.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/australia-in-south-africa-odi-series-2005-06-232101/south-africa-vs-australia-5th-odi-238200/full-scorecard",
+      "targetPlayerRole": "Batsman",
       "matchContext": "Australia in South Africa ODI Series 2006",
       "triviaFact": "The greatest ODI match ever — South Africa chased down 434, the highest successful chase in ODI history. Gibbs hit 175 off 111 balls as SA scored 438/9",
       "playerHighlight": "Herschelle Gibbs smashed 175 off 111 balls with 21 fours and 7 sixes, leading the most famous ODI chase in history at the Wanderers"
     },
     {
-      "puzzleId": 75,
+      "file": "247505.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/247505.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2007 Semi-Final",
       "triviaFact": "Mahela Jayawardene's brilliant 115* guided Sri Lanka past New Zealand and into the World Cup Final",
       "playerHighlight": "Jayawardene's unbeaten century was a masterclass in ODI batting under pressure in Jamaica"
     },
     {
-      "puzzleId": 76,
+      "file": "247506.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/247506.html",
+      "targetPlayerRole": "Bowler",
       "matchContext": "ICC Cricket World Cup 2007 Semi-Final",
       "triviaFact": "Glenn McGrath's 3/18 helped Australia restrict South Africa to 149 in a completely one-sided semi-final in St Lucia",
       "playerHighlight": "McGrath produced a vintage performance in what would be one of his final ODI matches"
     },
     {
-      "puzzleId": 77,
+      "file": "247507.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/247507.html",
+      "targetPlayerRole": "Wicketkeeper",
       "matchContext": "ICC Cricket World Cup 2007 Final",
       "triviaFact": "Adam Gilchrist smashed 149 off 104 balls in the World Cup Final — later revealing he used a squash ball inside his glove for grip",
       "playerHighlight": "Gilchrist's blistering knock remains the highest individual score in a World Cup Final"
     },
     {
-      "puzzleId": 78,
+      "file": "415287.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/415287.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Champions Trophy 2009 Final",
       "triviaFact": "Shane Watson's 105* guided Australia to a comfortable 6-wicket win over New Zealand in the Champions Trophy Final at Centurion",
       "playerHighlight": "Watson's unbeaten century in the final sealed Australia's second Champions Trophy title"
     },
     {
-      "puzzleId": 79,
+      "file": "433558.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/433558.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2011 Group Stage",
       "triviaFact": "Virender Sehwag smashed 175 off just 140 balls — the highest WC score at the time — as India crushed Bangladesh in the tournament opener at Mirpur",
       "playerHighlight": "Sehwag's explosive century set the tone for India's eventual World Cup triumph on home soil"
     },
     {
-      "puzzleId": 80,
+      "file": "433568.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/433568.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2011 Group Stage",
       "triviaFact": "One of the rarest results in WC history — a tie between India and England in Bangalore. Andrew Strauss scored 158 but India's batting made it a dead heat",
       "playerHighlight": "Strauss hit 158 in a losing (well, tying) cause as both teams finished on identical scores in a thrilling group match"
     },
     {
-      "puzzleId": 81,
+      "file": "433602.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/433602.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Cricket World Cup 2011 Quarter-Final",
       "triviaFact": "Jacob Oram's 4/39 dismantled South Africa as New Zealand won a close quarter-final at Mirpur",
       "playerHighlight": "Oram's bowling spell was the difference as New Zealand knocked out South Africa"
     },
     {
-      "puzzleId": 82,
+      "file": "433603.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/433603.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2011 Quarter-Final",
       "triviaFact": "Tillakaratne Dilshan scored a century and took 2/38 as Sri Lanka thrashed England by 10 wickets in Colombo",
       "playerHighlight": "Dilshan's all-round display led to a comprehensive Sri Lankan victory, one of the most dominant WC QF performances"
     },
     {
-      "puzzleId": 83,
+      "file": "433604.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/433604.html",
+      "targetPlayerRole": "Wicketkeeper",
       "matchContext": "ICC Cricket World Cup 2011 Semi-Final",
       "triviaFact": "Kumar Sangakkara scored a masterful unbeaten 54 as Sri Lanka chased down New Zealand's target to reach the World Cup Final in Mumbai",
       "playerHighlight": "Sangakkara's composed knock guided Sri Lanka through a tricky chase in Colombo"
     },
     {
-      "puzzleId": 84,
+      "file": "433605.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/433605.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2011 Semi-Final",
       "triviaFact": "The biggest cricket match on earth — India vs Pakistan in a World Cup semi-final at Mohali, with Sachin Tendulkar's 85 anchoring India's run chase",
       "playerHighlight": "Tendulkar survived early dropped catches and played a crucial knock as India beat their arch-rivals to reach the World Cup Final at home"
     },
     {
-      "puzzleId": 85,
+      "file": "441828.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/441828.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "India vs South Africa ODI Series 2010",
       "triviaFact": "Sachin Tendulkar became the first player in history to score a double century in ODIs — 200* off 147 balls at Gwalior",
       "playerHighlight": "Tendulkar's historic 200* included 25 fours and 3 sixes, rewriting the record books"
     },
     {
-      "puzzleId": 86,
+      "file": "566948.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/566948.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Champions Trophy 2013 Final",
       "triviaFact": "Ravindra Jadeja's 2/24 and his crucial 33* with the bat helped India defend 129 to beat England by 5 runs in a low-scoring Champions Trophy Final",
       "playerHighlight": "Jadeja's all-round performance in dire conditions at Edgbaston won India their second Champions Trophy"
     },
     {
-      "puzzleId": 87,
+      "file": "656405.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/656405.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2015 Group Stage",
       "triviaFact": "Virat Kohli's 107 was the centerpiece of India's 76-run victory over Pakistan in the biggest group-stage rivalry match at Adelaide",
       "playerHighlight": "Kohli's century continued his superb record against Pakistan in World Cups"
     },
     {
-      "puzzleId": 88,
+      "file": "656427.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/656427.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Cricket World Cup 2015 Group Stage",
       "triviaFact": "Chris Gayle's 215 off 147 balls — the first-ever double century in a World Cup match — destroyed Zimbabwe at Canberra",
       "playerHighlight": "Gayle's record-breaking double century included 10 fours and 16 sixes in an utterly dominant display"
     },
     {
-      "puzzleId": 89,
+      "file": "656435.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/656435.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2015 Group Stage",
       "triviaFact": "AB de Villiers smashed 162 off 66 balls — reaching his century off just 31 balls, the fastest in WC history — as SA won by a record 257 runs",
       "playerHighlight": "De Villiers' innings featured 17 fours and 8 sixes in the most destructive WC batting performance ever seen"
     },
     {
-      "puzzleId": 90,
+      "file": "656437.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/656437.html",
+      "targetPlayerRole": "Bowler",
       "matchContext": "ICC Cricket World Cup 2015 Group Stage",
       "triviaFact": "An all-time classic — Trent Boult took 5/27 and Mitchell Starc 6/28, but NZ chased 151 with 1 wicket to spare. Kane Williamson and Boult saw them home",
       "playerHighlight": "Boult's brilliant 5-wicket haul bowled Australia out cheaply before NZ scraped home in a thriller at Auckland"
     },
     {
-      "puzzleId": 91,
+      "file": "656485.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/656485.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2015 Quarter-Final",
       "triviaFact": "Rohit Sharma's 137 and Umesh Yadav's 4/31 powered India past Bangladesh at the MCG",
       "playerHighlight": "Rohit's assured century set up a comfortable Indian win in the quarter-final"
     },
     {
-      "puzzleId": 92,
+      "file": "656489.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/656489.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2015 Quarter-Final",
       "triviaFact": "Martin Guptill smashed 237* — the highest World Cup score ever — as New Zealand obliterated West Indies by 143 runs in Wellington",
       "playerHighlight": "Guptill's record-breaking double century featured 24 fours and 11 sixes in a stunning quarter-final display"
     },
     {
-      "puzzleId": 93,
+      "file": "656491.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/656491.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Cricket World Cup 2015 Semi-Final",
       "triviaFact": "Grant Elliott hit a six off Dale Steyn's penultimate ball to seal New Zealand's first-ever World Cup Final berth, breaking South African hearts at Eden Park",
       "playerHighlight": "Elliott's unbeaten 84 in a tense chase will forever be remembered as one of cricket's most dramatic semi-final knocks"
     },
     {
-      "puzzleId": 94,
+      "file": "656495.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/656495.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Cricket World Cup 2015 Final",
       "triviaFact": "James Faulkner took 3/36 as Australia restricted New Zealand to 183, then cruised to victory at the MCG in front of 93,000 fans",
       "playerHighlight": "Faulkner's death-overs bowling strangled New Zealand's innings in the biggest match of the tournament"
     },
     {
-      "puzzleId": 95,
+      "file": "1022375.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1022375.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Champions Trophy 2017 Final",
       "triviaFact": "Fakhar Zaman's 114 powered Pakistan to a stunning 180-run victory over India in the Champions Trophy Final at The Oval — one of the biggest upsets in ICC tournament history",
       "playerHighlight": "Fakhar's fearless century on the biggest stage humbled favorites India in a shocking result"
     },
     {
-      "puzzleId": 96,
+      "file": "1144514.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1144514.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2019 Group Stage",
       "triviaFact": "Aaron Finch hit 100 as Australia beat England by 64 runs at Lord's in a crucial group-stage encounter",
       "playerHighlight": "Finch's composed century laid the foundation for Australia's statement win at the home of cricket"
     },
     {
-      "puzzleId": 97,
+      "file": "1144520.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1144520.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2019 Group Stage",
       "triviaFact": "Jonny Bairstow's 111 powered England to a must-win victory over India at Edgbaston, keeping their World Cup hopes alive",
       "playerHighlight": "Bairstow's aggressive century set the tone for England's crucial chase"
     },
     {
-      "puzzleId": 98,
+      "file": "1144529.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1144529.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Cricket World Cup 2019 Semi-Final",
       "triviaFact": "Chris Woakes' 3/20 and Jason Roy's 85 helped England dismantle defending champions Australia at Edgbaston to reach the Final",
       "playerHighlight": "Woakes' new-ball spell removed Australia's top order as England cruised to a comfortable semi-final victory"
     },
     {
-      "puzzleId": 99,
+      "file": "1158069.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1158069.html",
+      "targetPlayerRole": "Wicketkeeper",
       "matchContext": "England tour of West Indies 2019",
       "triviaFact": "Jos Buttler's 150 off 77 balls and Chris Gayle's 162 off 97 balls made this one of the most explosive bilateral ODIs ever played",
       "playerHighlight": "Buttler's incredible 150 was matched by Gayle's blistering 162, producing 652 runs in a single match"
     },
     {
-      "puzzleId": 100,
+      "file": "1384409.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1384409.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2023 Group Stage",
       "triviaFact": "David Warner blasted 163 off 124 balls — his highest ODI score — to set up Australia's win over Pakistan at Bengaluru",
       "playerHighlight": "Warner's career-best 163 featured 17 fours and 5 sixes in a batting masterclass"
     },
     {
-      "puzzleId": 101,
+      "file": "1384412.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1384412.html",
+      "targetPlayerRole": "Bowler",
       "matchContext": "ICC Cricket World Cup 2023 Group Stage",
       "triviaFact": "Mohammed Shami took 5/54 on a turning Dharamsala pitch as India beat New Zealand early in the tournament",
       "playerHighlight": "Shami's 5-wicket haul continued India's dominance in the 2023 World Cup"
     },
     {
-      "puzzleId": 102,
+      "file": "1384415.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/series/icc-cricket-world-cup-2023-24-1367856/australia-vs-netherlands-24th-match-1384415/full-scorecard",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Cricket World Cup 2023 Group Stage",
       "triviaFact": "Glenn Maxwell smashed 106 off just 44 balls — one of the fastest WC centuries ever — as Australia obliterated Netherlands by 309 runs in Delhi",
       "playerHighlight": "Maxwell's blistering 106 off 44 balls included 8 fours and 8 sixes in a devastating display of power hitting"
     },
     {
-      "puzzleId": 103,
+      "file": "1384420.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1384420.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2023 Group Stage",
       "triviaFact": "Rohit Sharma's blistering 87-ball century set the tone as India maintained their unbeaten run against England in Lucknow",
       "playerHighlight": "Rohit's attacking century was the highlight of India's dominant group-stage campaign"
     },
     {
-      "puzzleId": 104,
+      "file": "1384428.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1384428.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2023 Group Stage",
       "triviaFact": "Virat Kohli scored his 49th ODI century — equaling Sachin Tendulkar's all-time record — in a dominant Indian win over South Africa at Kolkata",
       "playerHighlight": "Kohli's historic century drew him level with Tendulkar's seemingly unbreakable record"
     },
     {
-      "puzzleId": 105,
+      "file": "1384437.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1384437.html",
+      "targetPlayerRole": "Bowler",
       "matchContext": "ICC Cricket World Cup 2023 Semi-Final",
       "triviaFact": "Mohammed Shami took 7/57 — the best-ever World Cup semi-final figures — as India crushed New Zealand by 70 runs at the Wankhede",
       "playerHighlight": "Shami's devastating spell ripped through New Zealand's batting, with India's bowlers ensuring a comfortable semi-final victory"
     },
     {
-      "puzzleId": 106,
+      "file": "1384438.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1384438.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2023 Semi-Final",
       "triviaFact": "Travis Head scored a match-winning 51-ball 62* as Australia chased down South Africa's total with 3 wickets and 6 balls to spare at Eden Gardens",
       "playerHighlight": "Head's calm aggression in the chase secured Australia's place in the final despite a shaky start"
     },
     {
-      "puzzleId": 107,
+      "file": "1384439.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1384439.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2023 Final",
       "triviaFact": "Travis Head's stunning 137 off 120 balls silenced 100,000 fans at Ahmedabad as Australia won their 6th World Cup title, denying unbeaten India",
       "playerHighlight": "Travis Head counter-attacked from 47/3, putting on 192 with Labuschagne to chase down 241 with 7 overs to spare"
     },
     {
-      "puzzleId": 108,
+      "file": "1466426.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1466426.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Champions Trophy 2025 Semi-Final",
       "triviaFact": "Virat Kohli delivered a vintage performance as India knocked out Australia in the Champions Trophy semi-final at Dubai",
       "playerHighlight": "Kohli's match-winning display guided India past Australia and into the Champions Trophy Final"
     },
     {
-      "puzzleId": 109,
+      "file": "1466427.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1466427.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Champions Trophy 2025 Semi-Final",
       "triviaFact": "Rachin Ravindra's all-round brilliance powered New Zealand past South Africa in the Champions Trophy semi-final at Lahore",
       "playerHighlight": "Ravindra's match-winning performance earned New Zealand a spot in the Champions Trophy Final"
     },
     {
-      "puzzleId": 110,
+      "file": "1466428.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1466428.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Champions Trophy 2025 Final",
       "triviaFact": "Rohit Sharma's unbeaten century sealed India's Champions Trophy triumph over New Zealand in Dubai",
       "playerHighlight": "Rohit's match-winning knock in the final capped a dominant Indian campaign in the 2025 Champions Trophy"
     },
     {
-      "puzzleId": 111,
+      "file": "1144530.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1144530.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Cricket World Cup 2019 Final",
       "triviaFact": "The most dramatic ODI final ever — tied match, tied Super Over, decided on boundary countback. Stokes' unbeaten 84* kept England alive after being 86/4",
       "playerHighlight": "Ben Stokes played one of cricket's greatest innings under pressure, surviving a deflection off his bat for 6 overthrows in the final over"
     },
     {
-      "puzzleId": 112,
+      "file": "433606.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/433606.html",
+      "targetPlayerRole": "Wicketkeeper",
       "matchContext": "ICC Cricket World Cup 2011 Final",
       "triviaFact": "Dhoni promoted himself above Yuvraj Singh and sealed India's second World Cup with an iconic six over long-on at the Wankhede Stadium",
       "playerHighlight": "MS Dhoni's unbeaten 91 off 79 balls, capped by the winning six, became one of cricket's most replayed moments"
     },
     {
-      "puzzleId": 113,
+      "file": "792295.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/792295.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "India vs Sri Lanka ODI Series 2014",
       "triviaFact": "Rohit Sharma smashed 264 off 173 balls — the highest individual ODI score in history, surpassing his own record of 209",
       "playerHighlight": "Rohit Sharma hit 33 fours and 9 sixes in a breathtaking display of batting at Eden Gardens, Kolkata"
     },
     {
-      "puzzleId": 114,
+      "file": "1144528.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/1144528.html",
+      "targetPlayerRole": "Bowler",
       "matchContext": "ICC Cricket World Cup 2019 Semi-Final",
       "triviaFact": "New Zealand's Matt Henry dismantled India's top order, removing Rohit, Kohli, and Rahul to derail the tournament favorites",
       "playerHighlight": "Matt Henry's devastating spell of 3/37 broke the back of India's chase in the semi-final at Old Trafford"
     },
     {
-      "puzzleId": 115,
+      "file": "656493.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/656493.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2015 Semi-Final",
       "triviaFact": "Steve Smith's brilliant 105 anchored Australia's chase as they knocked out India at the SCG to reach the final",
       "playerHighlight": "Steve Smith's composed century guided Australia past India in a dominant semi-final performance"
     },
     {
-      "puzzleId": 116,
+      "file": "247503.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/247503.html",
+      "targetPlayerRole": "Batsman",
       "matchContext": "ICC Cricket World Cup 2007 Group Stage",
       "triviaFact": "Matthew Hayden blasted a brutal century as Australia demolished New Zealand by 215 runs in a completely one-sided encounter",
       "playerHighlight": "Matthew Hayden's explosive innings set up Australia's massive total"
     },
     {
-      "puzzleId": 117,
+      "file": "433601.json",
+      "cricinfoUrl": "https://www.espncricinfo.com/matches/engine/match/433601.html",
+      "targetPlayerRole": "All-rounder",
       "matchContext": "ICC Cricket World Cup 2011 Quarter-Final",
       "triviaFact": "Yuvraj Singh's all-round brilliance — 57* with the bat and 2/44 with the ball — powered India past Australia in the quarter-final at Ahmedabad",
       "playerHighlight": "Yuvraj Singh delivered a match-winning all-round performance as India knocked out the defending champions"
     }
-  ],
-  "defaultHighlight": {
-    "matchContext": "T20 World Cup",
-    "triviaFact": "A classic T20 World Cup encounter",
-    "playerHighlight": null
-  }
+  ]
 }

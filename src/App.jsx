@@ -23,6 +23,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import allPlayersData from "./data/all_players.json";
 import matchPuzzlesData from "./data/match_puzzles_t20wc.json";
+import matchPuzzlesODI from "./data/match_puzzles_odi.json";
 import matchHighlightsData from "./data/match_highlights.json";
 import { useDailyPuzzle } from "./hooks/useDailyPuzzle.js";
 import { useLeaderboard } from "./hooks/useLeaderboard.js";
@@ -36,11 +37,10 @@ import { CountdownTimer } from "./components/CountdownTimer.jsx";
 import { ArchiveModal, saveArchiveCompletion } from "./components/ArchiveModal.jsx";
 import { LeaderboardModal, LeaderboardPreview } from "./components/community/LeaderboardModal.jsx";
 import { NameEntryPrompt } from "./components/community/NameEntryPrompt.jsx";
-import { EmailCapture, shouldShowEmailPrompt, incrementGamesPlayed, hasProvidedEmail } from "./components/community/EmailCapture.jsx";
 import { CompletedStateBanner, LiveLeaderboard, CompletedMobileView } from "./components/home/WinStateBanner.jsx";
 import { TutorialOverlay, hasTutorialBeenSeen } from "./components/onboarding/TutorialOverlay.jsx";
 import { Icon } from "./components/ui/Icon.jsx";
-import { validateGuess, saveNotificationSubscription } from "./lib/supabase.js";
+import { validateGuess, subscribeToEmails, unsubscribeFromEmails, isEmailSubscribed } from "./lib/supabase.js";
 import { getPuzzleIndex } from "./utils/dailyPuzzle.js";
 import { initAnalytics, trackGame, trackFeature, trackFunnel, trackButtonTap } from "./lib/analytics.js";
 import { Confetti } from "./components/effects/Confetti.jsx";
@@ -55,8 +55,11 @@ const USE_SUPABASE_VALIDATION = true;
 // Auto-reset if ?reset=true is in URL
 checkAutoReset();
 
-// Load puzzle data - each puzzle represents one historic match
-const PUZZLES = matchPuzzlesData.puzzles || [];
+// Load puzzle data - merge T20 WC + ODI puzzles into one pool
+const PUZZLES = [
+  ...(matchPuzzlesData.puzzles || []),
+  ...(matchPuzzlesODI.puzzles || [])
+];
 
 function App() {
   const {
@@ -94,7 +97,6 @@ function App() {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
-  const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [showTutorial, setShowTutorial] = useState(() => !hasTutorialBeenSeen());
   const [isChecking, setIsChecking] = useState(false);
   const [pendingFeedback, setPendingFeedback] = useState(null);
@@ -347,11 +349,11 @@ function App() {
       if (isWin) {
         setArchiveGameWon(true);
         saveArchiveCompletion(archivePuzzleDate, 'won');
-        setTimeout(() => setShowSuccessModal(true), 2500);
+        setTimeout(() => setShowSuccessModal(true), 800);
       } else if (isLastGuess) {
         setArchiveGameOver(true);
         saveArchiveCompletion(archivePuzzleDate, 'lost');
-        setTimeout(() => setShowGameOverModal(true), 2500);
+        setTimeout(() => setShowGameOverModal(true), 1000);
       }
     }, 300);
   };
@@ -449,22 +451,12 @@ function App() {
         setGameWon(true);
         trackGame.win(puzzleNumber, newFeedbackList.length);
         trackFunnel.gameCompleted(true);
-        incrementGamesPlayed(); // Track for email timing
-        setTimeout(() => setShowSuccessModal(true), 2500);
-        // Show email capture after success modal if conditions met
-        if (shouldShowEmailPrompt()) {
-          setTimeout(() => setShowEmailCapture(true), 6000);
-        }
+        setTimeout(() => setShowSuccessModal(true), 800);
       } else if (newFeedbackList.length >= maxGuesses) {
         setGameOver(true);
         trackGame.lose(puzzleNumber, newFeedbackList.length);
         trackFunnel.gameCompleted(false);
-        incrementGamesPlayed(); // Track for email timing
-        setTimeout(() => setShowGameOverModal(true), 3000);
-        // Show email capture after game over modal if conditions met
-        if (shouldShowEmailPrompt()) {
-          setTimeout(() => setShowEmailCapture(true), 7000);
-        }
+        setTimeout(() => setShowGameOverModal(true), 1000);
       }
     }, 300); // Shorter delay since server call adds latency
   };
@@ -585,11 +577,51 @@ function App() {
     window.open(url, '_blank');
   };
 
-  // Handle notification subscription
-  const handleNotificationSubscribe = async (contact, contactType) => {
+  // Email subscription state
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  // Check subscription status on mount
+  useEffect(() => {
+    if (savedEmail) {
+      isEmailSubscribed(savedEmail).then(setIsSubscribed);
+    }
+  }, [savedEmail]);
+
+  // Handle email subscription (used by NotifySection and other entry points)
+  const handleEmailSubscribe = useCallback(async (emailAddress) => {
     trackFeature.notificationSubscribed?.();
-    await saveNotificationSubscription(contact, contactType);
-  };
+    const deviceId = localStorage.getItem('bowldem_device_id');
+    const result = await subscribeToEmails(emailAddress, {
+      displayName: displayName || undefined,
+      deviceId: deviceId || undefined,
+      source: 'notify_button'
+    });
+    if (result?.success) {
+      setIsSubscribed(true);
+    }
+    return result;
+  }, [displayName]);
+
+  // Handle unsubscribe from URL param (?unsubscribe=base64email)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const unsubParam = params.get('unsubscribe');
+    if (unsubParam) {
+      try {
+        const email = atob(unsubParam);
+        unsubscribeFromEmails(email).then((result) => {
+          if (result?.success) {
+            setIsSubscribed(false);
+            // Brief visual feedback - clean URL
+            window.history.replaceState({}, '', window.location.pathname);
+            alert('You have been unsubscribed from Bowldem emails.');
+          }
+        });
+      } catch (e) {
+        console.warn('Invalid unsubscribe param');
+      }
+    }
+  }, []);
 
   const renderSimplifiedScorecard = () => {
     const puzzle = archiveMode ? archivePuzzle : currentPuzzle;
@@ -923,6 +955,16 @@ function App() {
                     return;
                   }
                   try { await linkEmail(trimmed); } catch (e) { /* non-blocking */ }
+                  // Also subscribe for emails
+                  try {
+                    const deviceId = localStorage.getItem('bowldem_device_id');
+                    await subscribeToEmails(trimmed, {
+                      displayName: displayName || undefined,
+                      deviceId: deviceId || undefined,
+                      source: 'reveal_answer'
+                    });
+                    setIsSubscribed(true);
+                  } catch (e) { /* non-blocking */ }
                   setAnswerRevealed(true);
                 }}
               >
@@ -1162,7 +1204,8 @@ function App() {
               playerName={(gameStatus === 'won' || answerRevealed) ? findPlayer(currentPuzzle?.targetPlayer)?.fullName : undefined}
               displayName={displayName}
               hasSubmitted={hasLeaderboardSubmitted}
-              onSubscribe={handleNotificationSubscribe}
+              onEmailSubscribe={handleEmailSubscribe}
+              isSubscribed={isSubscribed}
               onShareX={handleShareX}
               onShareWhatsApp={handleShareWhatsApp}
               onCopy={handleShare}
@@ -1222,7 +1265,8 @@ function App() {
                   onShareWhatsApp={handleShareWhatsApp}
                   onCopy={handleShare}
                   copyState={copyButtonState}
-                  onSubscribe={handleNotificationSubscribe}
+                  onEmailSubscribe={handleEmailSubscribe}
+                  isSubscribed={isSubscribed}
                   onOpenArchive={() => setShowArchiveModal(true)}
                   matchHighlight={(gameStatus === 'won' || answerRevealed) ? matchHighlight : null}
                   // Match summary reveal props
@@ -1401,23 +1445,6 @@ function App() {
               guessesUsed={feedbackList.length}
               won={gameWon || gameStatus === 'won'}
               gameCompleted={gameWon || gameOver || alreadyCompleted}
-            />
-          </div>
-        </div>
-      )}
-
-      {showEmailCapture && (
-        <div className="game-overlay" onClick={() => setShowEmailCapture(false)}>
-          <div onClick={e => e.stopPropagation()}>
-            <EmailCapture
-              variant="modal"
-              onClose={() => setShowEmailCapture(false)}
-              onSuccess={(email) => {
-                setShowEmailCapture(false);
-                // Refresh leaderboard to show linked stats
-                fetchPuzzleLeaderboard();
-              }}
-              linkEmail={linkEmail}
             />
           </div>
         </div>
