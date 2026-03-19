@@ -58,12 +58,20 @@ Three parallel workstreams to take Bowldem from MVP to production-ready:
 | India | 71 | 85 | +14 |
 
 ### Phase 2: Puzzle Content Expansion
+- [ ] **ODI puzzles (NEW)** - Need to create from scratch (raw /odi/ files won't work as-is, need new match selection + MOTM verification via Cricinfo)
 - [ ] IPL matches (2008-2024) - Target: 50 puzzles
 - [ ] ODI World Cup matches - Target: 30 puzzles
 - [ ] Test match classics - Target: 20 puzzles
 - [ ] Historic moments (WC finals, etc.) - Target: 20 puzzles
 
 **Total Target: 2000+ players, 180+ puzzles**
+
+### Autopilot Backlog (bowldem.com self-running)
+- [ ] **ODI puzzle creation** - Pick iconic ODI matches, verify MOTM on Cricinfo, build puzzle JSON entries (existing /odi/ raw data is wrong format, start fresh)
+- [ ] **Retention email system** - Deploy Supabase Edge Functions: welcome email, daily reminder, streak-at-risk nudge, win-back after 3 days inactive
+- [ ] **Contact button** - Simple way for users to reach out (mailto or Supabase contact_messages table)
+- [ ] **Puzzle schedule migration** - Ensure puzzle_schedule table exists in Supabase for manual daily overrides
+- [ ] **Email verification** - Currently unverified; consider adding confirmation step
 
 ---
 

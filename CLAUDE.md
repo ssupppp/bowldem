@@ -101,49 +101,47 @@ These folders contain outdated versions of the project:
 
 ## TODO - Current Tasks (March 2026)
 
-Full plan: `docs/PLAN_ODI_AND_EMAILS.md`
+### 1. Auth, Permanence & Newsletter (branch: `feature/auth-newsletter`)
+**Code written 2026-03-19.** Needs Supabase Dashboard setup + testing before merge.
 
-### 1. ODI Match Puzzles (Target: 30)
-- [ ] Pick 30 iconic ODI matches (WC finals/semis, classic rivalries, famous knocks)
-- [ ] Download Cricsheet JSON files for each match
-- [ ] Verify every MOTM against ESPNcricinfo scorecard
-- [ ] Create `scripts/process_odi.js` (fork of `process_cricsheet.js`)
-- [ ] Generate `src/data/match_puzzles_odi.json`
-- [ ] Add ODI-era retired legends to `all_players.json`
-- [ ] Add match highlights for each ODI puzzle
-- [ ] Integrate into puzzle rotation or separate mode
-- [ ] Test full flow
+- [x] Google OAuth + Magic Link auth (useAuth hook, AuthModal, UserAvatar)
+- [x] Migration flow (localStorage → Supabase on first login)
+- [x] user_profiles table + auth_user_id linking
+- [x] Leaderboard auto-includes auth_user_id + email
+- [x] Post-game auth prompt (replaces email capture for logged-out users)
+- [x] Newsletter edge function (Gemini 2.0 Flash content + Resend)
+- [x] Newsletter DB schema (content cache, email_log dedup)
+- [ ] **Supabase Dashboard:** Enable Google OAuth provider
+- [ ] **Supabase Dashboard:** Configure redirect URLs
+- [ ] **Resend:** Set up as custom SMTP + configure `hello@bowldem.com`
+- [ ] **Run migrations:** 005 + 006
+- [ ] **Deploy edge function:** send-daily-newsletter
+- [ ] **Set secrets:** RESEND_API_KEY, GEMINI_API_KEY
+- [ ] **pg_cron:** Schedule at 02:30 UTC daily
+- [ ] **Test:** Full auth flow (Google + magic link + anonymous preserved)
+- [ ] **Test:** Multi-device merge
+- [ ] **Test:** Newsletter email delivery + unsubscribe
 
-### 2. Email Capture & Registration (Autopilot)
-- [ ] Finish & commit email capture refactor (WinStateBanner inline form)
-- [ ] Set up email sending service (Resend / SendGrid / Postmark)
-- [ ] Add email verification flow (confirmation email on signup)
-- [ ] Create Supabase Edge Function for verification email
-- [ ] Add `verified_at`, `unsubscribed_at` to `email_subscriptions`
-- [ ] Create `email_log` table for deduplication
-- [ ] Add one-click unsubscribe link (legal requirement)
+### 2. ODI Puzzles — Live Testing
+- 57 ODI puzzles pushed to main (2026-03-17)
+- [ ] Play through ODI puzzles end-to-end on bowldem.com
+- [ ] Verify autocomplete, feedback, MOTM, highlights, archive, mobile
 
-### 3. Personalized Email Notifications
-- [ ] **Welcome email** — immediate on registration (today's result, how-to-play)
-- [ ] **Daily reminder** — at puzzle drop (yesterday's answer, "you got it in N guesses", percentile vs. world, streak)
-- [ ] **Weekly recap** — Sunday (games played X/7, win rate, best guess, weekly percentile)
-- [ ] Create 3 Supabase Edge Functions (one per email type)
-- [ ] Set up cron triggers for daily/weekly sends
-- [ ] Design HTML email templates
-- [ ] Pull personalization from `leaderboard_entries` + `player_profiles`
-- [ ] Test all 3 flows end-to-end
+### 3. ODI Data Quality (low priority)
+- Some player names use Cricsheet abbreviations
+- Maxwell 201*, 1999 WC matches not in Cricsheet
+- RG Sharma MOTM in 4 puzzles
 
 ### Completed
-- [x] 898 players across 22 countries (Phase 1.1 done, most of 1.3 done)
-- [x] 60 T20 World Cup puzzles with scheduling
+- [x] 1,099 players across 22+ countries
+- [x] 117 puzzles (60 T20 WC + 57 ODI) with scheduling
 - [x] Puzzle archive (replay past puzzles)
 - [x] Leaderboard via Supabase (daily + all-time)
-- [x] Team name resolution
-- [x] Answer reveal flow
-- [x] Tutorial overlay
-- [x] SEO + Open Graph
-- [x] Confetti celebration
+- [x] Team name resolution + Answer reveal flow
+- [x] Tutorial overlay + SEO + Confetti
 - [x] Match highlights fix (puzzles 6-11)
+- [x] Email capture (inline EmailNotifySection)
+- [x] Auth + Newsletter code (2026-03-19)
 
 ---
 
@@ -304,18 +302,19 @@ npm run build        # Production build
 ```
 
 ## Current State (as of March 2026)
-- **898 players** in database across 22 countries
-- 60 T20 World Cup puzzles loaded
+- **1,099 players** in database across 22+ countries
+- 117 puzzles (60 T20 WC + 57 ODI)
 - **5 guesses** per puzzle, 4 feedback params (Played/Team/Role/MOTM)
 - Daily puzzle rotation (EPOCH: 2026-01-15) + Supabase schedule override
 - Leaderboard (daily + all-time via `player_profiles`)
-- Email capture (inline in WinStateBanner — refactor in progress)
+- Email capture (inline EmailNotifySection in WinStateBanner)
+- Auth + Newsletter code on `feature/auth-newsletter` branch (not yet merged)
 - Archive mode, stats tracking, share functionality, confetti
 
 ## Priority Tasks
-1. **Add ODI match puzzles** (30 target) — see `docs/PLAN_ODI_AND_EMAILS.md`
-2. **Email capture & registration** — verification, cross-device persistence
-3. **Personalized email notifications** — welcome, daily reminder, weekly recap
+1. **Auth + Newsletter** — Supabase dashboard setup, test, merge (`feature/auth-newsletter`)
+2. **ODI live testing** — verify 57 ODI puzzles work correctly on bowldem.com
+3. **Newsletter content** — write style guide samples for Gemini prompt
 
 ### Quick Commands
 ```bash

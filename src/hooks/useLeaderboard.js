@@ -12,7 +12,8 @@ import {
   linkEmailToDevice,
   getEntriesByEmail,
   getPlayerProfile,
-  getPlayerRanking
+  getPlayerRanking,
+  subscribeToEmails
 } from '../lib/supabase.js';
 import { trackFeature, trackFunnel } from '../lib/analytics.js';
 
@@ -41,7 +42,7 @@ function getOrCreateDeviceId() {
  * @param {string} puzzleDate - Current puzzle date (YYYY-MM-DD)
  * @returns {Object} - Leaderboard state and actions
  */
-export function useLeaderboard(puzzleNumber, puzzleDate) {
+export function useLeaderboard(puzzleNumber, puzzleDate, authUser = null) {
   // State for puzzle leaderboard
   const [puzzleLeaderboard, setPuzzleLeaderboard] = useState([]);
   const [puzzleLeaderboardLoading, setPuzzleLeaderboardLoading] = useState(false);
@@ -184,6 +185,12 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
         is_seed: false
       };
 
+      // Include auth user data when logged in
+      if (authUser) {
+        entry.auth_user_id = authUser.id;
+        if (authUser.email) entry.email = authUser.email;
+      }
+
       const result = await submitLeaderboardEntry(entry);
 
       if (result.success) {
@@ -207,7 +214,7 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
     } finally {
       setIsSubmitting(false);
     }
-  }, [displayName, puzzleDate, puzzleNumber, isSubmitting, hasSubmitted, fetchPuzzleLeaderboard]);
+  }, [displayName, puzzleDate, puzzleNumber, isSubmitting, hasSubmitted, fetchPuzzleLeaderboard, authUser]);
 
   /**
    * Calculate percentile based on leaderboard position
@@ -246,6 +253,26 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
   }, [puzzleLeaderboard]);
 
   /**
+   * Fetch historical entries for an email
+   */
+  const fetchHistoricalEntries = useCallback(async (emailToFetch = null) => {
+    const targetEmail = emailToFetch || email;
+    if (!targetEmail) return;
+
+    setHistoricalLoading(true);
+
+    try {
+      const entries = await getEntriesByEmail(targetEmail);
+      setHistoricalEntries(entries);
+    } catch (err) {
+      console.error('Error fetching historical entries:', err);
+      setHistoricalEntries([]);
+    } finally {
+      setHistoricalLoading(false);
+    }
+  }, [email]);
+
+  /**
    * Link email to all entries for this device
    * Also fetches player profile after linking
    */
@@ -268,6 +295,14 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
         // Fetch historical entries and player profile
         fetchHistoricalEntries(trimmedEmail);
         fetchPlayerProfile(trimmedEmail);
+        // Also subscribe for emails (non-blocking)
+        try {
+          await subscribeToEmails(trimmedEmail, {
+            displayName: displayName || undefined,
+            deviceId,
+            source: 'leaderboard'
+          });
+        } catch (e) { /* non-blocking */ }
       }
 
       return result;
@@ -278,27 +313,7 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
     } finally {
       setIsLinkingEmail(false);
     }
-  }, [fetchHistoricalEntries, fetchPlayerProfile]);
-
-  /**
-   * Fetch historical entries for an email
-   */
-  const fetchHistoricalEntries = useCallback(async (emailToFetch = null) => {
-    const targetEmail = emailToFetch || email;
-    if (!targetEmail) return;
-
-    setHistoricalLoading(true);
-
-    try {
-      const entries = await getEntriesByEmail(targetEmail);
-      setHistoricalEntries(entries);
-    } catch (err) {
-      console.error('Error fetching historical entries:', err);
-      setHistoricalEntries([]);
-    } finally {
-      setHistoricalLoading(false);
-    }
-  }, [email]);
+  }, [fetchHistoricalEntries, fetchPlayerProfile, displayName]);
 
   /**
    * Clear saved email
@@ -336,6 +351,21 @@ export function useLeaderboard(puzzleNumber, puzzleDate) {
       fetchPlayerProfile(email);
     }
   }, []);
+
+  // Auto-set email and display name from auth user
+  useEffect(() => {
+    if (authUser?.email && !email) {
+      setEmail(authUser.email);
+      localStorage.setItem(STORAGE_KEYS.EMAIL, authUser.email);
+      fetchHistoricalEntries(authUser.email);
+      fetchPlayerProfile(authUser.email);
+    }
+    if (authUser?.user_metadata?.full_name && !displayName) {
+      const name = authUser.user_metadata.full_name.substring(0, 20);
+      setDisplayName(name);
+      localStorage.setItem(STORAGE_KEYS.DISPLAY_NAME, name);
+    }
+  }, [authUser]);
 
   return {
     // Puzzle leaderboard

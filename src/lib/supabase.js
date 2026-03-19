@@ -664,6 +664,177 @@ export async function getPlayerHistory(email, limit = 30) {
  * @param {string} sortBy - Sort criteria: 'wins', 'win_rate', 'streak'
  * @returns {number|null} - Ranking position (1-indexed) or null
  */
+// ============================================================================
+// AUTH FUNCTIONS
+// ============================================================================
+
+/**
+ * Sign in with Google OAuth (redirect mode for mobile compatibility)
+ */
+export async function signInWithGoogle() {
+  if (!supabase) return { error: { message: 'Supabase not configured' } };
+
+  return supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin
+    }
+  });
+}
+
+/**
+ * Sign in with Magic Link (passwordless email)
+ * @param {string} email - Email address
+ */
+export async function signInWithMagicLink(email) {
+  if (!supabase) return { error: { message: 'Supabase not configured' } };
+
+  return supabase.auth.signInWithOtp({
+    email: email.toLowerCase().trim(),
+    options: {
+      emailRedirectTo: window.location.origin
+    }
+  });
+}
+
+/**
+ * Sign out the current user
+ */
+export async function signOut() {
+  if (!supabase) return { error: { message: 'Supabase not configured' } };
+  return supabase.auth.signOut();
+}
+
+/**
+ * Get the current authenticated user
+ */
+export async function getCurrentUser() {
+  if (!supabase) return { data: { user: null } };
+  return supabase.auth.getUser();
+}
+
+/**
+ * Listen for auth state changes
+ * @param {Function} callback - (event, session) => void
+ * @returns {Object} - { data: { subscription } } for cleanup
+ */
+export function onAuthStateChange(callback) {
+  if (!supabase) return { data: { subscription: { unsubscribe: () => {} } } };
+  return supabase.auth.onAuthStateChange(callback);
+}
+
+// ============================================================================
+// AUTH MIGRATION FUNCTIONS
+// ============================================================================
+
+/**
+ * Upsert user profile on first login — stores auth user ID + device mapping
+ * @param {string} authUserId - Auth user UUID
+ * @param {Object} options - { displayName, deviceId, localStats }
+ */
+export async function upsertUserProfile(authUserId, options = {}) {
+  if (!supabase) return { success: false, error: 'Supabase not configured' };
+
+  const { displayName, deviceId, localStats } = options;
+
+  // First check if profile exists
+  const { data: existing } = await supabase
+    .from('user_profiles')
+    .select('id, device_ids')
+    .eq('id', authUserId)
+    .single();
+
+  if (existing) {
+    // Add device_id if not already in array
+    const deviceIds = existing.device_ids || [];
+    if (deviceId && !deviceIds.includes(deviceId)) {
+      deviceIds.push(deviceId);
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({ device_ids: deviceIds })
+        .eq('id', authUserId);
+      if (error) return { success: false, error: error.message };
+    }
+    return { success: true, isNew: false };
+  }
+
+  // Create new profile
+  const { error } = await supabase
+    .from('user_profiles')
+    .insert([{
+      id: authUserId,
+      display_name: displayName || null,
+      device_ids: deviceId ? [deviceId] : [],
+      local_stats: localStats || null
+    }]);
+
+  if (error) {
+    console.error('Error creating user profile:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true, isNew: true };
+}
+
+/**
+ * Link leaderboard entries from a device_id to an auth user
+ * @param {string} deviceId - Device ID
+ * @param {string} authUserId - Auth user UUID
+ * @param {string} email - User's email from auth
+ */
+export async function linkEntriesToAuthUser(deviceId, authUserId, email) {
+  if (!supabase) return { success: false, error: 'Supabase not configured' };
+
+  const normalizedEmail = email?.toLowerCase().trim();
+
+  // Link by device_id where auth_user_id is not yet set
+  const updates = { auth_user_id: authUserId };
+  if (normalizedEmail) updates.email = normalizedEmail;
+
+  const { data, error } = await supabase
+    .from('leaderboard_entries')
+    .update(updates)
+    .eq('device_id', deviceId)
+    .is('auth_user_id', null)
+    .select('id');
+
+  if (error) {
+    console.error('Error linking entries to auth user:', error);
+    return { success: false, error: error.message };
+  }
+
+  // Also link entries from other devices that belong to this auth user
+  // (handles multi-device merge)
+  const { data: profile } = await supabase
+    .from('user_profiles')
+    .select('device_ids')
+    .eq('id', authUserId)
+    .single();
+
+  if (profile?.device_ids) {
+    for (const did of profile.device_ids) {
+      if (did !== deviceId) {
+        await supabase
+          .from('leaderboard_entries')
+          .update(updates)
+          .eq('device_id', did)
+          .is('auth_user_id', null);
+      }
+    }
+  }
+
+  // Backfill player stats if email exists
+  if (normalizedEmail) {
+    try {
+      await supabase.rpc('backfill_player_stats', { p_email: normalizedEmail });
+    } catch (e) {
+      console.warn('Backfill player stats failed (non-blocking):', e);
+    }
+  }
+
+  return { success: true, count: data?.length || 0 };
+}
+
 export async function getPlayerRanking(email, sortBy = 'wins') {
   if (!supabase || !email) return null;
 

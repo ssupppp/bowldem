@@ -232,10 +232,59 @@ function ResultBanner({ won, guessesUsed, maxGuesses = 5, streak = 0, playerName
 }
 
 /**
- * NotifySection - Clear notify me button
+ * EmailNotifySection - Inline email input for subscribing to daily reminders
+ * Shows checkmark if already subscribed
+ * Memoized to prevent parent re-renders from causing input focus loss
  */
-function NotifySection({ onNotifyMe }) {
-  if (!onNotifyMe) return null;
+const EmailNotifySection = React.memo(function EmailNotifySection({ onEmailSubscribe, isSubscribed }) {
+  const [emailInput, setEmailInput] = React.useState('');
+  const [status, setStatus] = React.useState(isSubscribed ? 'subscribed' : 'idle'); // idle | submitting | subscribed | error
+  const [errorMsg, setErrorMsg] = React.useState('');
+  const inputRef = React.useRef(null);
+
+  // Sync with parent's isSubscribed prop
+  React.useEffect(() => {
+    if (isSubscribed) setStatus('subscribed');
+  }, [isSubscribed]);
+
+  const handleSubmit = async () => {
+    const trimmed = emailInput.trim().toLowerCase();
+    if (!trimmed) {
+      setErrorMsg('Please enter your email');
+      setStatus('error');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setErrorMsg('Please enter a valid email');
+      setStatus('error');
+      return;
+    }
+    setStatus('submitting');
+    setErrorMsg('');
+    try {
+      if (onEmailSubscribe) {
+        const result = await onEmailSubscribe(trimmed);
+        if (result?.success || result?.alreadySubscribed) {
+          setStatus('subscribed');
+        } else {
+          setErrorMsg(result?.error || 'Something went wrong');
+          setStatus('error');
+        }
+      }
+    } catch (e) {
+      setErrorMsg('Something went wrong');
+      setStatus('error');
+    }
+  };
+
+  if (status === 'subscribed') {
+    return (
+      <div className="notify-section notify-section-subscribed">
+        <span className="notify-check">✓</span>
+        <span className="notify-label">You'll get daily reminders!</span>
+      </div>
+    );
+  }
 
   return (
     <div className="notify-section">
@@ -243,12 +292,33 @@ function NotifySection({ onNotifyMe }) {
         <span className="notify-bell">🔔</span>
         <span className="notify-label">Get daily reminders</span>
       </div>
-      <button className="btn-notify" onClick={onNotifyMe}>
-        Notify Me
-      </button>
+      <div className="notify-form">
+        <input
+          ref={inputRef}
+          id="notify-email-input"
+          type="email"
+          className="notify-input"
+          placeholder="your@email.com"
+          value={emailInput}
+          onChange={(e) => {
+            setEmailInput(e.target.value);
+            if (status === 'error') { setStatus('idle'); setErrorMsg(''); }
+          }}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(); }}
+          disabled={status === 'submitting'}
+        />
+        <button
+          className="btn-notify"
+          onClick={handleSubmit}
+          disabled={status === 'submitting'}
+        >
+          {status === 'submitting' ? '...' : 'Notify Me'}
+        </button>
+      </div>
+      {errorMsg && <div className="notify-error">{errorMsg}</div>}
     </div>
   );
-}
+});
 
 /**
  * ArchiveButton - Button to play past puzzles
@@ -350,6 +420,39 @@ function MatchSummaryCard({ resolvedScorecard, playerName, targetPlayerTeam, tar
  * CompletedStateBanner - Complete redesigned home screen for completed state
  * Combines all sections: Result, Countdown, Leaderboard, Share, Notify, Archive
  */
+/**
+ * AuthPromptSection - Post-game auth prompt (replaces EmailNotifySection for logged-out users)
+ * Shows "Sign in to save your progress" with Google button, or "Signed in" badge
+ */
+function AuthPromptSection({ isAuthenticated, userName, onSignInClick, onEmailSubscribe, isSubscribed }) {
+  if (isAuthenticated) {
+    return (
+      <div className="auth-signed-in-badge">
+        <span>✓</span>
+        <span>Signed in as {userName}</span>
+      </div>
+    );
+  }
+
+  // Not authenticated — show sign-in prompt with email fallback
+  return (
+    <div className="auth-prompt-section">
+      <p className="auth-prompt-text">Sign in to save your progress across devices</p>
+      <button className="auth-prompt-btn" onClick={onSignInClick}>
+        <svg width="16" height="16" viewBox="0 0 24 24">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        <span>Continue with Google</span>
+      </button>
+      {/* Fallback to email notify for users who skip auth */}
+      <EmailNotifySection onEmailSubscribe={onEmailSubscribe} isSubscribed={isSubscribed} />
+    </div>
+  );
+}
+
 export function CompletedStateBanner({
   won,
   guessesUsed,
@@ -358,7 +461,8 @@ export function CompletedStateBanner({
   playerName,
   displayName,
   hasSubmitted,
-  onNotifyMe,
+  onEmailSubscribe,
+  isSubscribed,
   onShareX,
   onShareWhatsApp,
   onCopy,
@@ -378,7 +482,11 @@ export function CompletedStateBanner({
   onLinkEmail,
   onSkipEmail,
   isLinkingEmail,
-  showEmailPrompt
+  showEmailPrompt,
+  // Auth props
+  isAuthenticated,
+  userName,
+  onSignInClick
 }) {
   return (
     <div className="completed-home-redesign">
@@ -430,8 +538,14 @@ export function CompletedStateBanner({
         copyState={copyState}
       />
 
-      {/* Notify Me Section */}
-      <NotifySection onNotifyMe={onNotifyMe} />
+      {/* Auth Prompt (replaces EmailNotifySection) */}
+      <AuthPromptSection
+        isAuthenticated={isAuthenticated}
+        userName={userName}
+        onSignInClick={onSignInClick}
+        onEmailSubscribe={onEmailSubscribe}
+        isSubscribed={isSubscribed}
+      />
 
       {/* Archive Button */}
       {onOpenArchive && (
@@ -628,7 +742,8 @@ export function CompletedMobileView({
   onShareWhatsApp,
   onCopy,
   copyState,
-  onNotifyMe,
+  onEmailSubscribe,
+  isSubscribed,
   onOpenArchive,
   matchHighlight = null,
   playerName,
@@ -643,7 +758,11 @@ export function CompletedMobileView({
   onLinkEmail,
   onSkipEmail,
   isLinkingEmail,
-  showEmailPrompt
+  showEmailPrompt,
+  // Auth props
+  isAuthenticated,
+  userName,
+  onSignInClick
 }) {
   const [showPuzzleDetails, setShowPuzzleDetails] = React.useState(false);
   const [name, setName] = React.useState(displayName || '');
@@ -825,8 +944,14 @@ export function CompletedMobileView({
         />
       ) : null}
 
-      {/* Notify Me */}
-      <NotifySection onNotifyMe={onNotifyMe} />
+      {/* Auth Prompt (replaces Notify Me) */}
+      <AuthPromptSection
+        isAuthenticated={isAuthenticated}
+        userName={userName}
+        onSignInClick={onSignInClick}
+        onEmailSubscribe={onEmailSubscribe}
+        isSubscribed={isSubscribed}
+      />
 
       {/* Collapsible Puzzle Details */}
       <div className="mobile-puzzle-details">
@@ -853,6 +978,6 @@ export function CompletedMobileView({
 }
 
 // Export individual components for flexibility
-export { ProminentCountdown, ShareButtons, LeaderboardPreviewInline, ResultBanner, NotifySection, LiveLeaderboard, NostalgiaCard };
+export { ProminentCountdown, ShareButtons, LeaderboardPreviewInline, ResultBanner, EmailNotifySection, AuthPromptSection, LiveLeaderboard, NostalgiaCard };
 
 export default CompletedStateBanner;

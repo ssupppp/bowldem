@@ -41,6 +41,9 @@ import { CompletedStateBanner, LiveLeaderboard, CompletedMobileView } from "./co
 import { TutorialOverlay, hasTutorialBeenSeen } from "./components/onboarding/TutorialOverlay.jsx";
 import { Icon } from "./components/ui/Icon.jsx";
 import { validateGuess, subscribeToEmails, unsubscribeFromEmails, isEmailSubscribed } from "./lib/supabase.js";
+import { useAuth } from "./hooks/useAuth.js";
+import { AuthModal } from "./components/auth/AuthModal.jsx";
+import { UserAvatar } from "./components/auth/UserAvatar.jsx";
 import { getPuzzleIndex } from "./utils/dailyPuzzle.js";
 import { initAnalytics, trackGame, trackFeature, trackFunnel, trackButtonTap } from "./lib/analytics.js";
 import { Confetti } from "./components/effects/Confetti.jsx";
@@ -62,6 +65,10 @@ const PUZZLES = [
 ];
 
 function App() {
+  // Auth state
+  const { user, isAuthenticated, signInWithGoogle, signInWithMagicLink, signOut: authSignOut } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
   const {
     puzzle: currentPuzzle,
     puzzleNumber,
@@ -144,7 +151,7 @@ function App() {
     isLinkingEmail,
     historicalEntries,
     fetchHistoricalEntries
-  } = useLeaderboard(puzzleNumber, puzzleDate);
+  } = useLeaderboard(puzzleNumber, puzzleDate, user);
 
   // State to control email prompt visibility
   const [showEmailPrompt, setShowEmailPrompt] = useState(true);
@@ -1151,6 +1158,12 @@ function App() {
               >
                 <Icon name="stats" size={20} />
               </button>
+              <UserAvatar
+                user={user}
+                isAuthenticated={isAuthenticated}
+                onSignInClick={() => setShowAuthModal(true)}
+                onSignOut={authSignOut}
+              />
             </div>
           </div>
 
@@ -1227,6 +1240,10 @@ function App() {
               isLinkingEmail={isLinkingEmail}
               historicalEntries={historicalEntries}
               showEmailPrompt={showEmailPrompt && !savedEmail}
+              // Auth props
+              isAuthenticated={isAuthenticated}
+              userName={user?.user_metadata?.full_name || user?.email?.split('@')[0] || ''}
+              onSignInClick={() => setShowAuthModal(true)}
             />
           )}
 
@@ -1282,6 +1299,10 @@ function App() {
                   isLinkingEmail={isLinkingEmail}
                   historicalEntries={historicalEntries}
                   showEmailPrompt={showEmailPrompt && !savedEmail}
+                  // Auth props
+                  isAuthenticated={isAuthenticated}
+                  userName={user?.user_metadata?.full_name || user?.email?.split('@')[0] || ''}
+                  onSignInClick={() => setShowAuthModal(true)}
                 >
                   {/* Collapsible puzzle content */}
                   {renderSimplifiedScorecard()}
@@ -1466,6 +1487,15 @@ function App() {
 
       {showTutorial && (
         <TutorialOverlay onComplete={() => setShowTutorial(false)} />
+      )}
+
+      {showAuthModal && (
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          signInWithGoogle={signInWithGoogle}
+          signInWithMagicLink={signInWithMagicLink}
+        />
       )}
     </div>
   );
