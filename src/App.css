@@ -7415,6 +7415,28 @@ button:focus-visible {
   margin: 0;
 }
 
+.auth-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  text-align: left;
+  display: inline-block;
+}
+
+.auth-benefits li {
+  font-size: 13px;
+  color: #475569;
+  padding: 3px 0;
+  line-height: 1.4;
+}
+
+.auth-benefits li::before {
+  content: '\2713';
+  color: #16a34a;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
 .auth-modal-body {
   display: flex;
   flex-direction: column;

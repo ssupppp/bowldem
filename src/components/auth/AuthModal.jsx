@@ -51,12 +51,15 @@ export function AuthModal({ isOpen, onClose, signInWithGoogle, signInWithMagicLi
 
         <div className="auth-modal-header">
           <span className="auth-modal-icon">🏏</span>
-          <h2 className="auth-modal-title">Sign in to Bowldem</h2>
-          <p className="auth-modal-subtitle">Save your progress across devices</p>
+          <h2 className="auth-modal-title">Don't lose your streak</h2>
+          <ul className="auth-benefits">
+            <li>Your stats and streaks, safe on every device</li>
+            <li>Claim your spot on the leaderboard</li>
+            <li>Pick up right where you left off, anywhere</li>
+          </ul>
         </div>
 
         <div className="auth-modal-body">
-          {/* Google Sign In */}
           <button className="auth-btn auth-btn-google" onClick={handleGoogleSignIn}>
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -67,56 +70,11 @@ export function AuthModal({ isOpen, onClose, signInWithGoogle, signInWithMagicLi
             <span>Continue with Google</span>
           </button>
 
-          {/* Divider */}
-          <div className="auth-divider">
-            <span>or</span>
-          </div>
-
-          {/* Magic Link */}
-          {!showMagicLink ? (
-            <button
-              className="auth-btn auth-btn-magic"
-              onClick={() => setShowMagicLink(true)}
-            >
-              <span className="auth-btn-emoji">✉️</span>
-              <span>Sign in with email</span>
-            </button>
-          ) : status === 'sent' ? (
-            <div className="auth-magic-sent">
-              <span className="auth-sent-icon">✓</span>
-              <p className="auth-sent-text">Check your email!</p>
-              <p className="auth-sent-detail">We sent a sign-in link to <strong>{email}</strong></p>
-            </div>
-          ) : (
-            <div className="auth-magic-form">
-              <input
-                type="email"
-                className="auth-magic-input"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (status === 'error') { setStatus('idle'); setErrorMsg(''); }
-                }}
-                onKeyDown={(e) => { if (e.key === 'Enter') handleMagicLink(); }}
-                disabled={status === 'sending'}
-                autoFocus
-              />
-              <button
-                className="auth-btn auth-btn-send"
-                onClick={handleMagicLink}
-                disabled={status === 'sending'}
-              >
-                {status === 'sending' ? 'Sending...' : 'Send magic link'}
-              </button>
-            </div>
-          )}
-
           {errorMsg && <div className="auth-error">{errorMsg}</div>}
         </div>
 
         <div className="auth-modal-footer">
-          <p className="auth-footer-note">No password needed. Your anonymous progress will be saved.</p>
+          <p className="auth-footer-note">One tap. No passwords. Takes 2 seconds.</p>
         </div>
       </div>
     </div>

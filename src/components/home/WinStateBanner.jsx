@@ -429,15 +429,14 @@ function AuthPromptSection({ isAuthenticated, userName, onSignInClick, onEmailSu
     return (
       <div className="auth-signed-in-badge">
         <span>✓</span>
-        <span>Signed in as {userName}</span>
+        <span>Progress saved as {userName}</span>
       </div>
     );
   }
 
-  // Not authenticated — show sign-in prompt with email fallback
   return (
     <div className="auth-prompt-section">
-      <p className="auth-prompt-text">Sign in to save your progress across devices</p>
+      <p className="auth-prompt-text">Don't lose this result — save it to your profile</p>
       <button className="auth-prompt-btn" onClick={onSignInClick}>
         <svg width="16" height="16" viewBox="0 0 24 24">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -447,8 +446,9 @@ function AuthPromptSection({ isAuthenticated, userName, onSignInClick, onEmailSu
         </svg>
         <span>Continue with Google</span>
       </button>
-      {/* Fallback to email notify for users who skip auth */}
-      <EmailNotifySection onEmailSubscribe={onEmailSubscribe} isSubscribed={isSubscribed} />
+      <button className="auth-prompt-skip" onClick={onSignInClick} style={{ display: 'none' }}>
+        Skip for now
+      </button>
     </div>
   );
 }
