@@ -120,7 +120,7 @@ function App() {
   const [revealEmailError, setRevealEmailError] = useState('');
 
   // Get puzzle date for leaderboard
-  const puzzleDate = getEffectiveDate();
+  const todayDate = getEffectiveDate();
 
   // Archive mode state (must be before useLeaderboard and matchHighlight)
   const [archiveMode, setArchiveMode] = useState(false);
@@ -131,6 +131,9 @@ function App() {
   const [archiveUsedPlayers, setArchiveUsedPlayers] = useState(new Set());
   const [archiveGameWon, setArchiveGameWon] = useState(false);
   const [archiveGameOver, setArchiveGameOver] = useState(false);
+
+  // Use archive date when in archive mode, otherwise today
+  const puzzleDate = archiveMode && archivePuzzleDate ? archivePuzzleDate : todayDate;
 
   // Initialize leaderboard hook
   const {
