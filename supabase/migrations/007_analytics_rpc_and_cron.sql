@@ -36,25 +36,26 @@ RETURNS NUMERIC AS $$
 $$ LANGUAGE SQL STABLE;
 
 -- ============================================================================
--- pg_cron schedules (run these manually in SQL Editor if pg_cron is enabled)
+-- pg_cron schedules (run these in SQL Editor — already active as jobs 7 & 8)
+-- NOTE: Use hardcoded service_role JWT, not current_setting() which doesn't exist
 -- ============================================================================
 
--- Seed leaderboard at 00:15 UTC daily
+-- Seed leaderboard at 00:15 UTC daily (job 7)
 -- SELECT cron.schedule(
 --   'seed-daily-leaderboard',
 --   '15 0 * * *',
 --   $$SELECT net.http_post(
---     url := 'https://<PROJECT_REF>.supabase.co/functions/v1/seed-daily-leaderboard',
---     headers := jsonb_build_object('Authorization', 'Bearer ' || current_setting('app.settings.service_role_key'))
+--     url := 'https://nfeeatcbxfkewgyfkqxh.supabase.co/functions/v1/seed-daily-leaderboard',
+--     headers := '{"Authorization": "Bearer <SERVICE_ROLE_JWT>"}'::jsonb
 --   );$$
 -- );
 
--- Send analytics at 03:00 UTC daily
+-- Send analytics at 03:00 UTC daily (job 8)
 -- SELECT cron.schedule(
 --   'send-daily-analytics',
 --   '0 3 * * *',
 --   $$SELECT net.http_post(
---     url := 'https://<PROJECT_REF>.supabase.co/functions/v1/send-daily-analytics',
---     headers := jsonb_build_object('Authorization', 'Bearer ' || current_setting('app.settings.service_role_key'))
+--     url := 'https://nfeeatcbxfkewgyfkqxh.supabase.co/functions/v1/super-handler',
+--     headers := '{"Authorization": "Bearer <SERVICE_ROLE_JWT>"}'::jsonb
 --   );$$
 -- );
