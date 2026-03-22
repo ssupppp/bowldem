@@ -67,27 +67,26 @@ export function PlayerAutocomplete({
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  // Derive known role/country from feedback
-  const knownRole = useMemo(() => {
-    for (const fb of feedbackList) {
-      if (fb.sameRole) return fb.role;
-    }
-    return null;
-  }, [feedbackList]);
+  // Derive known clues from feedback
+  const knownClues = useMemo(() => {
+    let role = null;
+    let team = null;
 
-  const knownCountry = useMemo(() => {
     for (const fb of feedbackList) {
-      if (fb.sameTeam) return fb.country;
+      if (fb.sameRole && !role) role = fb.role;
+      if (fb.sameTeam && !team) team = fb.country;
     }
-    return null;
+
+    return { role, team };
   }, [feedbackList]);
 
   // Filter and sort players based on query (min 3 characters)
-  // Smart ordering: role distribution + feedback-derived priorities
+  // Smart ordering: cracked clues drive priority
   const suggestions = useMemo(() => {
     if (query.length < 3) return [];
 
     const normalizedQuery = query.toLowerCase().trim();
+    const { role: knownRole, team: knownTeam } = knownClues;
 
     const filtered = players.filter(player => {
       // Skip already guessed players
@@ -102,22 +101,25 @@ export function PlayerAutocomplete({
     const scored = filtered.map(player => {
       let score = 0;
 
-      // Priority players (in puzzles) get top boost
-      if (priorityPlayerIds.has(player.id)) score += 1000;
+      // Priority players (in puzzles) get base boost
+      if (priorityPlayerIds.has(player.id)) score += 100;
 
-      // Known country match gets high boost
-      if (knownCountry && player.country === knownCountry) score += 500;
+      const matchesTeam = knownTeam && player.country === knownTeam;
+      const matchesRole = knownRole && player.role === knownRole;
 
-      // Role scoring based on feedback knowledge
-      if (knownRole) {
-        // Role identified: heavily prioritize matching role
-        if (player.role === knownRole) score += 300;
-      } else {
-        // No role identified: use 50/30/20 distribution weighting
-        const role = (player.role || '').toLowerCase();
-        if (role === 'batsman') score += 50;
-        else if (role === 'bowler') score += 30;
-        else score += 20; // All-rounder, WK, etc.
+      // Both cracked: team + role match is top tier
+      if (knownTeam && knownRole) {
+        if (matchesTeam && matchesRole) score += 2000;
+        else if (matchesTeam) score += 1000;
+        else if (matchesRole) score += 500;
+      }
+      // Only team cracked: sort by team first
+      else if (knownTeam) {
+        if (matchesTeam) score += 1000;
+      }
+      // Only role cracked: sort by role first
+      else if (knownRole) {
+        if (matchesRole) score += 1000;
       }
 
       return { player, score };
@@ -130,7 +132,7 @@ export function PlayerAutocomplete({
     });
 
     return scored.map(s => s.player).slice(0, 10);
-  }, [query, players, usedPlayers, priorityPlayerIds, knownRole, knownCountry]);
+  }, [query, players, usedPlayers, priorityPlayerIds, knownClues]);
 
   // Reset highlighted index when suggestions change
   useEffect(() => {
