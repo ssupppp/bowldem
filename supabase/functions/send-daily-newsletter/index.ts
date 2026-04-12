@@ -119,7 +119,7 @@ Return ONLY valid JSON with two keys:
 2. "body": The article text. 2-3 paragraphs, 200-250 words. No heading, just the narrative.`;
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -127,7 +127,7 @@ Return ONLY valid JSON with two keys:
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 1024,
+          maxOutputTokens: 4096,
           responseMimeType: "application/json",
         },
       }),
@@ -145,7 +145,11 @@ Return ONLY valid JSON with two keys:
     );
   }
 
-  return JSON.parse(text);
+  // Extract JSON from response — handle markdown code blocks and extra whitespace
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error(`No JSON found in Gemini response: ${text.slice(0, 200)}`);
+
+  return JSON.parse(jsonMatch[0]);
 }
 
 /**
