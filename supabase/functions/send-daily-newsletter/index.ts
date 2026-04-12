@@ -3,16 +3,17 @@
  * Triggered daily via pg_cron at 8:00 AM IST (02:30 UTC)
  *
  * Flow:
- * 1. Calculate yesterday's puzzle ID
- * 2. Check/generate newsletter content (Gemini 2.0 Flash)
+ * 1. Calculate yesterday's puzzle ID + today's puzzle number
+ * 2. Check/generate newsletter content (Grok via xAI API)
  * 3. Fetch active subscribers
- * 4. Send personalized emails via Resend
+ * 4. Send personalized emails via Resend (with yesterday's score)
  */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { PUZZLE_LOOKUP, PUZZLE_COUNT } from "./puzzle_data.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
-const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY")!;
+const XAI_API_KEY = Deno.env.get("XAI_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -35,31 +36,63 @@ interface PuzzleData {
 interface NewsletterContent {
   headline: string;
   body: string;
-  did_you_know: string;
 }
 
-/**
- * Calculate yesterday's puzzle ID using the same epoch logic as the client
- */
-function getYesterdayPuzzleInfo(): { puzzleDate: string; dayNumber: number } {
+function getDayNumber(date: Date): number {
+  const diffMs = date.getTime() - EPOCH_DATE.getTime();
+  return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
+
+function getYesterdayPuzzleInfo(): {
+  puzzleDate: string;
+  dayNumber: number;
+  todayNumber: number;
+} {
   const now = new Date();
-  const yesterday = new Date(now);
+  const today = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+  );
+  const yesterday = new Date(today);
   yesterday.setUTCDate(yesterday.getUTCDate() - 1);
 
-  const puzzleDate = yesterday.toISOString().split("T")[0];
-  const diffMs = yesterday.getTime() - EPOCH_DATE.getTime();
-  const dayNumber = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  return { puzzleDate, dayNumber };
+  return {
+    puzzleDate: yesterday.toISOString().split("T")[0],
+    dayNumber: getDayNumber(yesterday),
+    todayNumber: getDayNumber(today),
+  };
 }
 
 /**
- * Generate newsletter content using Gemini 2.0 Flash
+ * Generate newsletter content using Grok (xAI API, OpenAI-compatible)
+ * Style-trained prompt based on ESPNcricinfo/Cricket Monthly voice
  */
-async function generateContent(puzzleData: PuzzleData): Promise<NewsletterContent> {
-  const prompt = `You are a cricket enthusiast writing a short nostalgia email about a historic cricket match. Write like a fan reminiscing with another fan — warm, evocative, personal. NOT like a sports journalist or commentator.
+async function generateContent(
+  puzzleData: PuzzleData
+): Promise<NewsletterContent> {
+  const systemPrompt = `You are a cricket writer whose voice is inspired by Andrew Miller and Sidharth Monga of ESPNcricinfo — literate, evocative sports writing with dry wit.
 
-Match details:
+STYLE RULES:
+- Write for a cricket-literate audience. Never explain what a yorker or cover drive is.
+- Use rich, specific verbs: bludgeoned, planted, clubbed, suckered, flogged, slotted — NOT "hit", "scored", "played well"
+- Mix long flowing sentences with short punchy ones for rhythm
+- Drop the reader INTO a specific moment in the opening line — an image, an irony, a turning point
+- Weave stats into narrative, never list them. "His 6/23 remained the finest figures ever produced against Australia" not "He took 6 wickets for 23 runs"
+- Use irony and understatement: "the most pyrrhic wicket of the night", "numbers that don't begin to capture the absurdity"
+- End with an emotional payoff — a lasting image or a line that lands
+- NO exclamation marks. The writing does the exclaiming.
+- NO generic words: amazing, incredible, fantastic, brilliant, epic
+- NO AI phrases: "let's dive in", "without further ado", "in conclusion"
+- NO bullet points or listicles
+- 2-3 paragraphs, 200-250 words total
+
+EXAMPLE OUTPUT STYLE:
+"Shane Bond bowled the spell of his life at Port Elizabeth — six wickets for 23, the finest figures ever produced against Australia in a World Cup — and still ended up on the losing side. That is the cruelty of the 2003 tournament in a single scoreline."
+
+Return ONLY valid JSON with two keys:
+1. "headline": A punchy headline (max 80 chars). Specific, names the key moment or player. Style: "When Bond's 6/23 wasn't enough" or "147 for 8 and the impossible last stand". NOT: "Amazing match between India and England"
+2. "body": The article text. 2-3 paragraphs, 200-250 words. No heading, just the narrative.`;
+
+  const userPrompt = `Write a newsletter article about this match:
 - Venue: ${puzzleData.venue}
 - ${puzzleData.team1}: ${puzzleData.team1Score}
 - ${puzzleData.team2}: ${puzzleData.team2Score}
@@ -67,39 +100,82 @@ Match details:
 - Man of the Match: ${puzzleData.motm}
 ${puzzleData.matchContext ? `- Context: ${puzzleData.matchContext}` : ""}
 ${puzzleData.triviaFact ? `- Trivia: ${puzzleData.triviaFact}` : ""}
-${puzzleData.playerHighlight ? `- Key performance: ${puzzleData.playerHighlight}` : ""}
+${puzzleData.playerHighlight ? `- Key performance: ${puzzleData.playerHighlight}` : ""}`;
 
-Generate a JSON object with:
-1. "headline": A punchy, nostalgic headline (max 100 chars). No quotes around it.
-2. "body": 2-3 short paragraphs about the match. Capture the emotion, the moment, what made it special. Use "you" and "we" — make the reader feel like they were there.
-3. "did_you_know": One surprising fact about this match or the players involved (1-2 sentences).
-
-Return ONLY valid JSON, no markdown formatting.`;
-
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.8,
-          maxOutputTokens: 1024,
-          responseMimeType: "application/json",
-        },
-      }),
-    }
-  );
+  const response = await fetch("https://api.x.ai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${XAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "grok-3-mini-fast",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      temperature: 0.7,
+      max_tokens: 1024,
+      response_format: { type: "json_object" },
+    }),
+  });
 
   const result = await response.json();
-  const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+  console.log("Grok raw response:", JSON.stringify(result).slice(0, 500));
+
+  if (result.error) {
+    throw new Error(
+      `Grok API error: ${result.error.message || JSON.stringify(result.error)}`
+    );
+  }
+
+  const text = result.choices?.[0]?.message?.content;
 
   if (!text) {
-    throw new Error("Empty response from Gemini");
+    throw new Error(
+      `Empty response from Grok. Status: ${response.status}. Keys: ${Object.keys(result).join(",")}`
+    );
   }
 
   return JSON.parse(text);
+}
+
+/**
+ * Build personalized score section
+ */
+function buildScoreSection(
+  entry: { guesses_used: number; won: boolean } | null,
+  percentile: number | null
+): string {
+  if (!entry) {
+    return `<div style="background:#fef3c7;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:14px;color:#92400e;text-align:center;">
+      You missed yesterday's puzzle — it was a good one.
+    </div>`;
+  }
+
+  if (!entry.won) {
+    return `<div style="background:#fef2f2;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:14px;color:#991b1b;text-align:center;">
+      Tough one yesterday. You'll get today's.
+    </div>`;
+  }
+
+  const guesses = entry.guesses_used;
+  let message: string;
+  if (guesses === 1) {
+    message = "First guess. You absolute menace.";
+  } else if (guesses <= 2) {
+    message = `Cracked it in ${guesses} guesses.`;
+  } else {
+    message = `Got it in ${guesses}.`;
+  }
+
+  if (percentile && percentile < 100) {
+    message += ` Better than ${percentile}% of players.`;
+  }
+
+  return `<div style="background:#f0fdf4;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:14px;color:#166534;text-align:center;">
+    <span style="font-size:18px;">&#127942;</span> ${message}
+  </div>`;
 }
 
 /**
@@ -108,64 +184,68 @@ Return ONLY valid JSON, no markdown formatting.`;
 function buildEmailHtml(
   content: NewsletterContent,
   puzzleData: PuzzleData,
-  personalResult: string | null
+  dayNumber: number,
+  todayNumber: number,
+  scoreHtml: string
 ): string {
-  const personalSection = personalResult
-    ? `<div style="background:#f0fdf4;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:15px;color:#166534;text-align:center;">${personalResult}</div>`
-    : "";
+  const bodyParagraphs = content.body
+    .split("\n")
+    .filter((p: string) => p.trim())
+    .map(
+      (p: string) =>
+        `<p style="margin:0 0 14px;color:#334155;font-size:15px;line-height:1.7;">${p}</p>`
+    )
+    .join("");
 
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f0f9ff;font-family:'Segoe UI',Roboto,Arial,sans-serif;">
-<div style="max-width:560px;margin:0 auto;padding:20px;">
+<body style="margin:0;padding:0;background:#f0f9ff;font-family:'Georgia','Times New Roman',serif;">
+<div style="max-width:540px;margin:0 auto;padding:20px;">
+
   <!-- Header -->
-  <div style="text-align:center;padding:20px 0 16px;">
-    <span style="font-size:28px;">🏏</span>
-    <span style="font-size:22px;font-weight:700;color:#1e3a5f;margin-left:8px;">Bowldem</span>
-    <div style="color:#64748b;font-size:13px;margin-top:4px;">Yesterday's Puzzle</div>
+  <div style="padding:16px 0 12px;border-bottom:2px solid #1e3a5f;margin-bottom:20px;">
+    <span style="font-size:20px;font-weight:700;color:#1e3a5f;font-family:'Segoe UI',Roboto,Arial,sans-serif;">Bowldem Daily</span>
   </div>
 
-  <!-- Card -->
-  <div style="background:#fff;border-radius:12px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    ${personalSection}
+  <!-- Yesterday's Answer -->
+  <div style="background:#1e3a5f;border-radius:8px;padding:14px 18px;margin-bottom:20px;color:#fff;">
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#94a3b8;margin-bottom:6px;">Yesterday's Answer — Puzzle #${dayNumber}</div>
+    <div style="font-size:18px;font-weight:700;">${puzzleData.motm}</div>
+    <div style="font-size:13px;color:#cbd5e1;margin-top:4px;">${puzzleData.venue.split(",")[0]}</div>
+  </div>
 
-    <!-- Headline -->
-    <h2 style="color:#1e3a5f;font-size:20px;margin:0 0 16px;line-height:1.3;">${content.headline}</h2>
+  <!-- Your Score -->
+  ${scoreHtml}
 
-    <!-- Match Info -->
-    <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:14px;color:#475569;">
-      <div><strong>${puzzleData.team1}</strong> ${puzzleData.team1Score}</div>
-      <div style="color:#94a3b8;font-size:12px;margin:2px 0;">vs</div>
-      <div><strong>${puzzleData.team2}</strong> ${puzzleData.team2Score}</div>
-      <div style="margin-top:6px;font-size:13px;color:#1e3a5f;">${puzzleData.result}</div>
-      <div style="margin-top:4px;font-size:13px;">⭐ MOTM: ${puzzleData.motm}</div>
-    </div>
+  <!-- The Story -->
+  <div style="margin-bottom:24px;">
+    <h2 style="color:#1e3a5f;font-size:19px;margin:0 0 14px;line-height:1.3;font-weight:700;">${content.headline}</h2>
+    ${bodyParagraphs}
+  </div>
 
-    <!-- Body -->
-    <div style="color:#334155;font-size:15px;line-height:1.7;margin-bottom:16px;">
-      ${content.body.split("\n").map((p: string) => `<p style="margin:0 0 12px;">${p}</p>`).join("")}
-    </div>
+  <!-- Scorecard Mini -->
+  <div style="background:#f8fafc;border-radius:8px;padding:12px 16px;margin-bottom:24px;font-size:13px;color:#475569;font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+    <div><strong>${puzzleData.team1}</strong> ${puzzleData.team1Score}</div>
+    <div><strong>${puzzleData.team2}</strong> ${puzzleData.team2Score}</div>
+    <div style="margin-top:6px;font-size:12px;color:#64748b;">${puzzleData.result}</div>
+  </div>
 
-    <!-- Did You Know -->
-    <div style="background:#fefce8;border-left:3px solid #eab308;padding:10px 14px;border-radius:0 8px 8px 0;margin-bottom:20px;">
-      <div style="font-size:12px;font-weight:600;color:#854d0e;margin-bottom:4px;">💡 DID YOU KNOW</div>
-      <div style="font-size:14px;color:#713f12;">${content.did_you_know}</div>
-    </div>
-
-    <!-- CTA -->
-    <div style="text-align:center;margin-top:20px;">
-      <a href="https://bowldem.com" style="display:inline-block;background:#1e3a5f;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:600;font-size:15px;">
-        Play Today's Puzzle →
-      </a>
-    </div>
+  <!-- Today's Puzzle CTA -->
+  <div style="background:#fff;border:2px solid #1e3a5f;border-radius:10px;padding:18px;text-align:center;margin-bottom:20px;">
+    <div style="font-size:13px;color:#64748b;font-family:'Segoe UI',Roboto,Arial,sans-serif;margin-bottom:8px;">Puzzle #${todayNumber} is live now</div>
+    <a href="https://bowldem.com" style="display:inline-block;background:#1e3a5f;color:#fff;text-decoration:none;padding:12px 32px;border-radius:8px;font-weight:600;font-size:15px;font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+      Play Today's Puzzle
+    </a>
   </div>
 
   <!-- Footer -->
-  <div style="text-align:center;padding:20px 0;color:#94a3b8;font-size:12px;">
+  <div style="text-align:center;padding:12px 0;color:#94a3b8;font-size:11px;font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+    <a href="https://bowldem.com" style="color:#64748b;text-decoration:none;">bowldem.com</a>
+    &nbsp;&middot;&nbsp;
     <a href="https://bowldem.com?unsubscribe={{email_b64}}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>
-    &nbsp;·&nbsp; Bowldem — Daily Cricket Puzzles
   </div>
+
 </div>
 </body>
 </html>`;
@@ -174,7 +254,11 @@ function buildEmailHtml(
 /**
  * Send email via Resend API
  */
-async function sendEmail(to: string, subject: string, html: string): Promise<string | null> {
+async function sendEmail(
+  to: string,
+  subject: string,
+  html: string
+): Promise<string | null> {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -194,86 +278,71 @@ async function sendEmail(to: string, subject: string, html: string): Promise<str
 }
 
 // Main handler
-Deno.serve(async (req) => {
+Deno.serve(async (_req) => {
   try {
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-    const { puzzleDate, dayNumber } = getYesterdayPuzzleInfo();
+    const { puzzleDate, dayNumber, todayNumber } = getYesterdayPuzzleInfo();
 
-    console.log(`Processing newsletter for puzzle date: ${puzzleDate}, day: ${dayNumber}`);
+    console.log(
+      `Newsletter for puzzle #${dayNumber} (${puzzleDate}), today is #${todayNumber}`
+    );
 
-    // 1. Check for scheduled puzzle override, fall back to modulo
-    const { data: scheduled } = await supabase
-      .from("puzzle_schedule")
-      .select("puzzle_id")
-      .eq("schedule_date", puzzleDate)
-      .single();
+    // 1. Get puzzle data from embedded lookup
+    // Client logic: puzzleIndex = puzzleNumber % totalPuzzles, puzzle.id = index + 1
+    const puzzleIndex = dayNumber % PUZZLE_COUNT;
+    const puzzleId = puzzleIndex + 1;
+    const raw = PUZZLE_LOOKUP[puzzleId];
 
-    // Get puzzle data — we need match details from the puzzle tables
-    // The puzzle_id comes from schedule or modulo calculation
-    // For now, fetch from match_puzzles view
-    const { data: puzzleRow } = await supabase
-      .from("public_puzzles")
-      .select("*")
-      .eq("puzzle_date", puzzleDate)
-      .single();
-
-    if (!puzzleRow) {
-      console.log("No puzzle found for yesterday, skipping newsletter");
-      return new Response(JSON.stringify({ status: "skipped", reason: "no puzzle" }), {
-        headers: { "Content-Type": "application/json" },
-      });
+    if (!raw) {
+      console.log(`No puzzle data for id ${puzzleId} (day ${dayNumber}), skipping`);
+      return new Response(
+        JSON.stringify({ status: "skipped", reason: "no puzzle", puzzleId }),
+        { headers: { "Content-Type": "application/json" } }
+      );
     }
 
-    // Build puzzle data for content generation
     const puzzleData: PuzzleData = {
-      venue: puzzleRow.venue || "",
-      team1: puzzleRow.team1_name || "",
-      team1Score: puzzleRow.team1_score || "",
-      team2: puzzleRow.team2_name || "",
-      team2Score: puzzleRow.team2_score || "",
-      result: puzzleRow.result || "",
-      motm: puzzleRow.motm_name || "",
-      matchContext: puzzleRow.match_context || undefined,
-      triviaFact: puzzleRow.trivia_fact || undefined,
-      playerHighlight: puzzleRow.player_highlight || undefined,
+      venue: raw.v,
+      team1: raw.t1,
+      team1Score: raw.t1s,
+      team2: raw.t2,
+      team2Score: raw.t2s,
+      result: raw.r,
+      motm: raw.m,
+      matchContext: raw.mc,
+      triviaFact: raw.tf,
+      playerHighlight: raw.ph,
     };
 
-    // 2. Check newsletter_content cache
+    // 2. Check content cache or generate
     let content: NewsletterContent;
     const { data: cached } = await supabase
       .from("newsletter_content")
       .select("*")
-      .eq("puzzle_id", puzzleRow.id || dayNumber)
+      .eq("puzzle_id", puzzleId)
       .single();
 
     if (cached) {
-      console.log("Using cached newsletter content");
-      content = {
-        headline: cached.headline,
-        body: cached.body,
-        did_you_know: cached.did_you_know,
-      };
+      console.log("Using cached content");
+      content = { headline: cached.headline, body: cached.body };
     } else {
-      console.log("Generating newsletter content via Gemini");
+      console.log("Generating content via Grok");
       content = await generateContent(puzzleData);
 
-      // Cache it
       await supabase.from("newsletter_content").insert([
         {
-          puzzle_id: puzzleRow.id || dayNumber,
+          puzzle_id: puzzleId,
           headline: content.headline,
           body: content.body,
-          did_you_know: content.did_you_know,
         },
       ]);
     }
 
-    // 3. Fetch active subscribers
+    // 3. Fetch subscribers
     const { data: subscribers } = await supabase
       .from("email_subscribers")
       .select("email")
-      .eq("is_active", true)
-      .eq("newsletter_enabled", true);
+      .eq("is_active", true);
 
     if (!subscribers || subscribers.length === 0) {
       console.log("No active subscribers");
@@ -282,10 +351,18 @@ Deno.serve(async (req) => {
       });
     }
 
+    // 4. Get yesterday's leaderboard stats for percentile calc
+    const { data: allEntries } = await supabase
+      .from("leaderboard_entries")
+      .select("guesses_used, won, email")
+      .eq("puzzle_date", puzzleDate)
+      .eq("is_seed", false);
+
+    const totalPlayers = allEntries?.length || 0;
+
     console.log(`Sending to ${subscribers.length} subscribers`);
     let sentCount = 0;
 
-    // 4. Send to each subscriber
     for (const sub of subscribers) {
       // Dedup check
       const { data: alreadySent } = await supabase
@@ -298,52 +375,38 @@ Deno.serve(async (req) => {
 
       if (alreadySent) continue;
 
-      // Personalize — check if they played yesterday
-      let personalResult: string | null = null;
-      const { data: entry } = await supabase
-        .from("leaderboard_entries")
-        .select("guesses_used, won")
-        .eq("email", sub.email)
-        .eq("puzzle_date", puzzleDate)
-        .single();
+      // Find this subscriber's entry
+      const entry =
+        allEntries?.find(
+          (e: { email: string }) => e.email === sub.email
+        ) || null;
 
-      if (entry) {
-        if (entry.won) {
-          // Calculate percentile
-          const { count: totalPlayers } = await supabase
-            .from("leaderboard_entries")
-            .select("id", { count: "exact", head: true })
-            .eq("puzzle_date", puzzleDate);
-
-          const { count: betterPlayers } = await supabase
-            .from("leaderboard_entries")
-            .select("id", { count: "exact", head: true })
-            .eq("puzzle_date", puzzleDate)
-            .eq("won", true)
-            .lt("guesses_used", entry.guesses_used);
-
-          const percentile = totalPlayers
-            ? Math.round(((totalPlayers - (betterPlayers || 0)) / totalPlayers) * 100)
-            : null;
-
-          personalResult = `🏆 You got it in ${entry.guesses_used}!`;
-          if (percentile) {
-            personalResult += ` Faster than ${percentile}% of players.`;
-          }
-        } else {
-          personalResult = `😔 You missed this one — but you're not alone!`;
-        }
-      } else {
-        personalResult = `⏰ You didn't play yesterday — don't break your streak!`;
+      // Calculate percentile if they won
+      let percentile: number | null = null;
+      if (entry?.won && totalPlayers > 0) {
+        const betterCount =
+          allEntries?.filter(
+            (e: { won: boolean; guesses_used: number }) =>
+              e.won && e.guesses_used < entry.guesses_used
+          ).length || 0;
+        percentile = Math.round(
+          ((totalPlayers - betterCount) / totalPlayers) * 100
+        );
       }
 
-      const html = buildEmailHtml(content, puzzleData, personalResult);
-      const subject = `🏏 ${content.headline}`;
+      const scoreHtml = buildScoreSection(entry, percentile);
+      const html = buildEmailHtml(
+        content,
+        puzzleData,
+        dayNumber,
+        todayNumber,
+        scoreHtml
+      );
+      const subject = `Bowldem Daily — ${content.headline}`;
 
       try {
         const resendId = await sendEmail(sub.email, subject, html);
 
-        // Log the send
         await supabase.from("email_log").insert([
           {
             email: sub.email,
@@ -359,9 +422,14 @@ Deno.serve(async (req) => {
       }
     }
 
-    console.log(`Newsletter complete: sent ${sentCount}/${subscribers.length}`);
+    console.log(`Newsletter done: ${sentCount}/${subscribers.length}`);
     return new Response(
-      JSON.stringify({ status: "done", sent: sentCount, total: subscribers.length }),
+      JSON.stringify({
+        status: "done",
+        sent: sentCount,
+        total: subscribers.length,
+        headline: content.headline,
+      }),
       { headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {

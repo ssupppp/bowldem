@@ -419,6 +419,11 @@ export async function subscribeToEmails(email, options = {}) {
     return { success: false, error: error.message };
   }
 
+  // Fire ad attribution conversion event (non-blocking, lazy import to avoid circular dep)
+  import('./attribution.js').then(({ markConversion }) => {
+    markConversion(normalizedEmail, source === 'auth_signup' ? 'auth_signup' : 'email_subscribe');
+  }).catch(() => {});
+
   // Trigger welcome email (non-blocking)
   if (!existing?.welcome_sent_at) {
     try {

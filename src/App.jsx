@@ -46,11 +46,15 @@ import { AuthModal } from "./components/auth/AuthModal.jsx";
 import { UserAvatar } from "./components/auth/UserAvatar.jsx";
 import { getPuzzleIndex } from "./utils/dailyPuzzle.js";
 import { initAnalytics, trackGame, trackFeature, trackFunnel, trackButtonTap } from "./lib/analytics.js";
+import { captureAttribution, markPuzzlePlayed } from "./lib/attribution.js";
 import { Confetti } from "./components/effects/Confetti.jsx";
 import "./App.css";
 
 // Initialize analytics on app load
 initAnalytics();
+
+// Capture UTM params + fbclid on landing (paid traffic attribution)
+captureAttribution();
 
 // Feature flag for Supabase validation (set to true to enable server-side validation)
 const USE_SUPABASE_VALIDATION = true;
@@ -401,9 +405,10 @@ function App() {
   const handlePlayerGuess = async (playerKey) => {
     if (gameWon || gameOver || usedPlayers.has(playerKey) || alreadyCompleted || isChecking) return;
 
-    // Track first guess for funnel
+    // Track first guess for funnel + ad attribution
     if (feedbackList.length === 0) {
       trackFunnel.firstGuess();
+      markPuzzlePlayed();
     }
 
     // Start 3rd Umpire checking state
