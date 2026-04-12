@@ -13,7 +13,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { PUZZLE_LOOKUP, PUZZLE_COUNT } from "./puzzle_data.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
-const XAI_API_KEY = Deno.env.get("XAI_API_KEY")!;
+const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
@@ -63,13 +63,29 @@ function getYesterdayPuzzleInfo(): {
 }
 
 /**
- * Generate newsletter content using Grok (xAI API, OpenAI-compatible)
+ * Generate newsletter content using Gemini 2.0 Flash (free tier)
  * Style-trained prompt based on ESPNcricinfo/Cricket Monthly voice
+ * Falls back to a no-AI template if Gemini fails
  */
 async function generateContent(
   puzzleData: PuzzleData
 ): Promise<NewsletterContent> {
-  const systemPrompt = `You are a cricket writer whose voice is inspired by Andrew Miller and Sidharth Monga of ESPNcricinfo — literate, evocative sports writing with dry wit.
+  try {
+    return await generateContentWithGemini(puzzleData);
+  } catch (e: any) {
+    const errMsg = e?.message || String(e);
+    console.error("Gemini content generation failed, using fallback:", errMsg);
+    const fallback = generateFallbackContent(puzzleData);
+    // Tag fallback content so we can see it was a fallback in the response
+    (fallback as any)._gemini_error = errMsg;
+    return fallback;
+  }
+}
+
+async function generateContentWithGemini(
+  puzzleData: PuzzleData
+): Promise<NewsletterContent> {
+  const prompt = `You are a cricket writer whose voice is inspired by Andrew Miller and Sidharth Monga of ESPNcricinfo — literate, evocative sports writing with dry wit.
 
 STYLE RULES:
 - Write for a cricket-literate audience. Never explain what a yorker or cover drive is.
@@ -88,11 +104,7 @@ STYLE RULES:
 EXAMPLE OUTPUT STYLE:
 "Shane Bond bowled the spell of his life at Port Elizabeth — six wickets for 23, the finest figures ever produced against Australia in a World Cup — and still ended up on the losing side. That is the cruelty of the 2003 tournament in a single scoreline."
 
-Return ONLY valid JSON with two keys:
-1. "headline": A punchy headline (max 80 chars). Specific, names the key moment or player. Style: "When Bond's 6/23 wasn't enough" or "147 for 8 and the impossible last stand". NOT: "Amazing match between India and England"
-2. "body": The article text. 2-3 paragraphs, 200-250 words. No heading, just the narrative.`;
-
-  const userPrompt = `Write a newsletter article about this match:
+Write a newsletter article about this match:
 - Venue: ${puzzleData.venue}
 - ${puzzleData.team1}: ${puzzleData.team1Score}
 - ${puzzleData.team2}: ${puzzleData.team2Score}
@@ -100,44 +112,50 @@ Return ONLY valid JSON with two keys:
 - Man of the Match: ${puzzleData.motm}
 ${puzzleData.matchContext ? `- Context: ${puzzleData.matchContext}` : ""}
 ${puzzleData.triviaFact ? `- Trivia: ${puzzleData.triviaFact}` : ""}
-${puzzleData.playerHighlight ? `- Key performance: ${puzzleData.playerHighlight}` : ""}`;
+${puzzleData.playerHighlight ? `- Key performance: ${puzzleData.playerHighlight}` : ""}
 
-  const response = await fetch("https://api.x.ai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${XAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "grok-3-mini-fast",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.7,
-      max_tokens: 1024,
-      response_format: { type: "json_object" },
-    }),
-  });
+Return ONLY valid JSON with two keys:
+1. "headline": A punchy headline (max 80 chars). Specific, names the key moment or player.
+2. "body": The article text. 2-3 paragraphs, 200-250 words. No heading, just the narrative.`;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1024,
+          responseMimeType: "application/json",
+        },
+      }),
+    }
+  );
 
   const result = await response.json();
-  console.log("Grok raw response:", JSON.stringify(result).slice(0, 500));
+  console.log("Gemini raw response:", JSON.stringify(result).slice(0, 500));
 
-  if (result.error) {
-    throw new Error(
-      `Grok API error: ${result.error.message || JSON.stringify(result.error)}`
-    );
-  }
-
-  const text = result.choices?.[0]?.message?.content;
+  const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
   if (!text) {
     throw new Error(
-      `Empty response from Grok. Status: ${response.status}. Keys: ${Object.keys(result).join(",")}`
+      `Empty response from Gemini. Status: ${response.status}. Body: ${JSON.stringify(result).slice(0, 300)}`
     );
   }
 
   return JSON.parse(text);
+}
+
+/**
+ * Fallback: no-AI newsletter with just the answer reveal
+ */
+function generateFallbackContent(puzzleData: PuzzleData): NewsletterContent {
+  return {
+    headline: `${puzzleData.motm} was the answer`,
+    body: `${puzzleData.team1} (${puzzleData.team1Score}) took on ${puzzleData.team2} (${puzzleData.team2Score}) at ${puzzleData.venue.split(",")[0]}. ${puzzleData.result}.\n\n${puzzleData.motm} was named Man of the Match.${puzzleData.playerHighlight ? " " + puzzleData.playerHighlight : ""}${puzzleData.matchContext ? "\n\n" + puzzleData.matchContext + "." : ""}`,
+  };
 }
 
 /**
@@ -429,6 +447,7 @@ Deno.serve(async (_req) => {
         sent: sentCount,
         total: subscribers.length,
         headline: content.headline,
+        gemini_error: (content as any)._gemini_error || null,
       }),
       { headers: { "Content-Type": "application/json" } }
     );
