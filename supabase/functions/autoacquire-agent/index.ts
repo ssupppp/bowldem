@@ -104,11 +104,19 @@ Deno.serve(async (req) => {
     // Override strategy token with env var so downstream functions use it
     meta.system_user_token = metaToken;
 
-    // 2. Get current cycle
+    // 2. ACTIVATE — check pending_review ads, activate approved ones
+    if (!dryRun) {
+      const activation = await activatePendingAds(meta);
+      if (activation.activated > 0 || activation.rejected > 0 || activation.still_pending > 0) {
+        addLog(`Activation: ${activation.activated} activated, ${activation.rejected} rejected, ${activation.still_pending} still pending`);
+      }
+    }
+
+    // 3. Get current cycle
     const cycle = await getCurrentCycle(strategy);
     addLog(`Cycle #${cycle.cycle_number}, experiment: ${cycle.experiment?.id || "none"}`);
 
-    // 3. EVALUATE — pull metrics from Meta for active variants
+    // 4. EVALUATE — pull metrics from Meta for active variants
     const activeVariants = await getActiveVariants();
     addLog(`Active variants: ${activeVariants.length}`);
 
@@ -768,37 +776,68 @@ async function ensureCampaign(adAccountId: string, token: string, strategy: Stra
 // ACTIVATE — Check pending_review ads and activate approved ones
 // ============================================================================
 
-async function activatePendingAds(meta: any) {
+async function activatePendingAds(meta: any): Promise<{ activated: number; rejected: number; still_pending: number }> {
+  const result = { activated: 0, rejected: 0, still_pending: 0 };
+
   const { data: pending } = await supabase
     .from("aq_variants")
-    .select("id, meta_ad_id, meta_adset_id")
+    .select("id, meta_ad_id, meta_adset_id, experiment_id")
     .eq("status", "pending_review");
 
-  for (const ad of pending || []) {
+  if (!pending || pending.length === 0) return result;
+
+  // Ensure campaign is active on Meta (it's created PAUSED)
+  const { data: campaign } = await supabase
+    .from("aq_campaigns")
+    .select("meta_campaign_id")
+    .eq("status", "active")
+    .limit(1)
+    .single();
+
+  if (campaign?.meta_campaign_id) {
+    try {
+      await metaApiPost(campaign.meta_campaign_id, { status: "ACTIVE" }, meta.system_user_token);
+    } catch (e) {
+      console.warn("Failed to activate campaign:", e);
+    }
+  }
+
+  for (const ad of pending) {
     if (!ad.meta_ad_id) continue;
 
     try {
-      // Check ad status on Meta
       const adStatus = await metaApiGet(ad.meta_ad_id, "effective_status", meta.system_user_token);
+      const status = adStatus.effective_status;
 
-      if (adStatus.effective_status === "PAUSED" || adStatus.effective_status === "ACTIVE") {
-        // Ad passed review — activate
+      // PAUSED = review passed (we created it paused), ACTIVE = already running
+      // IN_PROCESS = still being reviewed by Meta
+      // PENDING_REVIEW = waiting for review
+      if (status === "PAUSED" || status === "ACTIVE") {
+        // Activate ad + ad set
         await metaApiPost(ad.meta_ad_id, { status: "ACTIVE" }, meta.system_user_token);
-        await metaApiPost(ad.meta_adset_id, { status: "ACTIVE" }, meta.system_user_token);
+        if (ad.meta_adset_id) {
+          await metaApiPost(ad.meta_adset_id, { status: "ACTIVE" }, meta.system_user_token);
+        }
         await supabase.from("aq_variants").update({ status: "active" }).eq("id", ad.id);
-      } else if (adStatus.effective_status === "DISAPPROVED") {
-        // Ad rejected — mark as killed
+        result.activated++;
+      } else if (status === "DISAPPROVED" || status === "WITH_ISSUES") {
         await supabase.from("aq_variants").update({
           status: "killed",
           killed_at: new Date().toISOString(),
-          meta_data: { rejection_reason: adStatus.review_feedback || "unknown" },
+          meta_data: { rejection_reason: status },
         }).eq("id", ad.id);
+        result.rejected++;
+      } else {
+        // IN_PROCESS, PENDING_REVIEW, etc — still waiting
+        result.still_pending++;
       }
-      // else still in review — leave as pending
     } catch (e) {
       console.warn(`Failed to check ad ${ad.meta_ad_id}:`, e);
+      result.still_pending++;
     }
   }
+
+  return result;
 }
 
 // ============================================================================
