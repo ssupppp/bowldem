@@ -631,19 +631,25 @@ async function deployToMeta(variant: any, strategy: Strategy, cycle: any) {
     const campaignId = await ensureCampaign(adAccountId, token, strategy);
 
     // 2. Create ad set with targeting + budget
+    // Meta INR daily_budget is in paise. Min is ~₹93 (~9300 paise).
+    // Ensure each variant gets at least ₹125 (12500 paise) to avoid rejection.
+    const dailyBudgetPaise = Math.max(variant.daily_budget_paise, 12500);
+
     const adSetData = {
       name: `AQ_${cycle.cycle_number}_${variant.budget_type}_${Date.now()}`,
       campaign_id: campaignId,
       billing_event: "IMPRESSIONS",
-      optimization_goal: "LINK_CLICKS", // Start with clicks, switch to conversions after 50+ events
-      daily_budget: variant.daily_budget_paise, // API expects smallest unit (paise for INR)
+      optimization_goal: "LINK_CLICKS",
+      bid_strategy: "LOWEST_COST_WITHOUT_CAP",
+      daily_budget: dailyBudgetPaise,
       targeting: JSON.stringify({
         geo_locations: { countries: variant.targeting?.geo || ["IN"] },
         age_min: variant.targeting?.age_min || 18,
         age_max: variant.targeting?.age_max || 44,
         publisher_platforms: ["facebook", "instagram"],
+        targeting_automation: { advantage_audience: 0 },
       }),
-      status: "PAUSED", // Create paused, activate after review passes
+      status: "PAUSED",
       start_time: new Date().toISOString(),
     };
 
