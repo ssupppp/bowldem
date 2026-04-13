@@ -76,6 +76,7 @@ function App() {
   const {
     puzzle: currentPuzzle,
     puzzleNumber,
+    isTutorialPuzzle,
     gameState,
     guesses,
     guessedPlayers,
@@ -97,6 +98,13 @@ function App() {
     maxGuesses
   } = useDailyPuzzle(PUZZLES);
 
+  // Fire tutorial-puzzle-shown funnel event once when first-time visitor lands
+  useEffect(() => {
+    if (isTutorialPuzzle) {
+      trackFunnel.tutorialPuzzleShown();
+    }
+  }, [isTutorialPuzzle]);
+
   const [feedbackList, setFeedbackList] = useState([]);
   const [usedPlayers, setUsedPlayers] = useState(new Set());
   const [gameWon, setGameWon] = useState(false);
@@ -108,7 +116,7 @@ function App() {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(() => !hasTutorialBeenSeen());
+  const [showTutorial, setShowTutorial] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
   const [pendingFeedback, setPendingFeedback] = useState(null);
   const [newFeedbackIndex, setNewFeedbackIndex] = useState(-1);
@@ -409,6 +417,9 @@ function App() {
     if (feedbackList.length === 0) {
       trackFunnel.firstGuess();
       markPuzzlePlayed();
+      if (isTutorialPuzzle) {
+        trackFunnel.tutorialPuzzleFirstGuess();
+      }
     }
 
     // Start 3rd Umpire checking state
@@ -466,11 +477,19 @@ function App() {
         setGameWon(true);
         trackGame.win(puzzleNumber, newFeedbackList.length);
         trackFunnel.gameCompleted(true);
+        if (isTutorialPuzzle) {
+          trackFunnel.tutorialPuzzleWon();
+          trackFunnel.tutorialPuzzleGraduated();
+        }
         setTimeout(() => setShowSuccessModal(true), 800);
       } else if (newFeedbackList.length >= maxGuesses) {
         setGameOver(true);
         trackGame.lose(puzzleNumber, newFeedbackList.length);
         trackFunnel.gameCompleted(false);
+        if (isTutorialPuzzle) {
+          trackFunnel.tutorialPuzzleLost();
+          trackFunnel.tutorialPuzzleGraduated();
+        }
         setTimeout(() => setShowGameOverModal(true), 1000);
       }
     }, 300); // Shorter delay since server call adds latency
@@ -1175,6 +1194,17 @@ function App() {
             </div>
           </div>
 
+          {/* Tutorial puzzle welcome banner (first-time visitors only) */}
+          {isTutorialPuzzle && !archiveMode && (
+            <div className="tutorial-puzzle-banner">
+              <span className="tutorial-puzzle-banner-emoji">🏆</span>
+              <span className="tutorial-puzzle-banner-text">
+                Welcome to Bowldem — start with the 2011 World Cup Final.
+                Type a cricketer's name to begin.
+              </span>
+            </div>
+          )}
+
           {/* Clue Card - At Top */}
           {renderSimplifiedScorecard()}
 
@@ -1493,9 +1523,15 @@ function App() {
         />
       )}
 
-      {showTutorial && (
+      {/*
+        Tutorial modal disabled 2026-04-13 — replaced by tutorial-puzzle
+        (2011 WC Final as first-visit onboarding). The modal was blocking
+        cold paid traffic at the front door (264 landings → 0 plays).
+        See useDailyPuzzle + lib/tutorialPuzzle.js.
+      */}
+      {/* {showTutorial && (
         <TutorialOverlay onComplete={() => setShowTutorial(false)} />
-      )}
+      )} */}
 
       {showAuthModal && (
         <AuthModal

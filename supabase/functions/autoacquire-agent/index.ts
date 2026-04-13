@@ -300,22 +300,52 @@ async function evaluateVariants(variants: Variant[], meta: any, dryRun: boolean)
       const clicks = parseInt(insights.clicks || "0");
       const ctr = parseFloat(insights.ctr || "0");
       const cpcRaw = parseFloat(insights.cpc || "0");
-      const cpc_paise = Math.round(cpcRaw * 100); // Convert rupees to paise
+      const cpc_paise = Math.round(cpcRaw * 100); // rupees → paise
+      const cpmRaw = parseFloat(insights.cpm || "0");
+      const cpm_paise = Math.round(cpmRaw * 100);
       const spendRaw = parseFloat(insights.spend || "0");
       const total_spend_paise = Math.round(spendRaw * 100);
       const reach = parseInt(insights.reach || "0");
       const frequency = parseFloat(insights.frequency || "0");
 
-      // Count subscriptions from attribution table
+      // Parse Meta's `actions` array for Pixel-side Subscribe count.
+      // This lets us cross-check Pixel vs CAPI vs aq_attributions and detect
+      // attribution drift between the three sources.
+      let pixelSubscribes = 0;
+      if (Array.isArray(insights.actions)) {
+        for (const a of insights.actions) {
+          if (
+            a.action_type === "subscribe" ||
+            a.action_type === "offsite_conversion.fb_pixel_custom" ||
+            a.action_type === "offsite_conversion.fb_pixel_subscribe"
+          ) {
+            pixelSubscribes += parseInt(a.value || "0");
+          }
+        }
+      }
+
+      // Count subscriptions from attribution table.
+      // Match on utm_term (adset id) rather than utm_content (ad id) because:
+      //   1. Design is 1 adset per variant, so adset id uniquely identifies the variant
+      //   2. utm_content previously contained a literal "PLACEHOLDER_AD_ID" string
+      //      (see link template construction below) which never matched anything
       const { count: subscriptions } = await supabase
         .from("aq_attributions")
         .select("*", { count: "exact", head: true })
-        .eq("utm_content", variant.meta_ad_id)
+        .eq("utm_term", variant.meta_adset_id)
         .eq("converted", true);
 
-      const cac_paise = subscriptions && subscriptions > 0
-        ? Math.round(total_spend_paise / subscriptions)
+      const attributedSubs = subscriptions || 0;
+      const cac_paise = attributedSubs > 0
+        ? Math.round(total_spend_paise / attributedSubs)
         : 0;
+
+      if (pixelSubscribes !== attributedSubs) {
+        console.info(
+          `[evaluate ${variant.meta_adset_id}] Pixel=${pixelSubscribes} vs aq_attributions=${attributedSubs} ` +
+          `(delta=${pixelSubscribes - attributedSubs}) — investigate if persistent`
+        );
+      }
 
       // Update variant metrics
       if (!dryRun) {
@@ -326,10 +356,11 @@ async function evaluateVariants(variants: Variant[], meta: any, dryRun: boolean)
             clicks,
             ctr,
             cpc_paise,
+            cpm_paise,
             total_spend_paise,
             reach,
             frequency,
-            subscriptions: subscriptions || 0,
+            subscriptions: attributedSubs,
             cac_paise,
           })
           .eq("id", variant.id);
@@ -427,6 +458,17 @@ async function makeDecisions(variants: Variant[], strategy: Strategy, dryRun: bo
 // GENERATE — Create new ad variants via AI (Grok)
 // ============================================================================
 
+// Meta's minimum daily budget for INR ad sets is ~₹93 (9300 paise). We use
+// 12500 paise (₹125) to leave margin and avoid rejection on edge-case pacing.
+// All allocation math must respect this floor — Meta silently overrides
+// anything below it and the agent's internal budget accounting drifts from
+// actual spend if we don't apply the floor at allocation time.
+const META_MIN_BUDGET_PAISE = 12500;
+
+function floorBudget(paise: number): number {
+  return Math.max(Math.round(paise), META_MIN_BUDGET_PAISE);
+}
+
 async function generateVariants(
   count: number,
   strategy: Strategy,
@@ -457,7 +499,7 @@ async function generateVariants(
   // Generate explore_far (wild card) variants via AI
   for (let i = 0; i < exploreFarCount; i++) {
     const variant = await generateAdCopy(strategy, learnings, null, "explore_far");
-    variant.daily_budget_paise = Math.round(dailyBudget * alloc.explore_far_pct / 100 / Math.max(1, exploreFarCount));
+    variant.daily_budget_paise = floorBudget(dailyBudget * alloc.explore_far_pct / 100 / Math.max(1, exploreFarCount));
     variants.push(variant);
   }
 
@@ -466,7 +508,7 @@ async function generateVariants(
     const parent = winners[i % winners.length];
     const variant = await generateAdCopy(strategy, learnings, parent, "explore_near");
     variant.parent_variant_id = parent.id;
-    variant.daily_budget_paise = Math.round(dailyBudget * alloc.explore_near_pct / 100 / Math.max(1, exploreNearCount));
+    variant.daily_budget_paise = floorBudget(dailyBudget * alloc.explore_near_pct / 100 / Math.max(1, exploreNearCount));
     variants.push(variant);
   }
 
@@ -482,10 +524,22 @@ async function generateVariants(
       budget_type: "exploit",
       parent_variant_id: parent.id,
       mutation_type: null,
-      daily_budget_paise: Math.round(dailyBudget * alloc.exploit_pct / 100 / Math.max(1, exploitCount)),
+      daily_budget_paise: floorBudget(dailyBudget * alloc.exploit_pct / 100 / Math.max(1, exploitCount)),
       targeting: strategy.audiences.primary,
     };
     variants.push(variant);
+  }
+
+  // Sanity check: post-floor total may exceed the declared daily cap when
+  // small allocation percentages get floored up. Log a warning so the cap
+  // breach is visible in the cycle log, but don't abort — the minimum-variant
+  // cold-start flow is more important than strict cap adherence.
+  const totalAllocated = variants.reduce((s, v) => s + (v.daily_budget_paise || 0), 0);
+  if (totalAllocated > dailyBudget) {
+    console.warn(
+      `[budget] Post-floor total ${totalAllocated} exceeds daily_cap ${dailyBudget} by ${totalAllocated - dailyBudget} paise. ` +
+      `${variants.length} variants at Meta floor. Consider reducing max_concurrent_variants or raising the cap.`
+    );
   }
 
   return variants;
@@ -639,9 +693,9 @@ async function deployToMeta(variant: any, strategy: Strategy, cycle: any) {
     const campaignId = await ensureCampaign(adAccountId, token, strategy);
 
     // 2. Create ad set with targeting + budget
-    // Meta INR daily_budget is in paise. Min is ~₹93 (~9300 paise).
-    // Ensure each variant gets at least ₹125 (12500 paise) to avoid rejection.
-    const dailyBudgetPaise = Math.max(variant.daily_budget_paise, 12500);
+    // variant.daily_budget_paise is already floored at allocation time
+    // (see generateVariants / floorBudget). Use it directly.
+    const dailyBudgetPaise = variant.daily_budget_paise;
 
     const adSetData = {
       name: `AQ_${cycle.cycle_number}_${variant.budget_type}_${Date.now()}`,
@@ -665,12 +719,16 @@ async function deployToMeta(variant: any, strategy: Strategy, cycle: any) {
     const adSetId = adSet.id;
 
     // 3. Create ad creative
+    // Attribution note: utm_term holds the adset id, which is 1:1 with a variant
+    // in this system. utm_content is intentionally omitted — Meta does not let us
+    // substitute the ad id into the creative URL after the ad is created, and a
+    // literal placeholder string would break the evaluator's attribution query.
     const creativeData = {
       name: `AQ_creative_${variant.name}`,
       object_story_spec: JSON.stringify({
         page_id: pageId,
         link_data: {
-          link: `${strategy.brand.url}?utm_source=meta&utm_medium=cpc&utm_campaign=${campaignId}&utm_content=PLACEHOLDER_AD_ID&utm_term=${adSetId}`,
+          link: `${strategy.brand.url}?utm_source=meta&utm_medium=cpc&utm_campaign=${campaignId}&utm_term=${adSetId}`,
           message: `${variant.hook}\n\n${variant.body_text}`,
           name: variant.headline,
           call_to_action: { type: variant.cta_type || "LEARN_MORE" },
@@ -690,8 +748,7 @@ async function deployToMeta(variant: any, strategy: Strategy, cycle: any) {
 
     const ad = await metaApiPost(`act_${adAccountId}/ads`, adData, token);
 
-    // 5. Update creative with actual ad ID in UTM
-    // (Meta doesn't let us update creatives easily, so the UTM will use the ad set ID for attribution)
+    // 5. Creative attribution relies on utm_term (adset id) — see comment above.
 
     // 6. Save variant to DB with Meta IDs
     await supabase.from("aq_variants").insert([{

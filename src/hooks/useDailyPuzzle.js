@@ -27,6 +27,15 @@ import {
   MAX_GUESSES
 } from '../utils/dailyPuzzle.js';
 import { getScheduledPuzzleId } from '../lib/supabase.js';
+import {
+  TUTORIAL_PUZZLE_ID,
+  TUTORIAL_SENTINEL,
+  hasPlayedTutorialPuzzle,
+  markTutorialPuzzleDone,
+  migratePreExistingUsers
+} from '../lib/tutorialPuzzle.js';
+
+migratePreExistingUsers();
 
 /**
  * Get puzzle by ID from puzzles array
@@ -44,14 +53,55 @@ function getPuzzleById(puzzles, puzzleId) {
  * @returns {Object} - Daily puzzle state and actions
  */
 export function useDailyPuzzle(puzzles) {
-  // Current puzzle data (start with fallback, may be overridden by schedule)
-  const [puzzleData, setPuzzleData] = useState(() => getPuzzleForToday(puzzles));
+  // Tutorial puzzle override: first-time visitors see puzzle 112 (2011 WC Final)
+  // as their first experience instead of the rotating daily puzzle.
+  const [isTutorial] = useState(() => !hasPlayedTutorialPuzzle());
 
-  // Track if we're checking the schedule
-  const [isLoadingSchedule, setIsLoadingSchedule] = useState(true);
+  // Current puzzle data (tutorial puzzle if first-time, else daily rotation)
+  const [puzzleData, setPuzzleData] = useState(() => {
+    if (isTutorial) {
+      const tutorialPuzzle = puzzles.find(p => p.id === TUTORIAL_PUZZLE_ID);
+      if (tutorialPuzzle) {
+        return {
+          puzzle: tutorialPuzzle,
+          puzzleNumber: TUTORIAL_SENTINEL,
+          puzzleIndex: puzzles.indexOf(tutorialPuzzle)
+        };
+      }
+    }
+    return getPuzzleForToday(puzzles);
+  });
+
+  // Track if we're checking the schedule (skip for tutorial)
+  const [isLoadingSchedule, setIsLoadingSchedule] = useState(!isTutorial);
 
   // Game state (guesses, status)
   const [gameState, setGameState] = useState(() => {
+    if (isTutorial) {
+      const existing = loadGameState();
+      // Resume in-progress tutorial if sentinel matches
+      if (existing.lastPuzzleNumber === TUTORIAL_SENTINEL && existing.gameStatus === 'in_progress') {
+        return existing;
+      }
+      // Start fresh tutorial state
+      const fresh = {
+        lastPlayedDate: getEffectiveDate(),
+        lastPuzzleNumber: TUTORIAL_SENTINEL,
+        guesses: [],
+        gameStatus: 'in_progress',
+        modalShown: false,
+        answerRevealed: false
+      };
+      saveGameState(fresh);
+      return fresh;
+    }
+
+    // Not tutorial: defensive cleanup if stale tutorial state exists
+    const existing = loadGameState();
+    if (existing.lastPuzzleNumber === TUTORIAL_SENTINEL) {
+      return initializeTodayGame();
+    }
+
     const { canPlay, existingState } = canPlayToday();
     if (existingState) return existingState;
     return initializeTodayGame();
@@ -64,8 +114,12 @@ export function useDailyPuzzle(puzzles) {
   const [debugMode] = useState(() => isDebugMode());
   const [debugOffset, setDebugOffset] = useState(() => getDebugDateOffset());
 
-  // Check Supabase for scheduled puzzle override on mount
+  // Check Supabase for scheduled puzzle override on mount (skip for tutorial)
   useEffect(() => {
+    if (isTutorial) {
+      setIsLoadingSchedule(false);
+      return;
+    }
     async function checkScheduledPuzzle() {
       try {
         const today = getEffectiveDate();
@@ -97,7 +151,7 @@ export function useDailyPuzzle(puzzles) {
     }
 
     checkScheduledPuzzle();
-  }, [puzzles]); // Only run on mount
+  }, [puzzles, isTutorial]); // Only run on mount
 
   // Derived state
   const alreadyCompleted = gameState.gameStatus === 'won' || gameState.gameStatus === 'lost';
@@ -184,10 +238,15 @@ export function useDailyPuzzle(puzzles) {
     if (isGameOver) {
       const newStats = completeGame(won);
       setStats(newStats);
+
+      // Graduate from tutorial puzzle on game end (win or loss)
+      if (isTutorial) {
+        markTutorialPuzzleDone();
+      }
     }
 
     return { newState, isGameOver, won };
-  }, [gameState, alreadyCompleted]);
+  }, [gameState, alreadyCompleted, isTutorial]);
 
   /**
    * Get guessed player keys
@@ -261,6 +320,7 @@ export function useDailyPuzzle(puzzles) {
     puzzle: puzzleData.puzzle,
     puzzleNumber: puzzleData.puzzleNumber,
     puzzleIndex: puzzleData.puzzleIndex,
+    isTutorialPuzzle: isTutorial,
 
     // Game state
     gameState,

@@ -331,6 +331,13 @@ export const trackFunnel = {
   firstGuess: () => trackEvent('funnel', 'first_guess'),
   gameCompleted: (won) => trackEvent('funnel', 'game_completed', { won }),
 
+  // Tutorial puzzle funnel (2011 WC Final as first-visit onboarding)
+  tutorialPuzzleShown: () => trackEvent('funnel', 'tutorial_puzzle_shown'),
+  tutorialPuzzleFirstGuess: () => trackEvent('funnel', 'tutorial_puzzle_first_guess'),
+  tutorialPuzzleWon: () => trackEvent('funnel', 'tutorial_puzzle_won'),
+  tutorialPuzzleLost: () => trackEvent('funnel', 'tutorial_puzzle_lost'),
+  tutorialPuzzleGraduated: () => trackEvent('funnel', 'tutorial_puzzle_graduated'),
+
   // Engagement funnel
   returnVisit: (daysAgo) => trackEvent('funnel', 'return_visit', { days_since_last: daysAgo }),
   streakActive: (streakLength) => trackEvent('funnel', 'streak_active', { streak_length: streakLength }),
