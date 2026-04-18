@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { trackFunnel } from '../lib/analytics.js';
 
 // 3-letter country code mapping
 const COUNTRY_CODES = {
@@ -66,6 +67,9 @@ export function PlayerAutocomplete({
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
+
+  // Fire each micro-funnel event only once per session
+  const firedRef = useRef({ focused: false, typed: false, autocomplete: false, selected: false });
 
   // Derive known clues from feedback
   const knownClues = useMemo(() => {
@@ -154,9 +158,32 @@ export function PlayerAutocomplete({
     setQuery(value);
     setIsOpen(value.length >= 3);
     setHighlightedIndex(0);
+
+    // Micro-funnel: first keystroke
+    if (value.length > 0 && !firedRef.current.typed) {
+      firedRef.current.typed = true;
+      trackFunnel.inputTyped();
+    }
+    // Micro-funnel: autocomplete dropdown about to show
+    if (value.length >= 3 && !firedRef.current.autocomplete) {
+      firedRef.current.autocomplete = true;
+      trackFunnel.autocompleteShown(value);
+    }
+  };
+
+  const handleFocus = () => {
+    if (query.length >= 3) setIsOpen(true);
+    if (!firedRef.current.focused) {
+      firedRef.current.focused = true;
+      trackFunnel.inputFocused();
+    }
   };
 
   const handleSelectPlayer = (player) => {
+    if (!firedRef.current.selected) {
+      firedRef.current.selected = true;
+      trackFunnel.playerSelected(player.fullName);
+    }
     onSelectPlayer(player.id);
     setQuery('');
     setIsOpen(false);
@@ -209,7 +236,7 @@ export function PlayerAutocomplete({
           value={query}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => query.length >= 3 && setIsOpen(true)}
+          onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder="Type player name (min 3 letters)..."
           disabled={disabled}

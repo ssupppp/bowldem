@@ -338,6 +338,13 @@ export const trackFunnel = {
   tutorialPuzzleLost: () => trackEvent('funnel', 'tutorial_puzzle_lost'),
   tutorialPuzzleGraduated: () => trackEvent('funnel', 'tutorial_puzzle_graduated'),
 
+  // Micro-funnel: landing → first guess gap
+  scorecardViewed: () => trackEvent('funnel', 'scorecard_viewed'),
+  inputFocused: () => trackEvent('funnel', 'input_focused'),
+  inputTyped: () => trackEvent('funnel', 'input_typed'),
+  autocompleteShown: (query) => trackEvent('funnel', 'autocomplete_shown', { query }),
+  playerSelected: (playerName) => trackEvent('funnel', 'player_selected', { player_name: playerName }),
+
   // Engagement funnel
   returnVisit: (daysAgo) => trackEvent('funnel', 'return_visit', { days_since_last: daysAgo }),
   streakActive: (streakLength) => trackEvent('funnel', 'streak_active', { streak_length: streakLength }),

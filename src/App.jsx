@@ -20,7 +20,7 @@
  * - match_puzzles_t20wc.json: Puzzle data with scorecard, playersInMatch, target
  */
 
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import allPlayersData from "./data/all_players.json";
 import matchPuzzlesData from "./data/match_puzzles_t20wc.json";
 import matchPuzzlesODI from "./data/match_puzzles_odi.json";
@@ -97,6 +97,15 @@ function App() {
     resetAllData,
     maxGuesses
   } = useDailyPuzzle(PUZZLES);
+
+  // One-shot micro-funnel: scorecard_viewed fires when puzzle renders (proves JS loaded + painted)
+  const scorecardTrackedRef = useRef(false);
+  useEffect(() => {
+    if (currentPuzzle && !scorecardTrackedRef.current) {
+      scorecardTrackedRef.current = true;
+      trackFunnel.scorecardViewed();
+    }
+  }, [currentPuzzle]);
 
   // Fire tutorial-puzzle-shown funnel event once when first-time visitor lands
   useEffect(() => {

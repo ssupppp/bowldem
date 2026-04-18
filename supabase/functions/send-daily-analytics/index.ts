@@ -51,6 +51,11 @@ interface FunnelMetrics {
   landings: number;
   paidLandings: number;
   organicLandings: number;
+  scorecardViewed: number;
+  inputFocused: number;
+  inputTyped: number;
+  autocompleteShown: number;
+  playerSelected: number;
   tutorialPuzzleShown: number;
   tutorialFirstGuess: number;
   tutorialWon: number;
@@ -235,6 +240,11 @@ Deno.serve(async (_req) => {
     // ========================================================================
     const funnelActions = [
       "app_opened",
+      "scorecard_viewed",
+      "input_focused",
+      "input_typed",
+      "autocomplete_shown",
+      "player_selected",
       "tutorial_puzzle_shown",
       "tutorial_puzzle_first_guess",
       "tutorial_puzzle_won",
@@ -359,6 +369,11 @@ Deno.serve(async (_req) => {
       landings: (attrResult.data || []).length,
       paidLandings,
       organicLandings,
+      scorecardViewed: funnelCounts["scorecard_viewed"].size,
+      inputFocused: funnelCounts["input_focused"].size,
+      inputTyped: funnelCounts["input_typed"].size,
+      autocompleteShown: funnelCounts["autocomplete_shown"].size,
+      playerSelected: funnelCounts["player_selected"].size,
       tutorialPuzzleShown: funnelCounts["tutorial_puzzle_shown"].size,
       tutorialFirstGuess: funnelCounts["tutorial_puzzle_first_guess"].size,
       tutorialWon: funnelCounts["tutorial_puzzle_won"].size,
@@ -551,6 +566,12 @@ function buildEmailHtml(
       ${funnelRow("Landings (total)", f.landings, f.landings)}
       ${funnelRow("└ Paid (Meta)", f.paidLandings, f.landings, true)}
       ${funnelRow("└ Organic", f.organicLandings, f.landings, true)}
+      <tr><td colspan="3" style="border-bottom:1px solid #f1f5f9;padding:2px 0;"></td></tr>
+      ${funnelRow("Scorecard viewed", f.scorecardViewed, f.landings)}
+      ${funnelRow("Input focused (tapped)", f.inputFocused, f.scorecardViewed || f.landings)}
+      ${funnelRow("Input typed", f.inputTyped, f.inputFocused || f.landings)}
+      ${funnelRow("Autocomplete shown", f.autocompleteShown, f.inputTyped || 1)}
+      ${funnelRow("Player selected", f.playerSelected, f.autocompleteShown || 1)}
       <tr><td colspan="3" style="border-bottom:1px solid #f1f5f9;padding:2px 0;"></td></tr>
       ${funnelRow("Tutorial puzzle shown", f.tutorialPuzzleShown, f.landings)}
       ${funnelRow("Tutorial first guess", f.tutorialFirstGuess, f.tutorialPuzzleShown || f.landings)}
