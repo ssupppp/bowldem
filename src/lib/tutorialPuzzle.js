@@ -21,6 +21,11 @@ export const TUTORIAL_SENTINEL = -1;
 const DONE_KEY = 'bowldem_tutorial_puzzle_done';
 
 export function hasPlayedTutorialPuzzle() {
+  // ?tutorial in URL forces tutorial mode (for testing)
+  if (typeof window !== 'undefined' && window.location.search.includes('tutorial')) {
+    localStorage.removeItem(DONE_KEY);
+    return false;
+  }
   try {
     return localStorage.getItem(DONE_KEY) === 'true';
   } catch {

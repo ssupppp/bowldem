@@ -1618,6 +1618,12 @@ body {
   font-weight: 600;
 }
 
+.scorecard-simplified .puzzle-badge.tutorial {
+  background: #fff7e6;
+  color: #b45309;
+  border: 1px solid #f5b56a;
+}
+
 .scorecard-simplified .match-context-badge {
   background: rgba(251, 191, 36, 0.25);
   color: #fcd34d;
@@ -7690,6 +7696,230 @@ button:focus-visible {
   font-weight: 500;
 }
 
+/* Tutorial hero hint — bold CTA below "Who's the Man of the Match?" */
+.hero-tutorial-hint {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #3b82f6;
+  margin-top: 6px;
+  animation: hint-pulse 2s ease-in-out infinite;
+}
+
+@keyframes hint-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Tutorial coaching popup — friendly info overlay after each guess */
+.coaching-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: coaching-fade-in 0.2s ease;
+  cursor: pointer;
+}
+
+.coaching-popup {
+  background: white;
+  border-radius: 1rem;
+  max-width: 340px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: modal-scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: default;
+}
+
+.coaching-header {
+  background: linear-gradient(135deg, #fff7e6 0%, #ffe8cc 100%);
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #663c00;
+  text-align: center;
+  border-bottom: 1px solid #f5b56a;
+}
+
+.coaching-objective {
+  padding: 10px 20px 0;
+  font-size: 13px;
+  color: #334155;
+  text-align: center;
+}
+
+.coaching-player-guess {
+  padding: 6px 20px 0;
+  font-size: 13px;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.coaching-player-guess strong {
+  color: #1e293b;
+}
+
+.coaching-attributes {
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.coaching-attr-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border-left: 3px solid;
+}
+
+.coaching-attr-row.match {
+  border-left-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.coaching-attr-row.no-match {
+  border-left-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.coaching-attr-icon {
+  font-size: 18px;
+  font-weight: 700;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.coaching-attr-row.match .coaching-attr-icon {
+  color: #16a34a;
+}
+
+.coaching-attr-row.no-match .coaching-attr-icon {
+  color: #94a3b8;
+}
+
+.coaching-attr-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.coaching-attr-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.coaching-attr-desc {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+.coaching-tip-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 20px;
+  padding: 12px 14px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0c4a6e;
+}
+
+.coaching-dismiss {
+  display: block;
+  text-align: center;
+  padding: 12px 20px;
+  font-size: 12px;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+@keyframes coaching-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Tutorial auto-type overlay */
+.autotype-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding: 1rem 3rem 1rem 1.25rem;
+  font-size: 1rem;
+  color: #94a3b8;
+  cursor: text;
+  z-index: 1;
+}
+
+.autotype-text {
+  white-space: nowrap;
+}
+
+.autotype-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: #3b82f6;
+  margin-left: 1px;
+  animation: cursor-blink 0.7s step-end infinite;
+}
+
+@keyframes cursor-blink {
+  50% { opacity: 0; }
+}
+
+/* Tutorial graduation transition */
+.tutorial-graduation {
+  text-align: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.graduation-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 10px;
+}
+
+.graduation-btn {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.graduation-btn:active {
+  transform: scale(0.98);
+}
+
 @media (max-width: 600px) {
   .tutorial-puzzle-banner {
     margin: 0 0 10px;
@@ -7698,5 +7928,57 @@ button:focus-visible {
   }
   .tutorial-puzzle-banner-emoji {
     font-size: 20px;
+  }
+  .hero-tutorial-hint {
+    font-size: 0.9rem;
+  }
+  /* Coaching popup — tighter on mobile */
+  .coaching-popup {
+    max-width: 92%;
+    border-radius: 0.75rem;
+  }
+  .coaching-header {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+  .coaching-objective {
+    padding: 8px 16px 0;
+    font-size: 12px;
+  }
+  .coaching-player-guess {
+    padding: 4px 16px 0;
+    font-size: 12px;
+  }
+  .coaching-attributes {
+    padding: 10px 16px;
+    gap: 1px;
+  }
+  .coaching-attr-row {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+  .coaching-attr-label {
+    font-size: 13px;
+  }
+  .coaching-attr-desc {
+    font-size: 11px;
+  }
+  .coaching-tip-section {
+    margin: 0 16px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .coaching-dismiss {
+    padding: 10px 16px;
+  }
+  /* Auto-type overlay — match mobile input padding */
+  .autotype-overlay {
+    padding: 0.875rem 2.5rem 0.875rem 1rem;
+    font-size: 16px;
+  }
+  /* Graduation button */
+  .graduation-btn {
+    padding: 10px 16px;
+    font-size: 15px;
   }
 }

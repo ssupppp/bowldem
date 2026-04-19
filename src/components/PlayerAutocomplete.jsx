@@ -60,13 +60,47 @@ export function PlayerAutocomplete({
   disabled,
   usedPlayers = new Set(),
   priorityPlayerIds = new Set(),
-  feedbackList = []
+  feedbackList = [],
+  isTutorial = false,
+  hasGuessed = false
 }) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
+
+  // Auto-type animation state
+  const [animationDismissed, setAnimationDismissed] = useState(false);
+  const [charCount, setCharCount] = useState(0);
+  const autoTypeText = "Sachin Tendulkar";
+  const showAutoType = isTutorial && !hasGuessed && !animationDismissed && !disabled;
+
+  useEffect(() => {
+    if (!showAutoType) return;
+    let interval = null;
+    let phase = 'typing'; // typing → pause → erasing → pause → typing ...
+    const startTimer = setTimeout(() => {
+      interval = setInterval(() => {
+        setCharCount(prev => {
+          if (phase === 'typing') {
+            if (prev >= autoTypeText.length) { phase = 'pause-after-type'; return prev; }
+            return prev + 1;
+          } else if (phase === 'pause-after-type') {
+            phase = 'erasing';
+            return prev;
+          } else if (phase === 'erasing') {
+            if (prev <= 0) { phase = 'pause-before-type'; return 0; }
+            return prev - 1;
+          } else { // pause-before-type
+            phase = 'typing';
+            return 0;
+          }
+        });
+      }, 100);
+    }, 800);
+    return () => { clearTimeout(startTimer); if (interval) clearInterval(interval); };
+  }, [showAutoType]);
 
   // Fire each micro-funnel event only once per session
   const firedRef = useRef({ focused: false, typed: false, autocomplete: false, selected: false });
@@ -172,6 +206,7 @@ export function PlayerAutocomplete({
   };
 
   const handleFocus = () => {
+    if (showAutoType) setAnimationDismissed(true);
     if (query.length >= 3) setIsOpen(true);
     if (!firedRef.current.focused) {
       firedRef.current.focused = true;
@@ -248,6 +283,16 @@ export function PlayerAutocomplete({
         <span className="autocomplete-icon">
           {query.length >= 3 ? '🔍' : '🏏'}
         </span>
+        {showAutoType && (
+          <span
+            className="autotype-overlay"
+            onClick={() => { setAnimationDismissed(true); inputRef.current?.focus(); }}
+            aria-hidden="true"
+          >
+            <span className="autotype-text">{autoTypeText.slice(0, charCount)}</span>
+            <span className="autotype-cursor"></span>
+          </span>
+        )}
       </div>
 
       {/* Hint when typing */}

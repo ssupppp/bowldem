@@ -68,6 +68,105 @@ const PUZZLES = [
   ...(matchPuzzlesODI.puzzles || [])
 ];
 
+function TutorialCoachingTip({ feedbackList, isTutorial, gameWon }) {
+  const [dismissed, setDismissed] = useState(false);
+  const prevLength = useRef(feedbackList.length);
+
+  // Reset dismissed state when a new guess is made
+  useEffect(() => {
+    if (feedbackList.length > prevLength.current) {
+      setDismissed(false);
+    }
+    prevLength.current = feedbackList.length;
+  }, [feedbackList.length]);
+
+  if (!isTutorial || feedbackList.length === 0 || gameWon || dismissed) return null;
+
+  const latest = feedbackList[feedbackList.length - 1];
+  if (latest.isMVP) return null;
+
+  let tip = '';
+  if (!latest.playedInGame) {
+    tip = "Not in this match \u2014 try another player";
+  } else if (!latest.sameTeam) {
+    tip = "Right match, wrong team!";
+  } else if (!latest.sameRole) {
+    tip = "Right team! Try a different role (batsman / bowler / all-rounder)";
+  } else {
+    tip = "So close \u2014 same team and role!";
+  }
+
+  // Use first name only for long names (mobile readability)
+  const fullName = latest.playerName || 'Your guess';
+  const nameParts = fullName.split(' ');
+  const playerName = fullName.length > 16 && nameParts.length > 1
+    ? nameParts[nameParts.length - 1]  // surname (more recognizable: "Kohli", "Dhoni", "Tendulkar")
+    : fullName;
+
+  const attributes = [
+    {
+      label: 'Played',
+      desc: latest.playedInGame
+        ? `${playerName} played in this match`
+        : `${playerName} was not in this match`,
+      value: latest.playedInGame
+    },
+    {
+      label: 'Team',
+      desc: latest.sameTeam
+        ? `${playerName} is on the same team as the MOTM`
+        : `${playerName} is on a different team than the MOTM`,
+      value: latest.sameTeam
+    },
+    {
+      label: 'Role',
+      desc: latest.sameRole
+        ? `${playerName} has the same role as the MOTM`
+        : `${playerName} has a different role than the MOTM`,
+      value: latest.sameRole
+    },
+    {
+      label: 'MOTM',
+      desc: latest.isMVP
+        ? `${playerName} is the Man of the Match!`
+        : `${playerName} is not the Man of the Match`,
+      value: latest.isMVP
+    },
+  ];
+
+  return (
+    <div className="coaching-overlay" onClick={() => setDismissed(true)}>
+      <div className="coaching-popup" onClick={(e) => e.stopPropagation()}>
+        <div className="coaching-header">
+          {"\uD83C\uDFCF"} Clue Breakdown
+        </div>
+        <div className="coaching-objective">
+          <strong>Objective:</strong> Guess the Man of the Match
+        </div>
+        <div className="coaching-player-guess">
+          You guessed <strong>{playerName}</strong> — here's how they compare to the MOTM:
+        </div>
+        <div className="coaching-attributes">
+          {attributes.map((attr) => (
+            <div key={attr.label} className={`coaching-attr-row ${attr.value ? 'match' : 'no-match'}`}>
+              <span className="coaching-attr-icon">{attr.value ? '\u2713' : '\u2717'}</span>
+              <div className="coaching-attr-info">
+                <span className="coaching-attr-label">{attr.label}</span>
+                <span className="coaching-attr-desc">{attr.desc}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="coaching-tip-section">
+          <span>{"\uD83D\uDCA1"}</span>
+          <span>{tip}</span>
+        </div>
+        <span className="coaching-dismiss" onClick={() => setDismissed(true)}>Tap anywhere to continue</span>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   // Auth state
   const { user, isAuthenticated, signInWithGoogle, signInWithMagicLink, signOut: authSignOut } = useAuth();
@@ -192,6 +291,21 @@ function App() {
       fetchPuzzleLeaderboard();
     }
   }, [gameWon, gameOver, alreadyCompleted, fetchPuzzleLeaderboard]);
+
+  // Fake leaderboard entries for tutorial puzzle (social proof for cold users)
+  const TUTORIAL_LEADERBOARD = useMemo(() => [
+    { id: 't1', display_name: 'CricketFan_MSD', guesses_used: 1, won: true, is_seed: true },
+    { id: 't2', display_name: 'BowldemKing', guesses_used: 2, won: true, is_seed: true },
+    { id: 't3', display_name: 'DhoniFinisher', guesses_used: 2, won: true, is_seed: true },
+    { id: 't4', display_name: 'WorldCup2011', guesses_used: 3, won: true, is_seed: true },
+    { id: 't5', display_name: 'SixerKing07', guesses_used: 3, won: true, is_seed: true },
+    { id: 't6', display_name: 'CricNerd42', guesses_used: 3, won: true, is_seed: true },
+    { id: 't7', display_name: 'BleedBlue', guesses_used: 4, won: true, is_seed: true },
+    { id: 't8', display_name: 'WankhadeRoar', guesses_used: 4, won: true, is_seed: true },
+    { id: 't9', display_name: 'GullyBowler', guesses_used: 4, won: true, is_seed: true },
+    { id: 't10', display_name: 'SlipCordon', guesses_used: 5, won: true, is_seed: true },
+  ], []);
+  const effectiveLeaderboard = isTutorialPuzzle ? TUTORIAL_LEADERBOARD : puzzleLeaderboard;
 
   // Get match highlights for current puzzle
   const matchHighlight = useMemo(() => {
@@ -498,6 +612,7 @@ function App() {
         if (isTutorialPuzzle) {
           trackFunnel.tutorialPuzzleLost();
           trackFunnel.tutorialPuzzleGraduated();
+          setAnswerRevealed(true); // Auto-reveal MOTM for tutorial — no auth gate
         }
         setTimeout(() => setShowGameOverModal(true), 1000);
       }
@@ -678,10 +793,10 @@ function App() {
     const team1Score = scorecard.team1Score;
     const team2Score = scorecard.team2Score;
 
-    // Determine if we should reveal team names (won, or answer revealed after loss)
+    // Determine if we should reveal team names (won, answer revealed, or tutorial puzzle)
     const shouldReveal = archiveMode
       ? (archiveGameWon || archiveGameOver)
-      : (gameWon || (alreadyCompleted && (gameStatus === 'won' || answerRevealed)));
+      : (isTutorialPuzzle || gameWon || (alreadyCompleted && (gameStatus === 'won' || answerRevealed)));
 
     const team1Label = shouldReveal ? (resolved?.team1Name || 'Team 1') : 'Team 1';
     const team2Label = shouldReveal ? (resolved?.team2Name || 'Team 2') : 'Team 2';
@@ -694,8 +809,8 @@ function App() {
     return (
       <div className="scorecard-simplified">
         <div className="scorecard-header">
-          <span className={`puzzle-badge ${archiveMode ? 'archive' : ''}`}>
-            {archiveMode ? `Archive #${displayPuzzleNumber}` : `Puzzle #${displayPuzzleNumber}`}
+          <span className={`puzzle-badge ${archiveMode ? 'archive' : ''} ${isTutorialPuzzle && !archiveMode ? 'tutorial' : ''}`}>
+            {archiveMode ? `Archive #${displayPuzzleNumber}` : isTutorialPuzzle ? 'Tutorial' : `Puzzle #${displayPuzzleNumber}`}
           </span>
           {matchContext && (
             <span className="match-context-badge">{matchContext}</span>
@@ -848,8 +963,18 @@ function App() {
           </button>
         </div>
 
-        {/* Auth prompt */}
-        {!archiveMode && (
+        {/* Tutorial graduation or auth prompt */}
+        {!archiveMode && isTutorialPuzzle ? (
+          <div className="tutorial-graduation">
+            <p className="graduation-text">You cracked the 2011 WC Final!</p>
+            <button className="graduation-btn" onClick={() => {
+              setShowSuccessModal(false);
+              window.location.href = window.location.pathname;
+            }}>
+              Play Today's Puzzle
+            </button>
+          </div>
+        ) : !archiveMode && (
           isAuthenticated ? (
             <div className="auth-signed-in-badge">
               <span>✓</span>
@@ -871,16 +996,18 @@ function App() {
           )
         )}
 
-        {/* Secondary CTA - View Leaderboard (text link) */}
-        <button
-          className="btn-view-leaderboard-link"
-          onClick={() => {
-            setShowSuccessModal(false);
-            setShowLeaderboardModal(true);
-          }}
-        >
-          View Leaderboard →
-        </button>
+        {/* Secondary CTA - View Leaderboard (text link, hide for tutorial) */}
+        {!isTutorialPuzzle && (
+          <button
+            className="btn-view-leaderboard-link"
+            onClick={() => {
+              setShowSuccessModal(false);
+              setShowLeaderboardModal(true);
+            }}
+          >
+            View Leaderboard →
+          </button>
+        )}
       </div>
     );
   };
@@ -989,6 +1116,19 @@ function App() {
               >
                 🔗 View Full Scorecard ↗
               </a>
+            )}
+
+            {/* Tutorial graduation CTA */}
+            {isTutorialPuzzle && !archiveMode && (
+              <div className="tutorial-graduation">
+                <p className="graduation-text">Now try today's puzzle!</p>
+                <button className="graduation-btn" onClick={() => {
+                  setShowGameOverModal(false);
+                  window.location.href = window.location.pathname;
+                }}>
+                  Play Today's Puzzle
+                </button>
+              </div>
             )}
           </>
         ) : (
@@ -1208,8 +1348,8 @@ function App() {
             <div className="tutorial-puzzle-banner">
               <span className="tutorial-puzzle-banner-emoji">🏆</span>
               <span className="tutorial-puzzle-banner-text">
-                Welcome to Bowldem — start with the 2011 World Cup Final.
-                Type a cricketer's name to begin.
+                <strong>Practice puzzle:</strong> 2011 World Cup Final.
+                Guess the Man of the Match — tap the box below and type any cricketer's name.
               </span>
             </div>
           )}
@@ -1241,6 +1381,9 @@ function App() {
               <div className="hero-section">
                 <div className="hero-prompt">
                   <span className="hero-text">Who's the Man of the Match?</span>
+                  {isTutorialPuzzle && feedbackList.length === 0 && (
+                    <span className="hero-tutorial-hint">Type a player's name below to guess</span>
+                  )}
                 </div>
                 <PlayerAutocomplete
                   players={allPlayersData.players}
@@ -1249,6 +1392,8 @@ function App() {
                   usedPlayers={usedPlayers}
                   priorityPlayerIds={priorityPlayerIds}
                   feedbackList={feedbackList}
+                  isTutorial={isTutorialPuzzle}
+                  hasGuessed={feedbackList.length > 0}
                 />
               </div>
             )
@@ -1270,7 +1415,7 @@ function App() {
               onShareWhatsApp={handleShareWhatsApp}
               onCopy={handleShare}
               copyState={copyButtonState}
-              leaderboardEntries={puzzleLeaderboard}
+              leaderboardEntries={effectiveLeaderboard}
               userRanking={userRanking}
               onViewLeaderboard={() => setShowLeaderboardModal(true)}
               onOpenArchive={() => setShowArchiveModal(true)}
@@ -1303,6 +1448,13 @@ function App() {
             newFeedbackIndex={newFeedbackIndex}
           />
 
+          {/* Tutorial coaching tip — contextual hint after each guess */}
+          <TutorialCoachingTip
+            feedbackList={archiveMode ? archiveFeedbackList : feedbackList}
+            isTutorial={isTutorialPuzzle && !archiveMode}
+            gameWon={gameWon}
+          />
+
           {/* Mobile-only section (hidden on desktop where sidebar shows) */}
           {!archiveMode && (
             <div className="mobile-leaderboard">
@@ -1316,7 +1468,7 @@ function App() {
                   displayName={displayName}
                   hasSubmitted={hasLeaderboardSubmitted}
                   userRanking={userRanking}
-                  leaderboardEntries={puzzleLeaderboard}
+                  leaderboardEntries={effectiveLeaderboard}
                   leaderboardLoading={puzzleLeaderboardLoading}
                   onSubmitToLeaderboard={async (name) => {
                     saveDisplayName(name);
@@ -1364,7 +1516,7 @@ function App() {
               ) : (
                 /* Regular leaderboard for active game */
                 <LiveLeaderboard
-                  entries={puzzleLeaderboard}
+                  entries={effectiveLeaderboard}
                   loading={puzzleLeaderboardLoading}
                   gameCompleted={gameWon || gameOver}
                   won={gameWon}
@@ -1431,7 +1583,7 @@ function App() {
           {!archiveMode && (
             <div className="game-sidebar">
               <LiveLeaderboard
-                entries={puzzleLeaderboard}
+                entries={effectiveLeaderboard}
                 loading={puzzleLeaderboardLoading}
                 gameCompleted={gameWon || gameOver || alreadyCompleted}
                 won={gameWon || gameStatus === 'won'}
