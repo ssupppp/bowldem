@@ -22,7 +22,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const XAI_API_KEY = Deno.env.get("XAI_API_KEY"); // Grok for ad copy generation
+const XAI_API_KEY = Deno.env.get("XAI_API_KEY"); // Grok — primary ad copy generator
+const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY"); // Gemini — fallback if Grok is down/out of credits
 const META_ACCESS_TOKEN = Deno.env.get("META_ACCESS_TOKEN"); // Long-lived user token for Meta API
 const META_GRAPH_API = "https://graph.facebook.com/v21.0";
 
@@ -46,6 +47,8 @@ interface Variant {
   id: number;
   experiment_id: number;
   meta_ad_id: string | null;
+  meta_adset_id: string | null;
+  meta_creative_id: string | null;
   name: string;
   status: string;
   hook: string;
@@ -60,8 +63,12 @@ interface Variant {
   cpc_paise: number;
   total_spend_paise: number;
   subscriptions: number;
+  frequency: number;
   parent_variant_id: number | null;
   mutation_type: string | null;
+  image_url: string | null;
+  image_prompt: string | null;
+  meta_data: Record<string, any> | null;
 }
 
 // ============================================================================
@@ -103,6 +110,22 @@ Deno.serve(async (req) => {
     }
     // Override strategy token with env var so downstream functions use it
     meta.system_user_token = metaToken;
+
+    // Token preflight. If the long-lived user token has expired, every
+    // downstream Meta call (insights, pause, create) silently fails — the
+    // agent keeps running, writes useless rows, and you don't notice until
+    // spend drifts or cron reports look empty. Fail loud here instead.
+    const tokenCheck = await checkMetaToken(metaToken);
+    if (!tokenCheck.valid) {
+      addLog(`ERROR: Meta token invalid (${tokenCheck.reason}). Refresh required — cycle aborted.`);
+      return new Response(
+        JSON.stringify({ success: false, log, error: "meta_token_invalid", reason: tokenCheck.reason }),
+        { status: 200, headers }
+      );
+    }
+    if (tokenCheck.days_until_expiry !== null && tokenCheck.days_until_expiry < 14) {
+      addLog(`WARN: Meta token expires in ${tokenCheck.days_until_expiry} days — refresh before it does.`);
+    }
 
     // 2. ACTIVATE — check pending_review ads, activate approved ones
     if (!dryRun) {
@@ -382,56 +405,142 @@ interface DecisionResult {
   learnings: any[];
 }
 
+/**
+ * Per-variant funnel signal pulled live from aq_attributions. We join on
+ * utm_term (adset id) — the 1:1 key for variants in this system. See the
+ * attribution comments in evaluateVariants for why utm_content isn't used.
+ */
+async function getVariantSignal(
+  variant: Variant
+): Promise<{ landings: number; plays: number; subs: number }> {
+  const ident = variant.meta_adset_id;
+  if (!ident) return { landings: 0, plays: 0, subs: 0 };
+
+  const [landingsRes, playsRes, subsRes] = await Promise.all([
+    supabase.from("aq_attributions").select("id", { count: "exact", head: true }).eq("utm_term", ident),
+    supabase.from("aq_attributions").select("id", { count: "exact", head: true }).eq("utm_term", ident).not("puzzle_played_at", "is", null),
+    supabase.from("aq_attributions").select("id", { count: "exact", head: true }).eq("utm_term", ident).eq("converted", true),
+  ]);
+
+  return {
+    landings: landingsRes.count || 0,
+    plays: playsRes.count || 0,
+    subs: subsRes.count || 0,
+  };
+}
+
+/**
+ * Tiered variant scoring. The recursion's whole worth depends on this — if
+ * we rank by CTR alone (the old behavior), a clickbait hook with 0 plays
+ * beats a mediocre hook with 5 conversions every single cycle.
+ *
+ *   Tier 1 (conversion signal):  score by inverse CAC, bounded.
+ *   Tier 2 (engagement signal):  score by landing → play rate, bounded.
+ *   Tier 3 (click signal only):  fall back to CTR × 10 (≈ old behavior).
+ *
+ * Tier separation is by constant offsets so a variant with even one
+ * conversion always outranks any pure-CTR variant. Thresholds (20 landings,
+ * 1 sub) are deliberately low for cold start — we need *any* real signal
+ * before we start trusting it; statistical significance is aspirational at
+ * this budget.
+ */
+function scoreVariant(v: Variant & { signal: { landings: number; plays: number; subs: number } }): number {
+  const { landings, plays, subs } = v.signal;
+  if (subs > 0) {
+    const cacPaise = v.total_spend_paise / subs;
+    // Lower CAC → higher score. 100000 = ₹1000 CAC → score 1. Clamped to 0–1000.
+    return 20000 + Math.min(1000, 100000 / Math.max(1, cacPaise));
+  }
+  if (landings >= 20 && plays > 0) {
+    return 10000 + 1000 * (plays / landings);
+  }
+  return (v.ctr || 0) * 10;
+}
+
 async function makeDecisions(variants: Variant[], strategy: Strategy, dryRun: boolean): Promise<DecisionResult> {
   const result: DecisionResult = { killed: [], winners: [], promoted: [], learnings: [] };
 
   if (variants.length < 2) return result;
 
-  // Sort by CTR descending
-  const sorted = [...variants].sort((a, b) => b.ctr - a.ctr);
-  const leader = sorted[0];
+  // Enrich every active variant with fresh attribution signal. This is N DB
+  // round-trips per cycle but N <= max_concurrent_variants (4), so cost is
+  // trivial compared to the Meta API calls we already make.
+  const enriched = await Promise.all(
+    variants.map(async (v) => ({ ...v, signal: await getVariantSignal(v) }))
+  );
 
-  for (const variant of sorted) {
+  const scored = enriched
+    .map((v) => ({ ...v, score: scoreVariant(v) }))
+    .sort((a, b) => b.score - a.score);
+  const leader = scored[0];
+  const leaderTier =
+    leader.signal.subs > 0 ? "cac" : leader.signal.landings >= 20 && leader.signal.plays > 0 ? "play_rate" : "ctr";
+
+  for (const variant of scored) {
     // Skip leader
     if (variant.id === leader.id) {
       result.winners.push(variant);
       continue;
     }
 
-    // Only judge if minimum spend met
+    // Only judge if minimum spend + impressions met. Without these guards
+    // the kill threshold fires on variants that just haven't had a chance.
     if (variant.total_spend_paise < strategy.cycle.min_spend_before_kill_paise) continue;
     if (variant.impressions < strategy.goals.min_impressions_before_judge) continue;
 
-    // Kill if CTR is below threshold relative to leader
-    if (leader.ctr > 0 && variant.ctr / leader.ctr < strategy.cycle.early_kill_threshold) {
+    // Kill if score is below threshold relative to leader. Threshold is
+    // strategy.cycle.early_kill_threshold (default 0.5 = kill if <50% of
+    // leader's score). Works across all three tiers since score space is
+    // ordered by tier.
+    if (leader.score > 0 && variant.score / leader.score < strategy.cycle.early_kill_threshold) {
       result.killed.push(variant);
 
-      if (!dryRun && variant.meta_ad_id) {
-        // Pause on Meta
-        await metaApiPost(variant.meta_ad_id, { status: "PAUSED" }, strategy.meta_account.system_user_token!);
+      if (!dryRun) {
+        // Pause BOTH ad and ad set on Meta. Leaving the ad set active after
+        // the ad is paused lets Meta auto-allocate spend to whatever remaining
+        // ads exist in the set (default behavior). Kill at the set level too.
+        const token = strategy.meta_account.system_user_token!;
+        try {
+          if (variant.meta_ad_id) await metaApiPost(variant.meta_ad_id, { status: "PAUSED" }, token);
+        } catch (e) {
+          console.warn(`Failed to pause ad ${variant.meta_ad_id}:`, e);
+        }
+        try {
+          if (variant.meta_adset_id) await metaApiPost(variant.meta_adset_id, { status: "PAUSED" }, token);
+        } catch (e) {
+          console.warn(`Failed to pause adset ${variant.meta_adset_id}:`, e);
+        }
 
-        // Update local status
         await supabase
           .from("aq_variants")
           .update({ status: "killed", killed_at: new Date().toISOString() })
           .eq("id", variant.id);
       }
 
-      // Generate learning from the kill
+      // Record a learning — dimension reflects which signal drove the kill,
+      // so future cycles can bias generation toward the right dimension.
       if (leader.hook !== variant.hook) {
+        const winner_cac = leader.signal.subs > 0 ? leader.total_spend_paise / leader.signal.subs : null;
+        const loser_cac = variant.signal.subs > 0 ? variant.total_spend_paise / variant.signal.subs : null;
         result.learnings.push({
           category: "copy",
-          dimension: "hook",
-          finding: `Hook "${leader.hook?.slice(0, 50)}..." outperformed "${variant.hook?.slice(0, 50)}..." — CTR ${leader.ctr.toFixed(2)}% vs ${variant.ctr.toFixed(2)}%`,
-          confidence: variant.impressions > 2000 ? "high" : "medium",
+          dimension: leaderTier === "cac" ? "conversion" : leaderTier === "play_rate" ? "engagement" : "hook",
+          finding: leaderTier === "cac"
+            ? `Winner CAC ₹${Math.round((winner_cac || 0) / 100)} vs loser ₹${loser_cac ? Math.round(loser_cac / 100) : "∞"} — hook "${leader.hook?.slice(0, 50)}..." converts, "${variant.hook?.slice(0, 50)}..." doesn't.`
+            : leaderTier === "play_rate"
+            ? `Winner play rate ${(leader.signal.plays / Math.max(1, leader.signal.landings) * 100).toFixed(1)}% vs loser ${(variant.signal.plays / Math.max(1, variant.signal.landings) * 100).toFixed(1)}% — hook "${leader.hook?.slice(0, 50)}..." drives engaged clicks, "${variant.hook?.slice(0, 50)}..." drives bounces.`
+            : `Hook "${leader.hook?.slice(0, 50)}..." outperformed "${variant.hook?.slice(0, 50)}..." on CTR — ${leader.ctr.toFixed(2)}% vs ${variant.ctr.toFixed(2)}%. (No conversion data yet.)`,
+          confidence: leaderTier !== "ctr" ? "high" : variant.impressions > 2000 ? "medium" : "low",
           evidence: {
             winner_id: leader.id,
             loser_id: variant.id,
-            metric: "ctr",
-            winner_value: leader.ctr,
-            loser_value: variant.ctr,
-            sample_size_winner: leader.impressions,
-            sample_size_loser: variant.impressions,
+            tier: leaderTier,
+            winner_score: leader.score,
+            loser_score: variant.score,
+            winner_signal: leader.signal,
+            loser_signal: variant.signal,
+            winner_ctr: leader.ctr,
+            loser_ctr: variant.ctr,
           },
           implication: `Prefer hook style similar to: "${leader.hook?.slice(0, 80)}"`,
         });
@@ -439,7 +548,7 @@ async function makeDecisions(variants: Variant[], strategy: Strategy, dryRun: bo
     }
   }
 
-  // Check for creative fatigue on leader (frequency > 3 or CTR declining)
+  // Check for creative fatigue on leader (frequency > 3).
   if (leader.frequency > 3) {
     result.learnings.push({
       category: "audience",
@@ -512,9 +621,13 @@ async function generateVariants(
     variants.push(variant);
   }
 
-  // Exploit — clone winners with fresh budget (or slight tweak)
+  // Exploit — clone winners with fresh budget. Carry the creative assets
+  // (image_url, image_hash, video_id, thumbnail_url) forward from the parent
+  // so a winning video ad gets reused verbatim instead of silently dropping
+  // back to text-only on clone.
   for (let i = 0; i < exploitCount && i < winners.length; i++) {
     const parent = winners[i % winners.length];
+    const parentMeta = parent.meta_data || {};
     const variant = {
       name: `Exploit: ${parent.name} (cycle ${cycle.cycle_number})`,
       hook: parent.hook,
@@ -526,19 +639,34 @@ async function generateVariants(
       mutation_type: null,
       daily_budget_paise: floorBudget(dailyBudget * alloc.exploit_pct / 100 / Math.max(1, exploitCount)),
       targeting: strategy.audiences.primary,
+      image_url: parent.image_url,
+      image_prompt: parent.image_prompt,
+      image_hash: parentMeta.image_hash || null,
+      video_id: parentMeta.video_id || null,
+      thumbnail_url: parentMeta.thumbnail_url || null,
     };
     variants.push(variant);
   }
 
-  // Sanity check: post-floor total may exceed the declared daily cap when
-  // small allocation percentages get floored up. Log a warning so the cap
-  // breach is visible in the cycle log, but don't abort — the minimum-variant
-  // cold-start flow is more important than strict cap adherence.
-  const totalAllocated = variants.reduce((s, v) => s + (v.daily_budget_paise || 0), 0);
+  // Hard budget cap: if post-floor total exceeds daily_cap_paise, trim from
+  // the end (lowest priority = explore_far, since we generate in explore_far
+  // → explore_near → exploit order). This protects the wallet when Meta's
+  // minimum-budget floor collides with a low daily cap — previous behavior
+  // was to warn-and-continue, which could silently 2× spend if the cap was
+  // set loosely. Cold-start still gets at least one variant.
+  let totalAllocated = variants.reduce((s, v) => s + (v.daily_budget_paise || 0), 0);
+  while (totalAllocated > dailyBudget && variants.length > 1) {
+    const dropped = variants.pop()!;
+    totalAllocated -= dropped.daily_budget_paise || 0;
+    console.warn(
+      `[budget] Dropped variant "${dropped.name}" (${dropped.budget_type}) — post-floor total would exceed daily_cap. ` +
+      `Consider lowering max_concurrent_variants or raising daily_cap_paise.`
+    );
+  }
   if (totalAllocated > dailyBudget) {
     console.warn(
-      `[budget] Post-floor total ${totalAllocated} exceeds daily_cap ${dailyBudget} by ${totalAllocated - dailyBudget} paise. ` +
-      `${variants.length} variants at Meta floor. Consider reducing max_concurrent_variants or raising the cap.`
+      `[budget] Even a single variant at Meta floor (${variants[0]?.daily_budget_paise} paise) exceeds daily_cap ${dailyBudget}. ` +
+      `Shipping it anyway so cold-start isn't blocked — raise the cap to stop this warning.`
     );
   }
 
@@ -551,8 +679,11 @@ async function generateAdCopy(
   parent: Variant | null,
   budgetType: string
 ): Promise<any> {
-  if (!XAI_API_KEY) {
-    // Fallback: template-based generation if no AI API
+  if (!XAI_API_KEY && !GEMINI_API_KEY) {
+    // Neither provider configured — only path left is template fallback.
+    // That's degenerate (random hook/body/headline combinations with no
+    // learnings bias) so log it loudly enough to catch during cycle review.
+    console.warn("[generate] No XAI_API_KEY or GEMINI_API_KEY set — using template fallback. Recursion will degenerate.");
     return generateTemplateCopy(strategy, parent, budgetType);
   }
 
@@ -592,44 +723,75 @@ Generate ONE Meta ad. Return ONLY valid JSON:
   "name": "internal name for this variant (short, descriptive)"
 }`;
 
-  try {
-    const response = await fetch("https://api.x.ai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${XAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "grok-3-mini",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.8,
-        max_tokens: 300,
-      }),
-    });
+  // Provider chain: Grok (primary) → Gemini (fallback) → template.
+  // Grok was the original generator; newsletter moved to Gemini when Grok
+  // credits ran out. Same thing can happen here silently — the old code
+  // went straight from Grok failure to random templates, torching the
+  // learnings signal. This chain keeps AI generation going as long as any
+  // provider works.
+  const providers: Array<{ name: string; run: () => Promise<string> }> = [];
+  if (XAI_API_KEY) providers.push({ name: "grok", run: () => callGrok(prompt) });
+  if (GEMINI_API_KEY) providers.push({ name: "gemini", run: () => callGemini(prompt) });
 
-    const result = await response.json();
-    const content = result.choices?.[0]?.message?.content || "";
+  for (const provider of providers) {
+    try {
+      const content = await provider.run();
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error(`No JSON in ${provider.name} response`);
 
-    // Parse JSON from response (handle markdown code blocks)
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("No JSON found in AI response");
+      const parsed = JSON.parse(jsonMatch[0]);
 
-    const parsed = JSON.parse(jsonMatch[0]);
-
-    return {
-      name: parsed.name || `${budgetType}_cycle_${Date.now()}`,
-      hook: parsed.hook,
-      body_text: parsed.body_text,
-      headline: parsed.headline?.slice(0, 27),
-      cta_type: "LEARN_MORE",
-      budget_type: budgetType,
-      mutation_type: mutationDimension,
-      targeting: strategy.audiences.primary,
-    };
-  } catch (e) {
-    console.warn("AI generation failed, using template fallback:", e);
-    return generateTemplateCopy(strategy, parent, budgetType);
+      return {
+        name: parsed.name || `${budgetType}_cycle_${Date.now()}`,
+        hook: parsed.hook,
+        body_text: parsed.body_text,
+        headline: parsed.headline?.slice(0, 27),
+        cta_type: "LEARN_MORE",
+        budget_type: budgetType,
+        mutation_type: mutationDimension,
+        targeting: strategy.audiences.primary,
+      };
+    } catch (e) {
+      console.warn(`[generate] ${provider.name} failed, trying next:`, e);
+    }
   }
+
+  console.warn("[generate] All AI providers failed — falling back to template.");
+  return generateTemplateCopy(strategy, parent, budgetType);
+}
+
+async function callGrok(prompt: string): Promise<string> {
+  const response = await fetch("https://api.x.ai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${XAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "grok-3-mini",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.8,
+      max_tokens: 300,
+    }),
+  });
+  if (!response.ok) throw new Error(`Grok HTTP ${response.status}`);
+  const result = await response.json();
+  return result.choices?.[0]?.message?.content || "";
+}
+
+async function callGemini(prompt: string): Promise<string> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.8, maxOutputTokens: 300 },
+    }),
+  });
+  if (!response.ok) throw new Error(`Gemini HTTP ${response.status}`);
+  const result = await response.json();
+  return result.candidates?.[0]?.content?.parts?.[0]?.text || "";
 }
 
 /**
@@ -697,20 +859,48 @@ async function deployToMeta(variant: any, strategy: Strategy, cycle: any) {
     // (see generateVariants / floorBudget). Use it directly.
     const dailyBudgetPaise = variant.daily_budget_paise;
 
+    // Translate strategy.audiences interests (array of strings like "cricket"
+    // or objects with {id, name}) into Meta's flexible_spec. If the strategy
+    // seeds only string names, Meta ignores them silently — which is what was
+    // happening before this fix. Send them as interest objects so the API
+    // validates and applies them. Only accept object form with a Meta-issued
+    // id; string-only interests are dropped with a warning.
+    const rawInterests = Array.isArray(variant.targeting?.interests) ? variant.targeting.interests : [];
+    const interestObjects = rawInterests
+      .map((i: any) => (typeof i === "object" && i.id ? { id: String(i.id), name: i.name } : null))
+      .filter(Boolean);
+    if (rawInterests.length > 0 && interestObjects.length === 0) {
+      console.warn(
+        `[targeting] variant "${variant.name}" has interests but none are Meta-resolvable objects — running broad. ` +
+        `Strategy seeded strings like "cricket"; resolve these to {id, name} via /search?type=adinterest in Meta.`
+      );
+    }
+
+    const targetingPayload: any = {
+      geo_locations: { countries: variant.targeting?.geo || ["IN"] },
+      age_min: variant.targeting?.age_min || 18,
+      age_max: variant.targeting?.age_max || 44,
+      publisher_platforms: ["facebook", "instagram"],
+      targeting_automation: { advantage_audience: 0 },
+    };
+    if (interestObjects.length > 0) {
+      targetingPayload.flexible_spec = [{ interests: interestObjects }];
+    }
+
+    // optimization_goal is strategy-configurable. Default stays LINK_CLICKS
+    // for compatibility with cold-start; once puzzle_played signal is stable
+    // and Meta has a custom conversion registered for it, flip this to
+    // OFFSITE_CONVERSIONS in strategy.goals to let Meta ML optimize mid-funnel.
+    const optimizationGoal = strategy.goals?.optimization_goal || "LINK_CLICKS";
+
     const adSetData = {
       name: `AQ_${cycle.cycle_number}_${variant.budget_type}_${Date.now()}`,
       campaign_id: campaignId,
       billing_event: "IMPRESSIONS",
-      optimization_goal: "LINK_CLICKS",
+      optimization_goal: optimizationGoal,
       bid_strategy: "LOWEST_COST_WITHOUT_CAP",
       daily_budget: dailyBudgetPaise,
-      targeting: JSON.stringify({
-        geo_locations: { countries: variant.targeting?.geo || ["IN"] },
-        age_min: variant.targeting?.age_min || 18,
-        age_max: variant.targeting?.age_max || 44,
-        publisher_platforms: ["facebook", "instagram"],
-        targeting_automation: { advantage_audience: 0 },
-      }),
+      targeting: JSON.stringify(targetingPayload),
       status: "PAUSED",
       start_time: new Date().toISOString(),
     };
@@ -718,22 +908,56 @@ async function deployToMeta(variant: any, strategy: Strategy, cycle: any) {
     const adSet = await metaApiPost(`act_${adAccountId}/adsets`, adSetData, token);
     const adSetId = adSet.id;
 
-    // 3. Create ad creative
-    // Attribution note: utm_term holds the adset id, which is 1:1 with a variant
-    // in this system. utm_content is intentionally omitted — Meta does not let us
-    // substitute the ad id into the creative URL after the ad is created, and a
-    // literal placeholder string would break the evaluator's attribution query.
+    // 3. Create ad creative — branch by asset type.
+    //
+    // Attribution: utm_term = adset id (1:1 with variant). utm_content is
+    // omitted — Meta won't interpolate the ad id into the URL at creation,
+    // and a literal placeholder breaks the evaluator's attribution query.
+    //
+    // Asset precedence (until the video pipeline ships, all variants fall to
+    // the last case — text-only link ads):
+    //   1. variant.video_id       → video_data (feed + reels). Meta requires
+    //                                image_url as the thumbnail fallback.
+    //   2. variant.image_hash     → link_data + image_hash (single-image ad).
+    //   3. text-only              → link_data alone (current behavior).
+    //
+    // Video is by far the highest-leverage upgrade per the India CPI data;
+    // treat the first two branches as plumbing ready for the creative
+    // pipeline. See bowldem-autoacquire.md backlog item B for the asset spec.
+    const landingUrl = `${strategy.brand.url}?utm_source=meta&utm_medium=cpc&utm_campaign=${campaignId}&utm_term=${adSetId}`;
+    const storySpec: any = { page_id: pageId };
+    const cta = { type: variant.cta_type || "LEARN_MORE", value: { link: landingUrl } };
+
+    if (variant.video_id) {
+      storySpec.video_data = {
+        video_id: variant.video_id,
+        title: variant.headline,
+        message: `${variant.hook}\n\n${variant.body_text}`,
+        call_to_action: cta,
+        // image_url is the thumbnail frame shown while the video loads.
+        // Meta requires it for every video creative.
+        image_url: variant.thumbnail_url || undefined,
+      };
+    } else if (variant.image_hash) {
+      storySpec.link_data = {
+        link: landingUrl,
+        message: `${variant.hook}\n\n${variant.body_text}`,
+        name: variant.headline,
+        image_hash: variant.image_hash,
+        call_to_action: { type: variant.cta_type || "LEARN_MORE" },
+      };
+    } else {
+      storySpec.link_data = {
+        link: landingUrl,
+        message: `${variant.hook}\n\n${variant.body_text}`,
+        name: variant.headline,
+        call_to_action: { type: variant.cta_type || "LEARN_MORE" },
+      };
+    }
+
     const creativeData = {
       name: `AQ_creative_${variant.name}`,
-      object_story_spec: JSON.stringify({
-        page_id: pageId,
-        link_data: {
-          link: `${strategy.brand.url}?utm_source=meta&utm_medium=cpc&utm_campaign=${campaignId}&utm_term=${adSetId}`,
-          message: `${variant.hook}\n\n${variant.body_text}`,
-          name: variant.headline,
-          call_to_action: { type: variant.cta_type || "LEARN_MORE" },
-        },
-      }),
+      object_story_spec: JSON.stringify(storySpec),
     };
 
     const creative = await metaApiPost(`act_${adAccountId}/adcreatives`, creativeData, token);
@@ -750,7 +974,9 @@ async function deployToMeta(variant: any, strategy: Strategy, cycle: any) {
 
     // 5. Creative attribution relies on utm_term (adset id) — see comment above.
 
-    // 6. Save variant to DB with Meta IDs
+    // 6. Save variant to DB with Meta IDs. image_url/image_prompt live in
+    // dedicated columns; video_id and thumbnail_url are stashed in meta_data
+    // JSONB (no column for them yet — video pipeline isn't built).
     await supabase.from("aq_variants").insert([{
       experiment_id: cycle.experiment?.id,
       meta_ad_id: ad.id,
@@ -767,7 +993,14 @@ async function deployToMeta(variant: any, strategy: Strategy, cycle: any) {
       parent_variant_id: variant.parent_variant_id || null,
       mutation_type: variant.mutation_type || null,
       targeting: variant.targeting,
+      image_url: variant.image_url || null,
+      image_prompt: variant.image_prompt || null,
       deployed_at: new Date().toISOString(),
+      meta_data: {
+        video_id: variant.video_id || null,
+        thumbnail_url: variant.thumbnail_url || null,
+        image_hash: variant.image_hash || null,
+      },
     }]);
 
     // 7. Schedule activation check (the ad needs to pass review first)
@@ -795,13 +1028,18 @@ async function deployToMeta(variant: any, strategy: Strategy, cycle: any) {
 }
 
 async function ensureCampaign(adAccountId: string, token: string, strategy: Strategy): Promise<string> {
-  // Check if we have an active campaign
+  // Pick the most recent active campaign. maybeSingle tolerates zero rows;
+  // ordering by created_at handles the case where a prior test left multiple
+  // active rows (the old .single() would throw on that — silently bricking
+  // deploy). If multiple exist, we use the newest; older rows should be
+  // cleaned up manually but they're harmless here.
   const { data: existing } = await supabase
     .from("aq_campaigns")
-    .select("meta_campaign_id")
+    .select("meta_campaign_id, created_at")
     .eq("status", "active")
+    .order("created_at", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   if (existing?.meta_campaign_id) return existing.meta_campaign_id;
 
@@ -990,4 +1228,37 @@ async function metaApiGet(objectId: string, fields: string, token: string): Prom
   const url = `${META_GRAPH_API}/${objectId}?fields=${fields}&access_token=${token}`;
   const response = await fetch(url);
   return response.json();
+}
+
+/**
+ * Probe the Meta token before any real work. Uses /debug_token on the Graph
+ * API — cheap, doesn't count toward ad-creation rate limits, and returns a
+ * typed expiry we can surface as a warning before it bites.
+ */
+async function checkMetaToken(
+  token: string
+): Promise<{ valid: boolean; reason?: string; days_until_expiry: number | null }> {
+  try {
+    const url = `${META_GRAPH_API}/debug_token?input_token=${token}&access_token=${token}`;
+    const response = await fetch(url);
+    const result = await response.json();
+
+    if (result.error) return { valid: false, reason: result.error.message, days_until_expiry: null };
+
+    const data = result.data;
+    if (!data) return { valid: false, reason: "no_data", days_until_expiry: null };
+    if (data.is_valid === false) return { valid: false, reason: data.error?.message || "not_valid", days_until_expiry: null };
+
+    // expires_at = 0 means "never expires" (System User tokens). Positive value
+    // is a unix timestamp.
+    const expiresAt = typeof data.expires_at === "number" ? data.expires_at : 0;
+    let daysUntil: number | null = null;
+    if (expiresAt > 0) {
+      daysUntil = Math.round((expiresAt * 1000 - Date.now()) / (1000 * 60 * 60 * 24));
+      if (daysUntil <= 0) return { valid: false, reason: "expired", days_until_expiry: daysUntil };
+    }
+    return { valid: true, days_until_expiry: daysUntil };
+  } catch (e) {
+    return { valid: false, reason: `probe_failed: ${e}`, days_until_expiry: null };
+  }
 }

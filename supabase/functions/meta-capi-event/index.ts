@@ -42,7 +42,15 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { event_name, email, fbclid, utm_source, utm_content } = await req.json();
+    const {
+      event_name,
+      event_id: clientEventId,
+      email,
+      fbclid,
+      utm_source,
+      utm_content,
+      utm_term,
+    } = await req.json();
 
     if (!META_PIXEL_ID || !META_CAPI_TOKEN) {
       console.warn("Meta CAPI not configured — skipping event send");
@@ -59,9 +67,13 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Build the event payload
+    // Build the event payload. If the client supplied an event_id, use it —
+    // that's what makes Pixel + CAPI collapse into a single event on Meta's
+    // side. Fall back to a server-generated one if absent (legacy callers).
     const eventTime = Math.floor(Date.now() / 1000);
-    const eventId = `bowldem_${event_name}_${eventTime}_${Math.random().toString(36).slice(2, 8)}`;
+    const eventId =
+      clientEventId ||
+      `bowldem_${event_name}_${eventTime}_${Math.random().toString(36).slice(2, 8)}`;
 
     const userData: Record<string, any> = {};
 
@@ -85,9 +97,11 @@ Deno.serve(async (req) => {
           event_source_url: "https://bowldem.com",
           user_data: userData,
           custom_data: {
-            content_name: "bowldem_newsletter",
+            content_name:
+              event_name === "Subscribe" ? "bowldem_newsletter" : "bowldem_game",
             utm_source: utm_source || undefined,
             utm_content: utm_content || undefined,
+            utm_term: utm_term || undefined,
           },
         },
       ],
